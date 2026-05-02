@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Funcionario, mockFuncionarios } from '../../types/funcionarios';
+import { type Funcionario, mockFuncionarios } from '../../types/funcionarios';
 
 const Funcionarios: React.FC = () => {
   const navigate = useNavigate();

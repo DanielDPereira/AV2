@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { DashboardAircraft, DashboardStats } from '../../types/dashboard';
+import { type DashboardAircraft, type DashboardStats } from '../../types/dashboard';
 
 const mockStats: DashboardStats = {
   aircrafts: 142,

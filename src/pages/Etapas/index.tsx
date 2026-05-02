@@ -1,6 +1,6 @@
 import React, { useState, Fragment } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Etapa, mockEtapas } from '../../types/etapas';
+import { type Etapa, mockEtapas } from '../../types/etapas';
 
 const Etapas: React.FC = () => {
   const navigate = useNavigate();

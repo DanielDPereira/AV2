@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Aeronave, mockAeronaves } from '../../types/aeronaves';
+import { type Aeronave, mockAeronaves } from '../../types/aeronaves';
 
 const Aeronaves: React.FC = () => {
   const navigate = useNavigate();

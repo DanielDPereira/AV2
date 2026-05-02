@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Peca, mockPecas } from '../../types/pecas';
+import { type Peca, mockPecas } from '../../types/pecas';
 
 const Pecas: React.FC = () => {
   const navigate = useNavigate();
