@@ -1,66 +1,14 @@
 import React, { useState, Fragment } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import Layout from '../../components/Layout';
 import { type Etapa, mockEtapas } from '../../types/etapas';
 
 const Etapas: React.FC = () => {
-  const navigate = useNavigate();
   const [etapas] = useState<Etapa[]>(mockEtapas);
 
   return (
-    <div className="bg-background text-on-background font-body-md antialiased min-h-screen">
-      {/* TopNavBar */}
-      <header className="fixed top-0 w-full z-50 h-16 bg-white border-b border-slate-200 shadow-sm flex items-center justify-between px-8 max-w-full">
-        <div className="flex items-center gap-4">
-          <span className="text-xl font-bold tracking-tighter text-blue-800">Aerocode</span>
-        </div>
-        <div className="flex items-center gap-md">
-          <span className="font-body-sm text-slate-600">User Name</span>
-          <button 
-            onClick={() => navigate('/login')}
-            className="font-label-md text-primary-container hover:text-blue-800 transition-colors"
-          >
-            Logout
-          </button>
-        </div>
-      </header>
-
-      {/* SideNavBar & Main Content Wrapper */}
-      <div className="flex pt-[64px] min-h-screen">
-        {/* SideNavBar */}
-        <nav className="hidden md:flex flex-col py-6 space-y-1 bg-slate-50 border-r border-slate-200 fixed left-0 top-16 w-64 h-[calc(100vh-64px)]">
-          <div className="px-6 mb-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">System Management</div>
-          <Link to="/dashboard" className="flex items-center gap-sm px-6 py-3 text-slate-600 border-l-4 border-transparent hover:bg-slate-100 hover:text-blue-800 duration-150 ease-in-out font-inter text-sm font-medium tracking-wide">
-            <span className="material-symbols-outlined">dashboard</span>
-            Dashboard
-          </Link>
-          <Link to="/aeronaves" className="flex items-center gap-sm px-6 py-3 text-slate-600 border-l-4 border-transparent hover:bg-slate-100 hover:text-blue-800 duration-150 ease-in-out font-inter text-sm font-medium tracking-wide">
-            <span className="material-symbols-outlined">flight</span>
-            Aeronaves
-          </Link>
-          <Link to="/pecas" className="flex items-center gap-sm px-6 py-3 text-slate-600 border-l-4 border-transparent hover:bg-slate-100 hover:text-blue-800 duration-150 ease-in-out font-inter text-sm font-medium tracking-wide">
-            <span className="material-symbols-outlined">settings_input_component</span>
-            Peças
-          </Link>
-          <Link to="/etapas" className="flex items-center gap-sm px-6 py-3 bg-white text-blue-800 border-l-4 border-blue-800 font-bold duration-150 ease-in-out font-inter text-sm tracking-wide">
-            <span className="material-symbols-outlined">account_tree</span>
-            Etapas
-          </Link>
-          <Link to="/funcionarios" className="flex items-center gap-sm px-6 py-3 text-slate-600 border-l-4 border-transparent hover:bg-slate-100 hover:text-blue-800 duration-150 ease-in-out font-inter text-sm font-medium tracking-wide">
-            <span className="material-symbols-outlined">badge</span>
-            Funcionários
-          </Link>
-          <Link to="/testes" className="flex items-center gap-sm px-6 py-3 text-slate-600 border-l-4 border-transparent hover:bg-slate-100 hover:text-blue-800 duration-150 ease-in-out font-inter text-sm font-medium tracking-wide">
-            <span className="material-symbols-outlined">biotech</span>
-            Testes
-          </Link>
-          <Link to="/relatorios" className="flex items-center gap-sm px-6 py-3 text-slate-600 border-l-4 border-transparent hover:bg-slate-100 hover:text-blue-800 duration-150 ease-in-out font-inter text-sm font-medium tracking-wide">
-            <span className="material-symbols-outlined">analytics</span>
-            Relatórios
-          </Link>
-        </nav>
-
-        {/* Main Content */}
-        <main className="flex-1 md:ml-64 p-margin bg-background">
+    <Layout>
+      <div className="p-xl flex flex-col min-h-full">
           {/* Header Section */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-xl gap-md">
             <div>
@@ -208,9 +156,8 @@ const Etapas: React.FC = () => {
               </div>
             </div>
           </div>
-        </main>
       </div>
-    </div>
+    </Layout>
   );
 };
 

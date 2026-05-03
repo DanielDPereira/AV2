@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import Layout from '../../components/Layout';
 import { type DashboardAircraft, type DashboardStats } from '../../types/dashboard';
 
 const mockStats: DashboardStats = {
@@ -27,74 +28,13 @@ const getStatusClasses = (status: DashboardAircraft['status']) => {
 };
 
 const Dashboard: React.FC = () => {
-  const navigate = useNavigate();
   const [stats] = useState<DashboardStats>(mockStats);
   const [aircrafts] = useState<DashboardAircraft[]>(mockAircrafts);
 
   return (
-    <div className="bg-surface-container-low text-on-surface font-body-md text-body-md antialiased h-screen overflow-hidden flex flex-col">
-      {/* Header Fixo */}
-      <nav className="fixed top-0 w-full z-50 h-16 bg-white border-b border-outline-variant flex items-center justify-between px-8">
-        <div className="flex items-center gap-xl">
-          <span className="text-xl font-bold tracking-tighter text-primary">Aerocode</span>
-          <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest hidden md:block">Sistema de Gestão Industrial</span>
-        </div>
-        <div className="flex items-center gap-lg">
-          <div className="flex items-center gap-sm">
-            <span className="font-label-md text-label-md text-on-surface-variant">User Name</span>
-            <img 
-              alt="Avatar" 
-              className="w-8 h-8 rounded-full border border-outline-variant" 
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQf5RBJz0IjH7MZ8p432JAl3wXfMnpeAxR7Z1ndz23HggawSyphaGGG8zf6ahg6Y08_pPkL4AX2VMDy69ErvYytqhUMF8I7JlWNc_0K62q836pnnSQEZDQVXECKihPKegq3O0Rej_e2vty3g7Eaqx0ION6t2puO4JwjnUlMRrJQm-qNMbX1t0vmE5f7Crt9KeetAv_lj47KJmbFFh0MNV6Mgb3NHe3g70dbHWdnIabwBTdCvMjpEzJnD-sdpyo3xLF-1CFtBS6E_U" 
-            />
-          </div>
-          <button 
-            onClick={() => navigate('/login')}
-            className="font-label-sm text-label-sm text-primary font-semibold hover:opacity-80 transition-opacity"
-          >
-            Sair
-          </button>
-        </div>
-      </nav>
-
-      <div className="flex flex-1 pt-16 h-full">
-        {/* Sidebar Fixa */}
-        <aside className="w-64 h-full bg-surface-container border-r border-outline-variant flex flex-col py-6">
-          <nav className="flex-1 flex flex-col space-y-1">
-            <Link to="/dashboard" className="flex items-center gap-md px-md py-sm bg-white text-primary border-l-4 border-primary font-bold">
-              <span className="material-symbols-outlined">dashboard</span>
-              <span>Dashboard</span>
-            </Link>
-            <Link to="/aeronaves" className="flex items-center gap-md px-md py-sm text-on-surface-variant border-l-4 border-transparent hover:bg-surface-variant hover:text-on-surface transition-colors">
-              <span className="material-symbols-outlined">flight</span>
-              <span>Aeronaves</span>
-            </Link>
-            <Link to="/pecas" className="flex items-center gap-md px-md py-sm text-on-surface-variant border-l-4 border-transparent hover:bg-surface-variant hover:text-on-surface transition-colors">
-              <span className="material-symbols-outlined">settings_input_component</span>
-              <span>Peças</span>
-            </Link>
-            <Link to="/etapas" className="flex items-center gap-md px-md py-sm text-on-surface-variant border-l-4 border-transparent hover:bg-surface-variant hover:text-on-surface transition-colors">
-              <span className="material-symbols-outlined">account_tree</span>
-              <span>Etapas</span>
-            </Link>
-            <Link to="/funcionarios" className="flex items-center gap-md px-md py-sm text-on-surface-variant border-l-4 border-transparent hover:bg-surface-variant hover:text-on-surface transition-colors">
-              <span className="material-symbols-outlined">badge</span>
-              <span>Funcionários</span>
-            </Link>
-            <Link to="/testes" className="flex items-center gap-md px-md py-sm text-on-surface-variant border-l-4 border-transparent hover:bg-surface-variant hover:text-on-surface transition-colors">
-              <span className="material-symbols-outlined">biotech</span>
-              <span>Testes</span>
-            </Link>
-            <Link to="/relatorios" className="flex items-center gap-md px-md py-sm text-on-surface-variant border-l-4 border-transparent hover:bg-surface-variant hover:text-on-surface transition-colors">
-              <span className="material-symbols-outlined">analytics</span>
-              <span>Relatórios</span>
-            </Link>
-          </nav>
-        </aside>
-
-        {/* Área Principal */}
-        <main className="flex-1 overflow-y-auto bg-surface-container-low p-xl">
-          <div className="max-w-7xl mx-auto space-y-xl">
+    <Layout>
+      <div className="p-xl">
+        <div className="max-w-7xl mx-auto space-y-xl">
             {/* Header & Botões Rápidos */}
             <div className="flex items-center justify-between">
               <h1 className="font-h1 text-h1 text-on-surface">Dashboard</h1>
@@ -197,11 +137,9 @@ const Dashboard: React.FC = () => {
                 </table>
               </div>
             </div>
-
           </div>
-        </main>
-      </div>
-    </div>
+        </div>
+    </Layout>
   );
 };
 

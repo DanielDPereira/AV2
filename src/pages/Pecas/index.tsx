@@ -1,66 +1,14 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import Layout from '../../components/Layout';
 import { type Peca, mockPecas } from '../../types/pecas';
 
 const Pecas: React.FC = () => {
-  const navigate = useNavigate();
   const [pecas] = useState<Peca[]>(mockPecas);
 
   return (
-    <div className="bg-surface text-on-surface min-h-screen">
-      {/* TopNavBar */}
-      <header className="bg-white dark:bg-slate-900 font-inter antialiased text-slate-900 dark:text-slate-100 fixed top-0 w-full z-50 h-16 border-b border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between px-8 max-w-full">
-        <div className="flex items-center gap-sm">
-          <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>air</span>
-          <span className="text-xl font-bold tracking-tighter text-blue-800 dark:text-blue-400">Aerocode</span>
-        </div>
-        <div className="flex items-center gap-md">
-          <span className="text-body-sm font-body-sm text-secondary">User Name</span>
-          <button 
-            onClick={() => navigate('/login')}
-            className="text-label-md font-label-md text-primary hover:text-blue-800 dark:hover:text-blue-300 transition-colors active:opacity-80 transition-all"
-          >
-            Logout
-          </button>
-        </div>
-      </header>
-
-      {/* SideNavBar & Main Content Wrapper */}
-      <div className="flex pt-16">
-        {/* SideNavBar */}
-        <nav className="bg-slate-50 dark:bg-slate-950 font-inter text-sm font-medium tracking-wide fixed left-0 top-16 w-64 h-[calc(100vh-64px)] border-r border-slate-200 dark:border-slate-800 flex flex-col py-6 space-y-1 overflow-y-auto">
-          <Link to="/dashboard" className="text-slate-600 dark:text-slate-400 border-l-4 border-transparent hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-blue-800 duration-150 ease-in-out flex items-center gap-sm px-lg py-sm">
-            <span className="material-symbols-outlined">dashboard</span>
-            <span>Dashboard</span>
-          </Link>
-          <Link to="/aeronaves" className="text-slate-600 dark:text-slate-400 border-l-4 border-transparent hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-blue-800 duration-150 ease-in-out flex items-center gap-sm px-lg py-sm">
-            <span className="material-symbols-outlined">flight</span>
-            <span>Aeronaves</span>
-          </Link>
-          <Link to="/pecas" className="bg-white dark:bg-slate-900 text-blue-800 dark:text-blue-300 border-l-4 border-blue-800 font-bold duration-150 ease-in-out flex items-center gap-sm px-lg py-sm">
-            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>settings_input_component</span>
-            <span>Peças</span>
-          </Link>
-          <Link to="/etapas" className="text-slate-600 dark:text-slate-400 border-l-4 border-transparent hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-blue-800 duration-150 ease-in-out flex items-center gap-sm px-lg py-sm">
-            <span className="material-symbols-outlined">account_tree</span>
-            <span>Etapas</span>
-          </Link>
-          <Link to="/funcionarios" className="text-slate-600 dark:text-slate-400 border-l-4 border-transparent hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-blue-800 duration-150 ease-in-out flex items-center gap-sm px-lg py-sm">
-            <span className="material-symbols-outlined">badge</span>
-            <span>Funcionários</span>
-          </Link>
-          <Link to="/testes" className="text-slate-600 dark:text-slate-400 border-l-4 border-transparent hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-blue-800 duration-150 ease-in-out flex items-center gap-sm px-lg py-sm">
-            <span className="material-symbols-outlined">biotech</span>
-            <span>Testes</span>
-          </Link>
-          <Link to="/relatorios" className="text-slate-600 dark:text-slate-400 border-l-4 border-transparent hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-blue-800 duration-150 ease-in-out flex items-center gap-sm px-lg py-sm">
-            <span className="material-symbols-outlined">analytics</span>
-            <span>Relatórios</span>
-          </Link>
-        </nav>
-
-        {/* Main Canvas */}
-        <main className="ml-64 flex-1 p-margin flex flex-col gap-lg">
+    <Layout>
+      <div className="p-xl flex flex-col gap-lg min-h-full">
           {/* Header Section */}
           <div className="flex flex-col gap-xs">
             <nav aria-label="Breadcrumb" className="flex text-body-sm font-body-sm text-secondary">
@@ -164,9 +112,8 @@ const Pecas: React.FC = () => {
               </div>
             </div>
           </div>
-        </main>
       </div>
-    </div>
+    </Layout>
   );
 };
 
