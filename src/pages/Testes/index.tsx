@@ -65,12 +65,18 @@ const Testes: React.FC = () => {
                       </span>
                     </td>
                     <td className="py-md px-lg text-right">
-                      <div className="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button className="text-secondary hover:text-primary transition-colors flex items-center" title="Editar">
-                          <span className="material-symbols-outlined text-[20px]">edit</span>
+                      <div className="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
+                        <button
+                          aria-label={`Editar teste de ${teste.aeronave}`}
+                          className="text-secondary hover:text-primary transition-colors flex items-center"
+                        >
+                          <span aria-hidden="true" className="material-symbols-outlined text-[20px]">edit</span>
                         </button>
-                        <button className="text-secondary hover:text-primary transition-colors flex items-center" title="Aprovar/Reprovar">
-                          <span className="material-symbols-outlined text-[20px]">fact_check</span>
+                        <button
+                          aria-label={`Aprovar ou reprovar teste de ${teste.aeronave}`}
+                          className="text-secondary hover:text-primary transition-colors flex items-center"
+                        >
+                          <span aria-hidden="true" className="material-symbols-outlined text-[20px]">fact_check</span>
                         </button>
                       </div>
                     </td>

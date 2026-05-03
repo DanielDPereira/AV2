@@ -76,12 +76,18 @@ const Relatorios: React.FC = () => {
                       {relatorio.dataGeracao}
                     </td>
                     <td className="py-md px-lg text-right">
-                      <div className="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button className="p-2 text-on-surface-variant hover:text-primary transition-colors hover:bg-primary-fixed-dim/20 rounded-full" title="Visualizar">
-                          <span className="material-symbols-outlined text-[20px]">visibility</span>
+                      <div className="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
+                        <button
+                          aria-label={`Visualizar relatório ${relatorio.nomeArquivo}`}
+                          className="p-2 text-on-surface-variant hover:text-primary transition-colors hover:bg-primary-fixed-dim/20 rounded-full"
+                        >
+                          <span aria-hidden="true" className="material-symbols-outlined text-[20px]">visibility</span>
                         </button>
-                        <button className="p-2 text-on-surface-variant hover:text-primary transition-colors hover:bg-primary-fixed-dim/20 rounded-full" title="Baixar">
-                          <span className="material-symbols-outlined text-[20px]">download</span>
+                        <button
+                          aria-label={`Baixar relatório ${relatorio.nomeArquivo}`}
+                          className="p-2 text-on-surface-variant hover:text-primary transition-colors hover:bg-primary-fixed-dim/20 rounded-full"
+                        >
+                          <span aria-hidden="true" className="material-symbols-outlined text-[20px]">download</span>
                         </button>
                       </div>
                     </td>

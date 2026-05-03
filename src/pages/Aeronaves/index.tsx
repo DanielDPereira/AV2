@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Layout from '../../components/Layout';
 import { type Aeronave, mockAeronaves } from '../../types/aeronaves';
 
 const Aeronaves: React.FC = () => {
+  const navigate = useNavigate();
   const [aeronaves] = useState<Aeronave[]>(mockAeronaves);
 
   return (
@@ -85,15 +87,25 @@ const Aeronaves: React.FC = () => {
                       <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant">{aero.capacidade} pax/kg</td>
                       <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant">{aero.alcance} km</td>
                       <td className="py-md px-lg text-right">
-                        <div className="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button className="p-xs text-secondary hover:text-primary hover:bg-primary-fixed rounded transition-colors" title="Ver">
-                            <span className="material-symbols-outlined text-[20px]">visibility</span>
+                        <div className="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
+                          <button
+                            aria-label={`Ver detalhes de ${aero.codigo}`}
+                            className="p-xs text-secondary hover:text-primary hover:bg-primary-fixed rounded transition-colors"
+                            onClick={() => navigate(`/aeronaves/${aero.id}`)}
+                          >
+                            <span aria-hidden="true" className="material-symbols-outlined text-[20px]">visibility</span>
                           </button>
-                          <button className="p-xs text-secondary hover:text-primary hover:bg-primary-fixed rounded transition-colors" title="Editar">
-                            <span className="material-symbols-outlined text-[20px]">edit</span>
+                          <button
+                            aria-label={`Editar ${aero.codigo}`}
+                            className="p-xs text-secondary hover:text-primary hover:bg-primary-fixed rounded transition-colors"
+                          >
+                            <span aria-hidden="true" className="material-symbols-outlined text-[20px]">edit</span>
                           </button>
-                          <button className="p-xs text-secondary hover:text-error hover:bg-error-container rounded transition-colors" title="Excluir">
-                            <span className="material-symbols-outlined text-[20px]">delete</span>
+                          <button
+                            aria-label={`Excluir ${aero.codigo}`}
+                            className="p-xs text-secondary hover:text-error hover:bg-error-container rounded transition-colors"
+                          >
+                            <span aria-hidden="true" className="material-symbols-outlined text-[20px]">delete</span>
                           </button>
                         </div>
                       </td>
