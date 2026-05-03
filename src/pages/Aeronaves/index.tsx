@@ -6,6 +6,7 @@ import Modal from '../../components/Modal';
 import { type Aeronave, mockAeronaves } from '../../types/aeronaves';
 
 const Aeronaves: React.FC = () => {
+  const navigate = useNavigate();
   const [aeronaves, setAeronaves] = useState<Aeronave[]>(mockAeronaves);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [novaAeronave, setNovaAeronave] = useState({

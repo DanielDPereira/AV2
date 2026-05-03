@@ -39,7 +39,7 @@ const Funcionarios: React.FC = () => {
       <div className="p-xl max-w-[1200px] mx-auto w-full">
           {/* Breadcrumb */}
           <nav aria-label="Breadcrumb" className="flex items-center text-on-surface-variant font-label-sm text-label-sm mb-lg">
-            <span className="hover:text-primary transition-colors cursor-pointer">System Management</span>
+            <span className="hover:text-primary transition-colors cursor-pointer">Sistema</span>
             <span className="material-symbols-outlined mx-xs text-[16px]">chevron_right</span>
             <span className="text-on-surface font-semibold">Funcionários</span>
           </nav>

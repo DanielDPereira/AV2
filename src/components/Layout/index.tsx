@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 
+import avatarImg from '../../assets/Daniel Dias_1.jpg';
+
 interface LayoutProps {
   children: React.ReactNode;
 }
@@ -30,12 +32,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div className="flex items-center gap-lg">
           <div className="flex items-center gap-sm">
             <span className="font-label-md text-label-md text-on-surface-variant">Daniel Dias</span>
-            <div
-              aria-label="Avatar do utilizador"
-              className="w-8 h-8 rounded-full border border-outline-variant bg-primary-fixed text-on-primary-fixed flex items-center justify-center font-label-sm text-label-sm select-none"
-            >
-              DD
-            </div>
+            <img 
+              src={avatarImg} 
+              alt="Daniel Dias" 
+              className="w-8 h-8 rounded-full border border-outline-variant object-cover"
+            />
           </div>
           <button 
             onClick={() => navigate('/login')}
