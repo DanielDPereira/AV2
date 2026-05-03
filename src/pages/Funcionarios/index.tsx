@@ -1,10 +1,38 @@
 import React, { useState } from 'react';
 
 import Layout from '../../components/Layout';
+import Modal from '../../components/Modal';
 import { type Funcionario, mockFuncionarios } from '../../types/funcionarios';
 
 const Funcionarios: React.FC = () => {
-  const [funcionarios] = useState<Funcionario[]>(mockFuncionarios);
+  const [funcionarios, setFuncionarios] = useState<Funcionario[]>(mockFuncionarios);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [novoFunc, setNovoFunc] = useState({
+    nome: '',
+    usuario: '',
+    senha: '',
+    telefone: '',
+    endereco: '',
+    tipo: '1'
+  });
+
+  const handleCreate = (e: React.FormEvent) => {
+    e.preventDefault();
+    const func: Funcionario = {
+      id: Math.random().toString(),
+      nome: novoFunc.nome,
+      usuario: novoFunc.usuario,
+      telefone: novoFunc.telefone,
+      endereco: novoFunc.endereco,
+      nivel: novoFunc.tipo === '3' ? 'Administrador' : (novoFunc.tipo === '2' ? 'Engenheiro' : 'Operador'),
+      nivelVariant: novoFunc.tipo === '3' ? 'bg-primary-container text-on-primary-container border-primary-container' : (novoFunc.tipo === '2' ? 'bg-secondary-container text-on-secondary-container border-secondary-container' : 'bg-surface-container-high text-on-surface border-outline-variant'),
+      iniciais: novoFunc.nome.substring(0, 2).toUpperCase() || 'NO',
+      iniciaisVariant: 'bg-green-100 text-green-800'
+    };
+    setFuncionarios([func, ...funcionarios]);
+    setIsModalOpen(false);
+    setNovoFunc({ nome: '', usuario: '', senha: '', telefone: '', endereco: '', tipo: '1' });
+  };
 
   return (
     <Layout>
@@ -22,7 +50,9 @@ const Funcionarios: React.FC = () => {
               <h1 className="font-h1 text-h1 text-on-surface">Funcionários</h1>
               <p className="font-body-md text-body-md text-on-surface-variant mt-xs">Gerencie o diretório de pessoal e níveis de acesso ao sistema.</p>
             </div>
-            <button className="flex items-center gap-sm bg-primary text-on-primary px-lg py-sm rounded-DEFAULT hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-all font-label-md text-label-md active:scale-[0.98]">
+            <button 
+              onClick={() => setIsModalOpen(true)}
+              className="flex items-center gap-sm bg-primary text-on-primary px-lg py-sm rounded-DEFAULT hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-all font-label-md text-label-md active:scale-[0.98]">
               <span className="material-symbols-outlined text-[20px]">add</span>
               <span>Novo Funcionário</span>
             </button>
@@ -109,6 +139,43 @@ const Funcionarios: React.FC = () => {
             </div>
           </div>
       </div>
+
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Cadastrar Funcionário">
+        <form className="flex flex-col gap-md" onSubmit={handleCreate}>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Nome</label>
+            <input type="text" value={novoFunc.nome} onChange={(e) => setNovoFunc({...novoFunc, nome: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+          </div>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Telefone</label>
+            <input type="text" value={novoFunc.telefone} onChange={(e) => setNovoFunc({...novoFunc, telefone: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+          </div>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Endereço</label>
+            <input type="text" value={novoFunc.endereco} onChange={(e) => setNovoFunc({...novoFunc, endereco: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+          </div>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Usuário (Login)</label>
+            <input type="text" value={novoFunc.usuario} onChange={(e) => setNovoFunc({...novoFunc, usuario: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+          </div>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Senha</label>
+            <input type="password" value={novoFunc.senha} onChange={(e) => setNovoFunc({...novoFunc, senha: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+          </div>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Tipo de Conta</label>
+            <select value={novoFunc.tipo} onChange={(e) => setNovoFunc({...novoFunc, tipo: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required>
+              <option value="1">1- Operador</option>
+              <option value="2">2- Engenheiro</option>
+              <option value="3">3- Admin</option>
+            </select>
+          </div>
+          <div className="flex justify-end gap-sm mt-md">
+            <button type="button" onClick={() => setIsModalOpen(false)} className="px-md py-sm rounded text-primary hover:bg-primary-fixed">Cancelar</button>
+            <button type="submit" className="px-md py-sm rounded bg-primary text-on-primary hover:opacity-90">Cadastrar</button>
+          </div>
+        </form>
+      </Modal>
     </Layout>
   );
 };

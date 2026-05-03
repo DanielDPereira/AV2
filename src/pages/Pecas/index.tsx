@@ -1,10 +1,36 @@
 import React, { useState } from 'react';
 
 import Layout from '../../components/Layout';
+import Modal from '../../components/Modal';
 import { type Peca, mockPecas } from '../../types/pecas';
 
 const Pecas: React.FC = () => {
-  const [pecas] = useState<Peca[]>(mockPecas);
+  const [pecas, setPecas] = useState<Peca[]>(mockPecas);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [novaPeca, setNovaPeca] = useState({
+    aeronave: '',
+    nome: '',
+    fornecedor: '',
+    tipo: 'Nacional'
+  });
+
+  const handleCreate = (e: React.FormEvent) => {
+    e.preventDefault();
+    const peca: Peca = {
+      id: Math.random().toString(),
+      aeronave: novaPeca.aeronave,
+      nome: novaPeca.nome,
+      fornecedor: novaPeca.fornecedor,
+      tipo: novaPeca.tipo as 'Nacional' | 'Importada',
+      status: 'Em produção',
+      statusBadgeVariant: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+      statusIcon: 'manufacturing',
+      tipoBadgeVariant: novaPeca.tipo === 'Nacional' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'
+    };
+    setPecas([peca, ...pecas]);
+    setIsModalOpen(false);
+    setNovaPeca({ aeronave: '', nome: '', fornecedor: '', tipo: 'Nacional' });
+  };
 
   return (
     <Layout>
@@ -26,7 +52,9 @@ const Pecas: React.FC = () => {
             </nav>
             <div className="flex items-center justify-between">
               <h1 className="text-h2 font-h2 text-on-surface">Gestão de Peças</h1>
-              <button className="bg-primary text-on-primary text-label-md font-label-md px-md py-sm rounded-lg shadow-sm hover:opacity-90 transition-opacity flex items-center gap-xs">
+              <button 
+                onClick={() => setIsModalOpen(true)}
+                className="bg-primary text-on-primary text-label-md font-label-md px-md py-sm rounded-lg shadow-sm hover:opacity-90 transition-opacity flex items-center gap-xs">
                 <span className="material-symbols-outlined text-[18px]">add</span>
                 Nova Peça
               </button>
@@ -115,6 +143,34 @@ const Pecas: React.FC = () => {
             </div>
           </div>
       </div>
+
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Adicionar Peça a uma Aeronave">
+        <form className="flex flex-col gap-md" onSubmit={handleCreate}>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Código da Aeronave alvo</label>
+            <input type="text" value={novaPeca.aeronave} onChange={(e) => setNovaPeca({...novaPeca, aeronave: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+          </div>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Nome do componente</label>
+            <input type="text" value={novaPeca.nome} onChange={(e) => setNovaPeca({...novaPeca, nome: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+          </div>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Empresa fornecedora</label>
+            <input type="text" value={novaPeca.fornecedor} onChange={(e) => setNovaPeca({...novaPeca, fornecedor: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+          </div>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Origem</label>
+            <select value={novaPeca.tipo} onChange={(e) => setNovaPeca({...novaPeca, tipo: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required>
+              <option value="Nacional">1- Nacional</option>
+              <option value="Importada">2- Importada</option>
+            </select>
+          </div>
+          <div className="flex justify-end gap-sm mt-md">
+            <button type="button" onClick={() => setIsModalOpen(false)} className="px-md py-sm rounded text-primary hover:bg-primary-fixed">Cancelar</button>
+            <button type="submit" className="px-md py-sm rounded bg-primary text-on-primary hover:opacity-90">Cadastrar</button>
+          </div>
+        </form>
+      </Modal>
     </Layout>
   );
 };
