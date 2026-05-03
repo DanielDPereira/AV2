@@ -110,12 +110,18 @@ const Funcionarios: React.FC = () => {
                         </span>
                       </td>
                       <td className="py-md px-lg text-right">
-                        <div className="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button className="p-1 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-highest" title="Editar">
-                            <span className="material-symbols-outlined text-[20px]">edit</span>
+                        <div className="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
+                          <button
+                            aria-label={`Editar ${func.nome}`}
+                            className="p-1 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-highest"
+                          >
+                            <span aria-hidden="true" className="material-symbols-outlined text-[20px]">edit</span>
                           </button>
-                          <button className="p-1 text-on-surface-variant hover:text-error transition-colors rounded-full hover:bg-error-container" title="Remover">
-                            <span className="material-symbols-outlined text-[20px]">delete</span>
+                          <button
+                            aria-label={`Remover ${func.nome}`}
+                            className="p-1 text-on-surface-variant hover:text-error transition-colors rounded-full hover:bg-error-container"
+                          >
+                            <span aria-hidden="true" className="material-symbols-outlined text-[20px]">delete</span>
                           </button>
                         </div>
                       </td>

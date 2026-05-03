@@ -110,15 +110,24 @@ const Pecas: React.FC = () => {
                         </span>
                       </td>
                       <td className="p-md text-right">
-                        <div className="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button className="text-secondary hover:text-primary transition-colors flex items-center" title="Editar">
-                            <span className="material-symbols-outlined text-[20px]">edit</span>
+                        <div className="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
+                          <button
+                            aria-label={`Editar peça ${peca.nome}`}
+                            className="text-secondary hover:text-primary transition-colors flex items-center"
+                          >
+                            <span aria-hidden="true" className="material-symbols-outlined text-[20px]">edit</span>
                           </button>
-                          <button className="text-secondary hover:text-primary transition-colors flex items-center" title="Alterar status">
-                            <span className="material-symbols-outlined text-[20px]">published_with_changes</span>
+                          <button
+                            aria-label={`Alterar status de ${peca.nome}`}
+                            className="text-secondary hover:text-primary transition-colors flex items-center"
+                          >
+                            <span aria-hidden="true" className="material-symbols-outlined text-[20px]">published_with_changes</span>
                           </button>
-                          <button className="text-secondary hover:text-error transition-colors flex items-center" title="Excluir">
-                            <span className="material-symbols-outlined text-[20px]">delete</span>
+                          <button
+                            aria-label={`Excluir peça ${peca.nome}`}
+                            className="text-secondary hover:text-error transition-colors flex items-center"
+                          >
+                            <span aria-hidden="true" className="material-symbols-outlined text-[20px]">delete</span>
                           </button>
                         </div>
                       </td>

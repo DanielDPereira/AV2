@@ -4,7 +4,6 @@ export interface Funcionario {
   iniciaisVariant: string;
   nome: string;
   usuario: string;
-  senha?: string; // no front só será enviado ou mockado para teste, em prod não viria a senha crua do backend
   telefone: string;
   endereco: string;
   nivel: 'Administrador' | 'Engenheiro' | 'Operador';
@@ -18,7 +17,6 @@ export const mockFuncionarios: Funcionario[] = [
     iniciaisVariant: 'bg-primary-fixed text-on-primary-fixed',
     nome: 'Carlos Silva',
     usuario: 'admin',
-    senha: 'scrypt$dummyhash',
     telefone: '+55 11 98765-4321',
     endereco: 'Av. Paulista, 1000, São Paulo - SP',
     nivel: 'Administrador',
