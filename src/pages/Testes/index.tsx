@@ -1,10 +1,19 @@
 import React, { useState } from 'react';
 
 import Layout from '../../components/Layout';
+import Modal from '../../components/Modal';
 import { type Teste, mockTestes } from '../../types/testes';
 
 const Testes: React.FC = () => {
   const [testes] = useState<Teste[]>(mockTestes);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [novoTeste, setNovoTeste] = useState({ aeronave: '', tipo: '1', resultado: 's' });
+
+  const handleCreateTeste = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsModalOpen(false);
+    setNovoTeste({ aeronave: '', tipo: '1', resultado: 's' });
+  };
 
   return (
     <Layout>
@@ -28,7 +37,7 @@ const Testes: React.FC = () => {
                 type="text"
               />
             </div>
-            <button className="flex items-center gap-xs px-lg py-[10px] bg-primary text-on-primary rounded-lg font-label-md text-label-md shadow-sm hover:opacity-90 transition-opacity active:scale-[0.98]">
+            <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-xs px-lg py-[10px] bg-primary text-on-primary rounded-lg font-label-md text-label-md shadow-sm hover:opacity-90 transition-opacity active:scale-[0.98]">
               <span className="material-symbols-outlined text-[20px]">add</span>
               Novo Teste
             </button>
@@ -94,6 +103,34 @@ const Testes: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Registrar Teste de Qualidade">
+        <form className="flex flex-col gap-md" onSubmit={handleCreateTeste}>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Código da Aeronave</label>
+            <input type="text" value={novoTeste.aeronave} onChange={(e) => setNovoTeste({...novoTeste, aeronave: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+          </div>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Tipo</label>
+            <select value={novoTeste.tipo} onChange={(e) => setNovoTeste({...novoTeste, tipo: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required>
+              <option value="1">1- Elétrico</option>
+              <option value="2">2- Hidráulico</option>
+              <option value="3">3- Aerodinâmico</option>
+            </select>
+          </div>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Aprovado?</label>
+            <select value={novoTeste.resultado} onChange={(e) => setNovoTeste({...novoTeste, resultado: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required>
+              <option value="s">Sim</option>
+              <option value="n">Não</option>
+            </select>
+          </div>
+          <div className="flex justify-end gap-sm mt-md">
+            <button type="button" onClick={() => setIsModalOpen(false)} className="px-md py-sm rounded text-primary hover:bg-primary-fixed">Cancelar</button>
+            <button type="submit" className="px-md py-sm rounded bg-primary text-on-primary hover:opacity-90">Salvar Teste</button>
+          </div>
+        </form>
+      </Modal>
     </Layout>
   );
 };
