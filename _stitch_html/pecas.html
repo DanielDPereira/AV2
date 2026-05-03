@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aerocode - Peças</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline": "#757684",
+                        "on-background": "#1a1b22",
+                        "primary-fixed-dim": "#b8c4ff",
+                        "on-primary-fixed": "#001453",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "on-secondary-fixed": "#0b1c30",
+                        "primary-fixed": "#dde1ff",
+                        "surface-container": "#eeedf7",
+                        "on-error": "#ffffff",
+                        "surface-container-low": "#f4f2fc",
+                        "outline-variant": "#c4c5d5",
+                        "inverse-on-surface": "#f1f0fa",
+                        "surface-container-highest": "#e3e1eb",
+                        "secondary-fixed": "#d3e4fe",
+                        "on-surface": "#1a1b22",
+                        "on-error-container": "#93000a",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "inverse-primary": "#b8c4ff",
+                        "tertiary-fixed-dim": "#ffb59a",
+                        "surface-container-high": "#e8e7f1",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#e3e1eb",
+                        "tertiary-container": "#872d00",
+                        "surface-tint": "#3755c3",
+                        "tertiary-fixed": "#ffdbce",
+                        "surface-dim": "#dad9e3",
+                        "on-surface-variant": "#444653",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#173bab",
+                        "error": "#ba1a1a",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#1e40af",
+                        "surface": "#fbf8ff",
+                        "background": "#fbf8ff",
+                        "primary": "#00288e",
+                        "on-secondary-container": "#54647a",
+                        "on-primary-container": "#a8b8ff",
+                        "secondary-container": "#d0e1fb",
+                        "secondary": "#505f76",
+                        "on-tertiary-fixed": "#380d00",
+                        "on-tertiary-container": "#ffa583",
+                        "surface-bright": "#fbf8ff",
+                        "tertiary": "#611e00",
+                        "on-tertiary-fixed-variant": "#802a00",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#2f3037"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "sm": "8px",
+                        "margin": "32px",
+                        "xs": "4px",
+                        "gutter": "24px",
+                        "2xl": "48px",
+                        "lg": "24px",
+                        "base": "8px",
+                        "xl": "32px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "h3": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h2": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "code": ["monospace"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "h1": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", { "lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "h3": ["24px", { "lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.55", "fontWeight": "400" }],
+                        "h2": ["30px", { "lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "1", "letterSpacing": "0.02em", "fontWeight": "600" }],
+                        "code": ["14px", { "lineHeight": "1.4", "fontWeight": "400" }],
+                        "body-sm": ["14px", { "lineHeight": "1.45", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "h1": ["36px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen">
+<!-- TopNavBar -->
+<header class="bg-white dark:bg-slate-900 font-inter antialiased text-slate-900 dark:text-slate-100 fixed top-0 w-full z-50 h-16 border-b border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between px-8 w-full max-w-full">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">air</span>
+<span class="text-xl font-bold tracking-tighter text-blue-800 dark:text-blue-400">Aerocode</span>
+</div>
+<div class="flex items-center gap-md">
+<span class="text-body-sm font-body-sm text-secondary">User Name</span>
+<button class="text-label-md font-label-md text-primary hover:text-blue-800 dark:hover:text-blue-300 transition-colors active:opacity-80 transition-all">Logout</button>
+</div>
+</header>
+<!-- SideNavBar & Main Content Wrapper -->
+<div class="flex pt-16">
+<!-- SideNavBar -->
+<nav class="bg-slate-50 dark:bg-slate-950 font-inter text-sm font-medium tracking-wide fixed left-0 top-16 w-64 h-[calc(100vh-64px)] border-r border-slate-200 dark:border-slate-800 flex flex-col py-6 space-y-1 overflow-y-auto">
+<a class="text-slate-600 dark:text-slate-400 border-l-4 border-transparent hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-blue-800 duration-150 ease-in-out flex items-center gap-sm px-lg py-sm" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="text-slate-600 dark:text-slate-400 border-l-4 border-transparent hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-blue-800 duration-150 ease-in-out flex items-center gap-sm px-lg py-sm" href="#">
+<span class="material-symbols-outlined">flight</span>
+<span>Aeronaves</span>
+</a>
+<a class="bg-white dark:bg-slate-900 text-blue-800 dark:text-blue-300 border-l-4 border-blue-800 font-bold duration-150 ease-in-out flex items-center gap-sm px-lg py-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings_input_component</span>
+<span>Peças</span>
+</a>
+<a class="text-slate-600 dark:text-slate-400 border-l-4 border-transparent hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-blue-800 duration-150 ease-in-out flex items-center gap-sm px-lg py-sm" href="#">
+<span class="material-symbols-outlined">account_tree</span>
+<span>Etapas</span>
+</a>
+<a class="text-slate-600 dark:text-slate-400 border-l-4 border-transparent hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-blue-800 duration-150 ease-in-out flex items-center gap-sm px-lg py-sm" href="#">
+<span class="material-symbols-outlined">badge</span>
+<span>Funcionários</span>
+</a>
+<a class="text-slate-600 dark:text-slate-400 border-l-4 border-transparent hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-blue-800 duration-150 ease-in-out flex items-center gap-sm px-lg py-sm" href="#">
+<span class="material-symbols-outlined">biotech</span>
+<span>Testes</span>
+</a>
+<a class="text-slate-600 dark:text-slate-400 border-l-4 border-transparent hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-blue-800 duration-150 ease-in-out flex items-center gap-sm px-lg py-sm" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span>Relatórios</span>
+</a>
+</nav>
+<!-- Main Canvas -->
+<main class="ml-64 flex-1 p-margin flex flex-col gap-lg">
+<!-- Header Section -->
+<div class="flex flex-col gap-xs">
+<nav aria-label="Breadcrumb" class="flex text-body-sm font-body-sm text-secondary">
+<ol class="inline-flex items-center space-x-1">
+<li class="inline-flex items-center">
+<span class="text-secondary">Home</span>
+</li>
+<li>
+<div class="flex items-center">
+<span class="material-symbols-outlined text-[16px] mx-1">chevron_right</span>
+<span class="text-on-surface font-medium">Peças</span>
+</div>
+</li>
+</ol>
+</nav>
+<div class="flex items-center justify-between">
+<h1 class="text-h2 font-h2 text-on-surface">Gestão de Peças</h1>
+<button class="bg-primary text-on-primary text-label-md font-label-md px-md py-sm rounded-lg shadow-sm hover:opacity-90 transition-opacity flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                        Nova Peça
+                    </button>
+</div>
+</div>
+<!-- Table Card -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden flex flex-col">
+<!-- Table Toolbar -->
+<div class="p-md border-b border-outline-variant flex items-center justify-between bg-surface-container-low">
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-xl pr-sm py-sm text-body-sm font-body-sm border border-outline-variant rounded-lg focus:border-primary focus:ring-1 focus:ring-primary bg-surface-container-lowest text-on-surface outline-none transition-all" placeholder="Buscar peças..." type="text"/>
+</div>
+<button class="flex items-center gap-xs text-body-sm font-body-sm text-secondary border border-outline-variant px-sm py-xs rounded-lg hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+                        Filtros
+                    </button>
+</div>
+<!-- Data Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap">Nome</th>
+<th class="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap">Tipo</th>
+<th class="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap">Fornecedor</th>
+<th class="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap">Status</th>
+<th class="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap text-right">Ações</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="p-md text-body-sm font-body-sm text-on-surface font-medium">Turbina Axial X-100</td>
+<td class="p-md">
+<span class="inline-flex items-center px-2 py-1 rounded-full text-label-sm font-label-sm bg-tertiary-fixed text-on-tertiary-fixed">Importada</span>
+</td>
+<td class="p-md text-body-sm font-body-sm text-secondary">AeroEngines Corp</td>
+<td class="p-md">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-label-sm font-label-sm bg-secondary-container text-on-secondary-container">
+<span class="material-symbols-outlined text-[14px]">local_shipping</span>
+                                        Em transporte
+                                    </span>
+</td>
+<td class="p-md text-right">
+<div class="flex items-center justify-end gap-sm">
+<button class="text-secondary hover:text-primary transition-colors flex items-center" title="Editar">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="text-secondary hover:text-primary transition-colors flex items-center" title="Alterar status">
+<span class="material-symbols-outlined text-[20px]">published_with_changes</span>
+</button>
+<button class="text-secondary hover:text-error transition-colors flex items-center" title="Excluir">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="p-md text-body-sm font-body-sm text-on-surface font-medium">Painel Fuselagem Lat-A</td>
+<td class="p-md">
+<span class="inline-flex items-center px-2 py-1 rounded-full text-label-sm font-label-sm bg-secondary-fixed text-on-secondary-fixed">Nacional</span>
+</td>
+<td class="p-md text-body-sm font-body-sm text-secondary">Metalúrgica Sul</td>
+<td class="p-md">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-label-sm font-label-sm bg-primary-fixed text-on-primary-fixed">
+<span class="material-symbols-outlined text-[14px]">precision_manufacturing</span>
+                                        Em produção
+                                    </span>
+</td>
+<td class="p-md text-right">
+<div class="flex items-center justify-end gap-sm">
+<button class="text-secondary hover:text-primary transition-colors flex items-center" title="Editar">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="text-secondary hover:text-primary transition-colors flex items-center" title="Alterar status">
+<span class="material-symbols-outlined text-[20px]">published_with_changes</span>
+</button>
+<button class="text-secondary hover:text-error transition-colors flex items-center" title="Excluir">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="p-md text-body-sm font-body-sm text-on-surface font-medium">Trem de Pouso Dianteiro</td>
+<td class="p-md">
+<span class="inline-flex items-center px-2 py-1 rounded-full text-label-sm font-label-sm bg-tertiary-fixed text-on-tertiary-fixed">Importada</span>
+</td>
+<td class="p-md text-body-sm font-body-sm text-secondary">Global Gear</td>
+<td class="p-md">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-label-sm font-label-sm bg-surface-tint text-on-primary">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                                        Pronta
+                                    </span>
+</td>
+<td class="p-md text-right">
+<div class="flex items-center justify-end gap-sm">
+<button class="text-secondary hover:text-primary transition-colors flex items-center" title="Editar">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="text-secondary hover:text-primary transition-colors flex items-center" title="Alterar status">
+<span class="material-symbols-outlined text-[20px]">published_with_changes</span>
+</button>
+<button class="text-secondary hover:text-error transition-colors flex items-center" title="Excluir">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="p-md text-body-sm font-body-sm text-on-surface font-medium">Assento Comando Piloto</td>
+<td class="p-md">
+<span class="inline-flex items-center px-2 py-1 rounded-full text-label-sm font-label-sm bg-secondary-fixed text-on-secondary-fixed">Nacional</span>
+</td>
+<td class="p-md text-body-sm font-body-sm text-secondary">AeroInteriores</td>
+<td class="p-md">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-label-sm font-label-sm bg-surface-tint text-on-primary">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                                        Pronta
+                                    </span>
+</td>
+<td class="p-md text-right">
+<div class="flex items-center justify-end gap-sm">
+<button class="text-secondary hover:text-primary transition-colors flex items-center" title="Editar">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="text-secondary hover:text-primary transition-colors flex items-center" title="Alterar status">
+<span class="material-symbols-outlined text-[20px]">published_with_changes</span>
+</button>
+<button class="text-secondary hover:text-error transition-colors flex items-center" title="Excluir">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="p-md border-t border-outline-variant bg-surface-container-lowest flex items-center justify-between">
+<span class="text-body-sm font-body-sm text-secondary">Mostrando 1 a 4 de 24 peças</span>
+<div class="flex items-center gap-sm">
+<button class="text-secondary hover:text-primary p-xs rounded hover:bg-surface-variant transition-colors disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<span class="text-body-sm font-body-sm text-on-surface font-medium w-8 text-center">1</span>
+<button class="text-secondary hover:text-primary p-xs rounded hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>
