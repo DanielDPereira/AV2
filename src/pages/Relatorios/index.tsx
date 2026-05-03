@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+
 import Layout from '../../components/Layout';
 import { type Relatorio, mockRelatorios } from '../../types/relatorios';
 
@@ -32,26 +32,8 @@ const Relatorios: React.FC = () => {
         </div>
 
         {/* Content */}
-        <div className="p-xl grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-lg">
-          {/* Summary Widgets */}
-          <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col justify-center items-center shadow-sm">
-            <span className="material-symbols-outlined text-[48px] text-blue-500 mb-sm">library_books</span>
-            <span className="text-h2 font-h2 font-bold text-on-surface">142</span>
-            <span className="text-body-sm font-body-sm text-secondary">Relatórios Gerados no Mês</span>
-          </div>
-          <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col justify-center items-center shadow-sm">
-            <span className="material-symbols-outlined text-[48px] text-green-500 mb-sm">file_download</span>
-            <span className="text-h2 font-h2 font-bold text-on-surface">8.4k</span>
-            <span className="text-body-sm font-body-sm text-secondary">Downloads e Acessos</span>
-          </div>
-          <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col justify-center items-center shadow-sm">
-            <span className="material-symbols-outlined text-[48px] text-purple-500 mb-sm">schedule</span>
-            <span className="text-h2 font-h2 font-bold text-on-surface">12</span>
-            <span className="text-body-sm font-body-sm text-secondary">Relatórios Automatizados</span>
-          </div>
-        </div>
 
-        <div className="px-xl pb-xl flex-1">
+        <div className="p-xl flex-1">
           <div className="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden">
             <div className="p-lg border-b border-outline-variant bg-surface-container-low flex items-center justify-between">
               <h2 className="text-h3 font-h3 text-on-surface">Histórico Recente</h2>
@@ -67,10 +49,9 @@ const Relatorios: React.FC = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-surface-container-lowest border-b border-outline-variant">
-                  <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant">Nome do Relatório</th>
+                  <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant">Arquivo</th>
+                  <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant">Aeronave Associada</th>
                   <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant">Data de Geração</th>
-                  <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant">Gerado Por</th>
-                  <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant">Tamanho</th>
                   <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant text-right">Ações</th>
                 </tr>
               </thead>
@@ -79,23 +60,20 @@ const Relatorios: React.FC = () => {
                   <tr key={relatorio.id} className="hover:bg-surface-container-low transition-colors group">
                     <td className="py-md px-lg">
                       <div className="flex items-center gap-md">
-                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${relatorio.iconVariant}`}>
-                          <span className="material-symbols-outlined">{relatorio.tipoIcon}</span>
+                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-blue-600 bg-blue-100`}>
+                          <span className="material-symbols-outlined">description</span>
                         </div>
                         <div>
-                          <p className="font-label-md text-label-md text-on-surface font-semibold">{relatorio.titulo}</p>
-                          <p className="font-body-sm text-body-sm text-on-surface-variant">{relatorio.tipo}</p>
+                          <p className="font-label-md text-label-md text-on-surface font-semibold">{relatorio.nomeArquivo}</p>
+                          <p className="font-body-sm text-body-sm text-on-surface-variant">TXT</p>
                         </div>
                       </div>
                     </td>
+                    <td className="py-md px-lg font-body-sm text-body-sm text-on-surface">
+                      {relatorio.aeronaveCodigo}
+                    </td>
                     <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant">
                       {relatorio.dataGeracao}
-                    </td>
-                    <td className="py-md px-lg font-body-sm text-body-sm text-on-surface">
-                      {relatorio.geradoPor}
-                    </td>
-                    <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant">
-                      {relatorio.tamanho}
                     </td>
                     <td className="py-md px-lg text-right">
                       <div className="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 transition-opacity">

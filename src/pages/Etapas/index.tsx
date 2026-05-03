@@ -1,5 +1,5 @@
 import React, { useState, Fragment } from 'react';
-import { Link } from 'react-router-dom';
+
 import Layout from '../../components/Layout';
 import { type Etapa, mockEtapas } from '../../types/etapas';
 
@@ -71,10 +71,9 @@ const Etapas: React.FC = () => {
                               </span>
                               <div className="font-medium text-on-surface">{etapa.nome}</div>
                             </div>
-                            <div className="text-[12px] text-on-surface-variant mt-xs ml-[28px]">{etapa.subnome}</div>
                           </td>
-                          <td className={`px-lg py-md align-top ${etapa.atrasado ? 'text-on-error-container' : 'text-on-surface-variant'}`}>
-                            {etapa.prazo} {etapa.atrasado && <span className="font-bold text-[10px] ml-1">(ATRASADO)</span>}
+                          <td className={`px-lg py-md align-top text-on-surface-variant`}>
+                            {etapa.prazo}
                           </td>
                           <td className="px-lg py-md align-top">
                             <span className={`inline-flex items-center px-2 py-0.5 rounded ${etapa.statusBadgeVariant} font-label-sm text-[11px] uppercase`}>

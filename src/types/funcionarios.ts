@@ -3,10 +3,11 @@ export interface Funcionario {
   iniciais: string;
   iniciaisVariant: string;
   nome: string;
-  registro: string;
+  usuario: string;
+  senha?: string; // no front só será enviado ou mockado para teste, em prod não viria a senha crua do backend
   telefone: string;
   endereco: string;
-  nivel: string;
+  nivel: 'Administrador' | 'Engenheiro' | 'Operador';
   nivelVariant: string;
 }
 
@@ -16,7 +17,8 @@ export const mockFuncionarios: Funcionario[] = [
     iniciais: 'CS',
     iniciaisVariant: 'bg-primary-fixed text-on-primary-fixed',
     nome: 'Carlos Silva',
-    registro: 'EMP-0042',
+    usuario: 'admin',
+    senha: 'scrypt$dummyhash',
     telefone: '+55 11 98765-4321',
     endereco: 'Av. Paulista, 1000, São Paulo - SP',
     nivel: 'Administrador',
@@ -27,7 +29,7 @@ export const mockFuncionarios: Funcionario[] = [
     iniciais: 'ML',
     iniciaisVariant: 'bg-secondary-fixed text-on-secondary-fixed',
     nome: 'Mariana Lima',
-    registro: 'EMP-0187',
+    usuario: 'mariana.lima',
     telefone: '+55 12 99123-4567',
     endereco: 'Rua das Bandeiras, 45, S.J. Campos - SP',
     nivel: 'Engenheiro',
@@ -38,7 +40,7 @@ export const mockFuncionarios: Funcionario[] = [
     iniciais: 'RP',
     iniciaisVariant: 'bg-surface-variant text-on-surface-variant border border-outline-variant',
     nome: 'Rafael Pereira',
-    registro: 'EMP-0291',
+    usuario: 'rafael.p',
     telefone: '+55 11 97777-8888',
     endereco: 'Alameda Santos, 200, São Paulo - SP',
     nivel: 'Operador',
@@ -49,7 +51,7 @@ export const mockFuncionarios: Funcionario[] = [
     iniciais: 'AS',
     iniciaisVariant: 'bg-secondary-fixed text-on-secondary-fixed',
     nome: 'Ana Souza',
-    registro: 'EMP-0304',
+    usuario: 'ana.souza',
     telefone: '+55 19 98888-1111',
     endereco: 'Rodovia Anhanguera Km 98, Campinas - SP',
     nivel: 'Engenheiro',

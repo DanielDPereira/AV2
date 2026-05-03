@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+
 import Layout from '../../components/Layout';
 import { type Teste, mockTestes } from '../../types/testes';
 
@@ -24,7 +24,7 @@ const Testes: React.FC = () => {
               <span className="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
               <input 
                 className="w-full pl-[36px] pr-sm py-[10px] bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-fixed-dim transition-all placeholder:text-outline-variant" 
-                placeholder="Buscar por código ou aeronave..." 
+                placeholder="Buscar por aeronave..." 
                 type="text"
               />
             </div>
@@ -41,21 +41,15 @@ const Testes: React.FC = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-surface-container-low border-b border-outline-variant">
-                  <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant">Código</th>
                   <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant">Aeronave</th>
                   <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant">Tipo de Teste</th>
-                  <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant">Inspetor</th>
-                  <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant">Data</th>
-                  <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant">Status</th>
+                  <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant">Resultado</th>
                   <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant text-right">Ações</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-outline-variant">
                 {testes.map((teste) => (
                   <tr key={teste.id} className="hover:bg-surface-container-low transition-colors group">
-                    <td className="py-md px-lg font-label-md text-label-md text-on-surface font-semibold">
-                      {teste.codigo}
-                    </td>
                     <td className="py-md px-lg font-body-md text-body-md text-on-surface">
                       <div className="flex items-center gap-sm">
                         <span className="material-symbols-outlined text-outline-variant text-[18px]">flight</span>
@@ -65,15 +59,9 @@ const Testes: React.FC = () => {
                     <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant">
                       {teste.tipo}
                     </td>
-                    <td className="py-md px-lg font-body-sm text-body-sm text-on-surface">
-                      {teste.inspetor}
-                    </td>
-                    <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant">
-                      {teste.data}
-                    </td>
                     <td className="py-md px-lg">
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-[12px] font-semibold border ${teste.statusVariant}`}>
-                        {teste.status}
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-[12px] font-semibold border ${teste.resultadoVariant}`}>
+                        {teste.resultado}
                       </span>
                     </td>
                     <td className="py-md px-lg text-right">

@@ -8,10 +8,8 @@ export interface FuncionarioAlocado {
 export interface Etapa {
   id: string;
   nome: string;
-  subnome: string;
   prazo: string;
-  atrasado?: boolean;
-  status: string;
+  status: 'Pendente' | 'Em andamento' | 'Concluída';
   statusBadgeVariant: string;
   icon: string;
   isExpanded?: boolean;
@@ -22,7 +20,6 @@ export const mockEtapas: Etapa[] = [
   {
     id: '1',
     nome: 'Usinagem do Eixo Principal',
-    subnome: 'Aero-73X-Comp',
     prazo: '12/10/2023',
     status: 'Em andamento',
     statusBadgeVariant: 'bg-secondary-container text-on-secondary-container',
@@ -36,7 +33,6 @@ export const mockEtapas: Etapa[] = [
   {
     id: '2',
     nome: 'Inspeção de Turbina',
-    subnome: 'Controle de Qualidade V2',
     prazo: '15/10/2023',
     status: 'Pendente',
     statusBadgeVariant: 'bg-surface-variant text-on-surface-variant',
@@ -45,7 +41,6 @@ export const mockEtapas: Etapa[] = [
   {
     id: '3',
     nome: 'Soldagem Estrutural Asa Esq.',
-    subnome: 'Fuselagem Base',
     prazo: '08/10/2023',
     status: 'Concluída',
     statusBadgeVariant: 'bg-primary-fixed text-on-primary-fixed',
@@ -54,9 +49,7 @@ export const mockEtapas: Etapa[] = [
   {
     id: '4',
     nome: 'Calibração de Sensores Nav.',
-    subnome: 'Sistemas Eletrônicos',
     prazo: '10/10/2023',
-    atrasado: true,
     status: 'Pendente',
     statusBadgeVariant: 'bg-error-container text-on-error-container',
     icon: 'chevron_right',

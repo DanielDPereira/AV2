@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+
 import Layout from '../../components/Layout';
 import { type Funcionario, mockFuncionarios } from '../../types/funcionarios';
 
@@ -36,7 +36,7 @@ const Funcionarios: React.FC = () => {
                 <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
                 <input 
                   className="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-DEFAULT focus:border-primary focus:ring-1 focus:ring-primary outline-none font-body-sm text-body-sm text-on-surface transition-all" 
-                  placeholder="Buscar por nome ou registro..." 
+                  placeholder="Buscar por nome ou usuário..." 
                   type="text"
                 />
               </div>
@@ -68,7 +68,7 @@ const Funcionarios: React.FC = () => {
                           </div>
                           <div>
                             <p className="font-label-md text-label-md text-on-surface">{func.nome}</p>
-                            <p className="font-body-sm text-body-sm text-on-surface-variant">{func.registro}</p>
+                            <p className="font-body-sm text-body-sm text-on-surface-variant">@{func.usuario}</p>
                           </div>
                         </div>
                       </td>

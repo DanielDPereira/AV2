@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+
 import Layout from '../../components/Layout';
 import { type Peca, mockPecas } from '../../types/pecas';
 
@@ -59,6 +59,7 @@ const Pecas: React.FC = () => {
                     <th className="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap">Nome</th>
                     <th className="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap">Tipo</th>
                     <th className="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap">Fornecedor</th>
+                    <th className="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap">Aeronave Associada</th>
                     <th className="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap">Status</th>
                     <th className="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap text-right">Ações</th>
                   </tr>
@@ -73,6 +74,7 @@ const Pecas: React.FC = () => {
                         </span>
                       </td>
                       <td className="p-md text-body-sm font-body-sm text-secondary">{peca.fornecedor}</td>
+                      <td className="p-md text-body-sm font-body-sm text-on-surface">{peca.aeronave || '-'}</td>
                       <td className="p-md">
                         <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-label-sm font-label-sm ${peca.statusBadgeVariant}`}>
                           <span className="material-symbols-outlined text-[14px]">{peca.statusIcon}</span>

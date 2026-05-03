@@ -29,11 +29,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
         <div className="flex items-center gap-lg">
           <div className="flex items-center gap-sm">
-            <span className="font-label-md text-label-md text-on-surface-variant">User Name</span>
+            <span className="font-label-md text-label-md text-on-surface-variant">Daniel Dias</span>
             <img 
               alt="Avatar" 
               className="w-8 h-8 rounded-full border border-outline-variant" 
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQf5RBJz0IjH7MZ8p432JAl3wXfMnpeAxR7Z1ndz23HggawSyphaGGG8zf6ahg6Y08_pPkL4AX2VMDy69ErvYytqhUMF8I7JlWNc_0K62q836pnnSQEZDQVXECKihPKegq3O0Rej_e2vty3g7Eaqx0ION6t2puO4JwjnUlMRrJQm-qNMbX1t0vmE5f7Crt9KeetAv_lj47KJmbFFh0MNV6Mgb3NHe3g70dbHWdnIabwBTdCvMjpEzJnD-sdpyo3xLF-1CFtBS6E_U" 
+              src="https://media.licdn.com/dms/image/v2/D4D03AQGyt98mDFaU8w/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1671468853556?e=1779321600&v=beta&t=D9UHsNoASGDhSJPmTKS-ubEiIWcLW8yn5N2DNF2tJ6I" 
             />
           </div>
           <button 

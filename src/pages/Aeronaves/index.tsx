@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+
 import Layout from '../../components/Layout';
 import { type Aeronave, mockAeronaves } from '../../types/aeronaves';
 
@@ -82,8 +82,8 @@ const Aeronaves: React.FC = () => {
                           {aero.tipo}
                         </span>
                       </td>
-                      <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant">{aero.capacidade}</td>
-                      <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant">{aero.alcance}</td>
+                      <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant">{aero.capacidade} pax/kg</td>
+                      <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant">{aero.alcance} km</td>
                       <td className="py-md px-lg text-right">
                         <div className="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 transition-opacity">
                           <button className="p-xs text-secondary hover:text-primary hover:bg-primary-fixed rounded transition-colors" title="Ver">

@@ -1,12 +1,13 @@
 export interface Peca {
   id: string;
   nome: string;
-  tipo: string;
+  tipo: 'Nacional' | 'Importada';
   tipoBadgeVariant: string;
   fornecedor: string;
-  status: string;
+  status: 'Em produção' | 'Em transporte' | 'Pronta';
   statusIcon: string;
   statusBadgeVariant: string;
+  aeronave?: string;
 }
 
 export const mockPecas: Peca[] = [
@@ -19,6 +20,7 @@ export const mockPecas: Peca[] = [
     status: 'Em transporte',
     statusIcon: 'local_shipping',
     statusBadgeVariant: 'bg-secondary-container text-on-secondary-container',
+    aeronave: 'AC-737-MAX'
   },
   {
     id: '2',
@@ -29,6 +31,7 @@ export const mockPecas: Peca[] = [
     status: 'Em produção',
     statusIcon: 'precision_manufacturing',
     statusBadgeVariant: 'bg-primary-fixed text-on-primary-fixed',
+    aeronave: 'AC-C130-J'
   },
   {
     id: '3',
@@ -39,6 +42,7 @@ export const mockPecas: Peca[] = [
     status: 'Pronta',
     statusIcon: 'check_circle',
     statusBadgeVariant: 'bg-surface-tint text-on-primary',
+    aeronave: 'AC-E195-E2'
   },
   {
     id: '4',
@@ -49,5 +53,6 @@ export const mockPecas: Peca[] = [
     status: 'Pronta',
     statusIcon: 'check_circle',
     statusBadgeVariant: 'bg-surface-tint text-on-primary',
+    aeronave: 'AC-A320-NEO'
   },
 ];
