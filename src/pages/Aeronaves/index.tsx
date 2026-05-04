@@ -2,11 +2,36 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Layout from '../../components/Layout';
+import Modal from '../../components/Modal';
 import { type Aeronave, mockAeronaves } from '../../types/aeronaves';
 
 const Aeronaves: React.FC = () => {
   const navigate = useNavigate();
-  const [aeronaves] = useState<Aeronave[]>(mockAeronaves);
+  const [aeronaves, setAeronaves] = useState<Aeronave[]>(mockAeronaves);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [novaAeronave, setNovaAeronave] = useState({
+    codigo: '',
+    modelo: '',
+    tipo: 'Comercial',
+    capacidade: '',
+    alcance: ''
+  });
+
+  const handleCreate = (e: React.FormEvent) => {
+    e.preventDefault();
+    const aero: Aeronave = {
+      id: Math.random().toString(),
+      codigo: novaAeronave.codigo,
+      modelo: novaAeronave.modelo,
+      tipo: novaAeronave.tipo as 'Comercial' | 'Militar',
+      capacidade: Number(novaAeronave.capacidade),
+      alcance: Number(novaAeronave.alcance),
+      tipoBadgeColor: novaAeronave.tipo === 'Comercial' ? 'bg-blue-100 text-blue-800 border-blue-200' : 'bg-green-100 text-green-800 border-green-200'
+    };
+    setAeronaves([aero, ...aeronaves]);
+    setIsModalOpen(false);
+    setNovaAeronave({ codigo: '', modelo: '', tipo: 'Comercial', capacidade: '', alcance: '' });
+  };
 
   return (
     <Layout>
@@ -32,7 +57,9 @@ const Aeronaves: React.FC = () => {
               />
             </div>
             {/* Primary Action Button */}
-            <button className="bg-primary text-on-primary px-lg py-[10px] rounded-lg font-label-md text-label-md flex items-center gap-sm shadow-md hover:bg-primary-container transition-all active:scale-[0.98]">
+            <button 
+              onClick={() => setIsModalOpen(true)}
+              className="bg-primary text-on-primary px-lg py-[10px] rounded-lg font-label-md text-label-md flex items-center gap-sm shadow-md hover:bg-primary-container transition-all active:scale-[0.98]">
               <span className="material-symbols-outlined text-[18px]">add</span>
               Nova Aeronave
             </button>
@@ -129,6 +156,38 @@ const Aeronaves: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Cadastrar nova Aeronave">
+        <form className="flex flex-col gap-md" onSubmit={handleCreate}>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Código único</label>
+            <input type="text" value={novaAeronave.codigo} onChange={(e) => setNovaAeronave({...novaAeronave, codigo: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+          </div>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Modelo</label>
+            <input type="text" value={novaAeronave.modelo} onChange={(e) => setNovaAeronave({...novaAeronave, modelo: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+          </div>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Capacidade de Passageiros</label>
+            <input type="number" value={novaAeronave.capacidade} onChange={(e) => setNovaAeronave({...novaAeronave, capacidade: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+          </div>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Alcance em Km</label>
+            <input type="number" value={novaAeronave.alcance} onChange={(e) => setNovaAeronave({...novaAeronave, alcance: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+          </div>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Tipo</label>
+            <select value={novaAeronave.tipo} onChange={(e) => setNovaAeronave({...novaAeronave, tipo: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required>
+              <option value="Comercial">1- Comercial</option>
+              <option value="Militar">2- Militar</option>
+            </select>
+          </div>
+          <div className="flex justify-end gap-sm mt-md">
+            <button type="button" onClick={() => setIsModalOpen(false)} className="px-md py-sm rounded text-primary hover:bg-primary-fixed">Cancelar</button>
+            <button type="submit" className="px-md py-sm rounded bg-primary text-on-primary hover:opacity-90">Cadastrar</button>
+          </div>
+        </form>
+      </Modal>
     </Layout>
   );
 };

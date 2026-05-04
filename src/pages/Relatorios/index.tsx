@@ -1,10 +1,19 @@
 import React, { useState } from 'react';
 
 import Layout from '../../components/Layout';
+import Modal from '../../components/Modal';
 import { type Relatorio, mockRelatorios } from '../../types/relatorios';
 
 const Relatorios: React.FC = () => {
   const [relatorios] = useState<Relatorio[]>(mockRelatorios);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [novoRelatorio, setNovoRelatorio] = useState({ aeronave: '', gerarDisco: 's' });
+
+  const handleGerarRelatorio = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsModalOpen(false);
+    setNovoRelatorio({ aeronave: '', gerarDisco: 's' });
+  };
 
   return (
     <Layout>
@@ -24,15 +33,14 @@ const Relatorios: React.FC = () => {
               <span className="material-symbols-outlined text-[20px]">filter_alt</span>
               Filtros Avançados
             </button>
-            <button className="flex items-center gap-xs px-lg py-[10px] bg-primary text-on-primary rounded-lg font-label-md text-label-md shadow-sm hover:opacity-90 transition-opacity active:scale-[0.98]">
+            <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-xs px-lg py-[10px] bg-primary text-on-primary rounded-lg font-label-md text-label-md shadow-sm hover:opacity-90 transition-opacity active:scale-[0.98]">
               <span className="material-symbols-outlined text-[20px]">add_chart</span>
               Gerar Relatório
             </button>
           </div>
         </div>
 
-        {/* Content */}
-
+        {/* Content Area */}
         <div className="p-xl flex-1">
           <div className="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden">
             <div className="p-lg border-b border-outline-variant bg-surface-container-low flex items-center justify-between">
@@ -98,6 +106,26 @@ const Relatorios: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Gerar Relatório de Entrega">
+        <form className="flex flex-col gap-md" onSubmit={handleGerarRelatorio}>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Código da Aeronave</label>
+            <input type="text" value={novoRelatorio.aeronave} onChange={(e) => setNovoRelatorio({...novoRelatorio, aeronave: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+          </div>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Deseja gerar o .txt em disco?</label>
+            <select value={novoRelatorio.gerarDisco} onChange={(e) => setNovoRelatorio({...novoRelatorio, gerarDisco: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required>
+              <option value="s">Sim</option>
+              <option value="n">Não</option>
+            </select>
+          </div>
+          <div className="flex justify-end gap-sm mt-md">
+            <button type="button" onClick={() => setIsModalOpen(false)} className="px-md py-sm rounded text-primary hover:bg-primary-fixed">Cancelar</button>
+            <button type="submit" className="px-md py-sm rounded bg-primary text-on-primary hover:opacity-90">Gerar Relatório</button>
+          </div>
+        </form>
+      </Modal>
     </Layout>
   );
 };

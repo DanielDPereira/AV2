@@ -1,10 +1,33 @@
 import React, { useState, Fragment } from 'react';
 
 import Layout from '../../components/Layout';
+import Modal from '../../components/Modal';
 import { type Etapa, mockEtapas } from '../../types/etapas';
 
 const Etapas: React.FC = () => {
-  const [etapas] = useState<Etapa[]>(mockEtapas);
+  const [etapas, setEtapas] = useState<Etapa[]>(mockEtapas);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [novaEtapa, setNovaEtapa] = useState({
+    aeronave: '',
+    nome: '',
+    prazo: ''
+  });
+
+  const handleCreate = (e: React.FormEvent) => {
+    e.preventDefault();
+    const etapa: Etapa = {
+      id: Math.random().toString(),
+      nome: novaEtapa.nome,
+      prazo: novaEtapa.prazo,
+      status: 'Pendente',
+      statusBadgeVariant: 'bg-surface-container-high text-on-surface border border-outline-variant',
+      icon: 'pending_actions',
+      isExpanded: false
+    };
+    setEtapas([etapa, ...etapas]);
+    setIsModalOpen(false);
+    setNovaEtapa({ aeronave: '', nome: '', prazo: '' });
+  };
 
   return (
     <Layout>
@@ -21,7 +44,9 @@ const Etapas: React.FC = () => {
               <h1 className="font-h2 text-h2 text-on-surface">Etapas de Produção</h1>
               <p className="font-body-md text-body-md text-on-surface-variant mt-xs">Controle operacional das fases de montagem.</p>
             </div>
-            <button className="bg-primary text-on-primary font-label-md text-label-md px-lg py-sm rounded flex items-center gap-xs shadow-sm hover:bg-primary-container transition-all">
+            <button 
+              onClick={() => setIsModalOpen(true)}
+              className="bg-primary text-on-primary font-label-md text-label-md px-lg py-sm rounded flex items-center gap-xs shadow-sm hover:bg-primary-container transition-all">
               <span className="material-symbols-outlined text-[18px]">add</span>
               Nova Etapa
             </button>
@@ -156,6 +181,27 @@ const Etapas: React.FC = () => {
             </div>
           </div>
       </div>
+
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Nova Etapa">
+        <form className="flex flex-col gap-md" onSubmit={handleCreate}>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Código Aeronave</label>
+            <input type="text" value={novaEtapa.aeronave} onChange={(e) => setNovaEtapa({...novaEtapa, aeronave: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+          </div>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Nome da etapa</label>
+            <input type="text" value={novaEtapa.nome} onChange={(e) => setNovaEtapa({...novaEtapa, nome: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+          </div>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Prazo</label>
+            <input type="text" value={novaEtapa.prazo} onChange={(e) => setNovaEtapa({...novaEtapa, prazo: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+          </div>
+          <div className="flex justify-end gap-sm mt-md">
+            <button type="button" onClick={() => setIsModalOpen(false)} className="px-md py-sm rounded text-primary hover:bg-primary-fixed">Cancelar</button>
+            <button type="submit" className="px-md py-sm rounded bg-primary text-on-primary hover:opacity-90">Criar</button>
+          </div>
+        </form>
+      </Modal>
     </Layout>
   );
 };
