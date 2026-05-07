@@ -142,4 +142,3 @@ const Testes: React.FC = () => {
 };
 
 export default Testes;
-export default Testes;
