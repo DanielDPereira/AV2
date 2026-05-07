@@ -31,9 +31,9 @@ const Testes: React.FC = () => {
           <div className="flex items-center gap-md">
             <div className="relative w-[300px]">
               <span className="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
-              <input 
-                className="w-full pl-[36px] pr-sm py-[10px] bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-fixed-dim transition-all placeholder:text-outline-variant" 
-                placeholder="Buscar por aeronave..." 
+              <input
+                className="w-full pl-[36px] pr-sm py-[10px] bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-fixed-dim transition-all placeholder:text-outline-variant"
+                placeholder="Buscar por aeronave..."
                 type="text"
               />
             </div>
@@ -114,11 +114,11 @@ const Testes: React.FC = () => {
         <form className="flex flex-col gap-md" onSubmit={handleCreateTeste}>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Código da Aeronave</label>
-            <input type="text" value={novoTeste.aeronave} onChange={(e) => setNovoTeste({...novoTeste, aeronave: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+            <input type="text" value={novoTeste.aeronave} onChange={(e) => setNovoTeste({ ...novoTeste, aeronave: e.target.value })} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
           </div>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Tipo</label>
-            <select value={novoTeste.tipo} onChange={(e) => setNovoTeste({...novoTeste, tipo: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required>
+            <select value={novoTeste.tipo} onChange={(e) => setNovoTeste({ ...novoTeste, tipo: e.target.value })} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required>
               <option value="1">1- Elétrico</option>
               <option value="2">2- Hidráulico</option>
               <option value="3">3- Aerodinâmico</option>
@@ -126,7 +126,7 @@ const Testes: React.FC = () => {
           </div>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Aprovado?</label>
-            <select value={novoTeste.resultado} onChange={(e) => setNovoTeste({...novoTeste, resultado: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required>
+            <select value={novoTeste.resultado} onChange={(e) => setNovoTeste({ ...novoTeste, resultado: e.target.value })} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required>
               <option value="s">Sim</option>
               <option value="n">Não</option>
             </select>

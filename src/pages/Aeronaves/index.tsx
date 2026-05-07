@@ -50,14 +50,14 @@ const Aeronaves: React.FC = () => {
             {/* Search Field */}
             <div className="relative w-[300px]">
               <span className="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
-              <input 
-                className="w-full pl-[36px] pr-sm py-[10px] bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-fixed-dim transition-all placeholder:text-outline-variant" 
-                placeholder="Buscar aeronave..." 
+              <input
+                className="w-full pl-[36px] pr-sm py-[10px] bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-fixed-dim transition-all placeholder:text-outline-variant"
+                placeholder="Buscar aeronave..."
                 type="text"
               />
             </div>
             {/* Primary Action Button */}
-            <button 
+            <button
               onClick={() => setIsModalOpen(true)}
               className="bg-primary text-on-primary px-lg py-[10px] rounded-lg font-label-md text-label-md flex items-center gap-sm shadow-md hover:bg-primary-container transition-all active:scale-[0.98]">
               <span className="material-symbols-outlined text-[18px]">add</span>
@@ -111,16 +111,16 @@ const Aeronaves: React.FC = () => {
                           {aero.tipo}
                         </span>
                       </td>
-                      <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant">{aero.capacidade} pax/kg</td>
+                      <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant">{aero.capacidade} passageiros</td>
                       <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant">{aero.alcance} km</td>
                       <td className="py-md px-lg text-right">
                         <div className="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
                           <button
-                            aria-label={`Ver detalhes de ${aero.codigo}`}
+                            aria-label={`Ver etapas de ${aero.codigo}`}
                             className="p-xs text-secondary hover:text-primary hover:bg-primary-fixed rounded transition-colors"
-                            onClick={() => navigate(`/aeronaves/${aero.id}`)}
+                            onClick={() => navigate(`/etapas?search=${aero.codigo}`)}
                           >
-                            <span aria-hidden="true" className="material-symbols-outlined text-[20px]">visibility</span>
+                            <span aria-hidden="true" className="material-symbols-outlined text-[20px]">assignment</span>
                           </button>
                           <button
                             aria-label={`Editar ${aero.codigo}`}
@@ -161,23 +161,23 @@ const Aeronaves: React.FC = () => {
         <form className="flex flex-col gap-md" onSubmit={handleCreate}>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Código único</label>
-            <input type="text" value={novaAeronave.codigo} onChange={(e) => setNovaAeronave({...novaAeronave, codigo: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+            <input type="text" value={novaAeronave.codigo} onChange={(e) => setNovaAeronave({ ...novaAeronave, codigo: e.target.value })} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
           </div>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Modelo</label>
-            <input type="text" value={novaAeronave.modelo} onChange={(e) => setNovaAeronave({...novaAeronave, modelo: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+            <input type="text" value={novaAeronave.modelo} onChange={(e) => setNovaAeronave({ ...novaAeronave, modelo: e.target.value })} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
           </div>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Capacidade de Passageiros</label>
-            <input type="number" value={novaAeronave.capacidade} onChange={(e) => setNovaAeronave({...novaAeronave, capacidade: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+            <input type="number" value={novaAeronave.capacidade} onChange={(e) => setNovaAeronave({ ...novaAeronave, capacidade: e.target.value })} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
           </div>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Alcance em Km</label>
-            <input type="number" value={novaAeronave.alcance} onChange={(e) => setNovaAeronave({...novaAeronave, alcance: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+            <input type="number" value={novaAeronave.alcance} onChange={(e) => setNovaAeronave({ ...novaAeronave, alcance: e.target.value })} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
           </div>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Tipo</label>
-            <select value={novaAeronave.tipo} onChange={(e) => setNovaAeronave({...novaAeronave, tipo: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required>
+            <select value={novaAeronave.tipo} onChange={(e) => setNovaAeronave({ ...novaAeronave, tipo: e.target.value })} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required>
               <option value="Comercial">1- Comercial</option>
               <option value="Militar">2- Militar</option>
             </select>

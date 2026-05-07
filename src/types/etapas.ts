@@ -7,6 +7,7 @@ export interface FuncionarioAlocado {
 
 export interface Etapa {
   id: string;
+  aeronaveCodigo: string;
   nome: string;
   prazo: string;
   status: 'Pendente' | 'Em andamento' | 'Concluída';
@@ -19,6 +20,7 @@ export interface Etapa {
 export const mockEtapas: Etapa[] = [
   {
     id: '1',
+    aeronaveCodigo: 'AC-737-MAX',
     nome: 'Usinagem do Eixo Principal',
     prazo: '12/10/2023',
     status: 'Em andamento',
@@ -32,6 +34,7 @@ export const mockEtapas: Etapa[] = [
   },
   {
     id: '2',
+    aeronaveCodigo: 'AC-A320-NEO',
     nome: 'Inspeção de Turbina',
     prazo: '15/10/2023',
     status: 'Pendente',
@@ -40,6 +43,7 @@ export const mockEtapas: Etapa[] = [
   },
   {
     id: '3',
+    aeronaveCodigo: 'AC-C130-J',
     nome: 'Soldagem Estrutural Asa Esq.',
     prazo: '08/10/2023',
     status: 'Concluída',
@@ -48,6 +52,7 @@ export const mockEtapas: Etapa[] = [
   },
   {
     id: '4',
+    aeronaveCodigo: 'AC-E195-E2',
     nome: 'Calibração de Sensores Nav.',
     prazo: '10/10/2023',
     status: 'Pendente',
