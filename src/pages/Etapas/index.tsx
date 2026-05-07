@@ -3,7 +3,8 @@ import { useLocation } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import Modal from '../../components/Modal';
 import Tooltip from '../../components/Tooltip';
-import { type Etapa, mockEtapas } from '../../types/etapas';
+import { type Etapa, type FuncionarioAlocado, mockEtapas } from '../../types/etapas';
+import { mockFuncionarios } from '../../types/funcionarios';
 
 const inputCls = "px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none";
 
@@ -12,6 +13,11 @@ const statusMeta: Record<string, { variant: string; icon: string }> = {
   'Em andamento': { variant: 'bg-secondary-container text-on-secondary-container', icon: 'expand_more' },
   'Concluída': { variant: 'bg-primary-fixed text-on-primary-fixed', icon: 'chevron_right' },
 };
+
+const corVariants = [
+  'bg-primary-fixed-dim', 'bg-secondary-fixed-dim', 'bg-tertiary-fixed',
+  'bg-primary-container', 'bg-secondary-container', 'bg-error-container',
+];
 
 const Etapas: React.FC = () => {
   const location = useLocation();
@@ -31,6 +37,12 @@ const Etapas: React.FC = () => {
   // ── Exclusão ────────────────────────────────────────────────────────
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Etapa | null>(null);
+
+  // ── Alocação de Funcionários ────────────────────────────────────────
+  const [isAlocarOpen, setIsAlocarOpen] = useState(false);
+  const [alocarTarget, setAlocarTarget] = useState<Etapa | null>(null);
+  const [selectedFuncIds, setSelectedFuncIds] = useState<Set<string>>(new Set());
+  const [alocarSearch, setAlocarSearch] = useState('');
 
   const filteredEtapas = etapas.filter(etapa =>
     etapa.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -65,6 +77,53 @@ const Etapas: React.FC = () => {
   // ── Excluir ─────────────────────────────────────────────────────────
   const openDelete = (et: Etapa) => { setDeleteTarget(et); setIsDeleteOpen(true); };
   const handleDelete = () => { if (!deleteTarget) return; setEtapas(etapas.filter(et => et.id !== deleteTarget.id)); setIsDeleteOpen(false); };
+
+  // ── Alocar Funcionários ─────────────────────────────────────────────
+  const openAlocar = (et: Etapa) => {
+    setAlocarTarget(et);
+    const alreadyAllocated = new Set((et.funcionariosAlocados || []).map(f => f.id));
+    setSelectedFuncIds(alreadyAllocated);
+    setAlocarSearch('');
+    setIsAlocarOpen(true);
+  };
+
+  const toggleFunc = (id: string) => {
+    setSelectedFuncIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  const handleAlocar = () => {
+    if (!alocarTarget) return;
+    const alocados: FuncionarioAlocado[] = mockFuncionarios
+      .filter(f => selectedFuncIds.has(f.id))
+      .map((f, i) => ({
+        id: f.id,
+        iniciais: f.iniciais,
+        nome: f.nome,
+        corVariant: corVariants[i % corVariants.length],
+      }));
+    setEtapas(etapas.map(et => et.id === alocarTarget.id
+      ? { ...et, funcionariosAlocados: alocados.length > 0 ? alocados : undefined, isExpanded: alocados.length > 0 }
+      : et
+    ));
+    setIsAlocarOpen(false);
+  };
+
+  const handleDesalocar = (etapaId: string, funcId: string) => {
+    setEtapas(etapas.map(et => {
+      if (et.id !== etapaId || !et.funcionariosAlocados) return et;
+      const updated = et.funcionariosAlocados.filter(f => f.id !== funcId);
+      return { ...et, funcionariosAlocados: updated.length > 0 ? updated : undefined, isExpanded: updated.length > 0 };
+    }));
+  };
+
+  const filteredFuncForModal = mockFuncionarios.filter(f =>
+    f.nome.toLowerCase().includes(alocarSearch.toLowerCase()) ||
+    f.usuario.toLowerCase().includes(alocarSearch.toLowerCase())
+  );
 
   return (
     <Layout>
@@ -126,7 +185,6 @@ const Etapas: React.FC = () => {
                           <td className="px-lg py-md align-top"><span className={`inline-flex items-center px-2 py-0.5 rounded ${etapa.statusBadgeVariant} font-label-sm text-[11px] uppercase`}>{etapa.status}</span></td>
                           <td className="px-lg py-md text-right align-top">
                             <div className="flex items-center justify-end gap-xs">
-                              {/* Status-change buttons */}
                               {etapa.status === 'Pendente' && (
                                 <button onClick={() => handleIniciar(etapa.id)} className="bg-primary text-on-primary hover:bg-primary-container text-label-sm px-sm py-1 rounded transition-colors flex items-center gap-xs">
                                   <span className="material-symbols-outlined text-[16px]">play_arrow</span>Iniciar
@@ -137,8 +195,8 @@ const Etapas: React.FC = () => {
                                   <span className="material-symbols-outlined text-[16px]">stop</span>Finalizar
                                 </button>
                               )}
-                              {/* Edit / Delete — always visible on hover */}
                               <div className="flex items-center gap-xs opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
+                                <Tooltip label="Alocar Funcionários"><button aria-label={`Alocar funcionários em ${etapa.nome}`} className="p-1 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-highest" onClick={() => openAlocar(etapa)}><span aria-hidden="true" className="material-symbols-outlined text-[20px]">person_add</span></button></Tooltip>
                                 <Tooltip label="Editar"><button aria-label={`Editar ${etapa.nome}`} className="p-1 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-highest" onClick={() => openEdit(etapa)}><span aria-hidden="true" className="material-symbols-outlined text-[20px]">edit</span></button></Tooltip>
                                 <Tooltip label="Excluir"><button aria-label={`Excluir ${etapa.nome}`} className="p-1 text-on-surface-variant hover:text-error transition-colors rounded-full hover:bg-error-container" onClick={() => openDelete(etapa)}><span aria-hidden="true" className="material-symbols-outlined text-[20px]">delete</span></button></Tooltip>
                               </div>
@@ -154,12 +212,19 @@ const Etapas: React.FC = () => {
                                     <h4 className="font-label-sm text-on-surface-variant uppercase mb-sm">Funcionários Alocados</h4>
                                     <div className="flex flex-wrap gap-sm">
                                       {etapa.funcionariosAlocados.map((func) => (
-                                        <div key={func.id} className="flex items-center gap-xs bg-white px-sm py-1 rounded border border-outline-variant">
-                                          <div className={`w-6 h-6 rounded-full ${func.corVariant} flex items-center justify-center text-[10px] font-bold`}>{func.iniciais}</div>
+                                        <div key={func.id} className="flex items-center gap-xs bg-white px-sm py-1 rounded border border-outline-variant group/chip">
+                                          <div className={`w-6 h-6 rounded-full ${func.corVariant} flex items-center justify-center text-[10px] font-bold text-white`}>{func.iniciais}</div>
                                           <span className="text-body-sm">{func.nome}</span>
+                                          <button
+                                            onClick={() => handleDesalocar(etapa.id, func.id)}
+                                            className="ml-xs text-outline hover:text-error transition-colors opacity-0 group-hover/chip:opacity-100"
+                                            aria-label={`Remover ${func.nome}`}
+                                          >
+                                            <span className="material-symbols-outlined text-[14px]">close</span>
+                                          </button>
                                         </div>
                                       ))}
-                                      <button className="flex items-center gap-xs text-primary hover:underline text-body-sm">
+                                      <button onClick={() => openAlocar(etapa)} className="flex items-center gap-xs text-primary hover:underline text-body-sm">
                                         <span className="material-symbols-outlined text-[18px]">person_add</span> Alocar
                                       </button>
                                     </div>
@@ -226,6 +291,85 @@ const Etapas: React.FC = () => {
           <div className="flex justify-end gap-sm">
             <button type="button" onClick={() => setIsDeleteOpen(false)} className="px-md py-sm rounded text-primary hover:bg-primary-fixed">Cancelar</button>
             <button type="button" onClick={handleDelete} className="px-md py-sm rounded bg-error text-on-error hover:opacity-90">Excluir</button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Modal: Alocar Funcionários */}
+      <Modal isOpen={isAlocarOpen} onClose={() => setIsAlocarOpen(false)} title={`Alocar Funcionários — ${alocarTarget?.nome || ''}`}>
+        <div className="flex flex-col gap-md">
+          {/* Etapa info */}
+          <div className="flex items-center gap-sm p-sm bg-surface-container-low rounded border border-outline-variant">
+            <span className="material-symbols-outlined text-primary text-[20px]">engineering</span>
+            <div>
+              <p className="font-label-sm text-label-sm text-on-surface">{alocarTarget?.nome}</p>
+              <p className="font-body-sm text-body-sm text-on-surface-variant">Aeronave: {alocarTarget?.aeronaveCodigo}</p>
+            </div>
+          </div>
+
+          {/* Search */}
+          <div className="relative">
+            <span className="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+            <input
+              className="w-full pl-[32px] pr-sm py-xs border border-outline-variant rounded bg-surface-container-lowest font-body-sm text-body-sm focus:border-primary focus:outline-none transition-all"
+              placeholder="Buscar funcionário..."
+              type="text"
+              value={alocarSearch}
+              onChange={(e) => setAlocarSearch(e.target.value)}
+            />
+          </div>
+
+          {/* Selected count */}
+          <p className="font-label-sm text-label-sm text-on-surface-variant">
+            {selectedFuncIds.size} funcionário{selectedFuncIds.size !== 1 ? 's' : ''} selecionado{selectedFuncIds.size !== 1 ? 's' : ''}
+          </p>
+
+          {/* Employees list */}
+          <div className="flex flex-col gap-xs max-h-[280px] overflow-y-auto pr-xs -mr-xs">
+            {filteredFuncForModal.map((func) => {
+              const isSelected = selectedFuncIds.has(func.id);
+              return (
+                <label
+                  key={func.id}
+                  className={`flex items-center gap-md p-sm rounded-lg border cursor-pointer transition-all ${
+                    isSelected
+                      ? 'border-primary bg-primary-fixed/30 shadow-sm'
+                      : 'border-outline-variant bg-surface-container-lowest hover:bg-surface-container-low'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={isSelected}
+                    onChange={() => toggleFunc(func.id)}
+                    className="sr-only"
+                  />
+                  <div className={`w-9 h-9 rounded-full ${func.iniciaisVariant} flex items-center justify-center font-label-sm text-label-sm shrink-0`}>
+                    {func.iniciais}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-label-md text-label-md text-on-surface truncate">{func.nome}</p>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant">@{func.usuario} · {func.nivel}</p>
+                  </div>
+                  <div className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-all ${
+                    isSelected ? 'bg-primary border-primary' : 'border-outline-variant'
+                  }`}>
+                    {isSelected && <span className="material-symbols-outlined text-on-primary text-[16px]">check</span>}
+                  </div>
+                </label>
+              );
+            })}
+            {filteredFuncForModal.length === 0 && (
+              <p className="text-center text-on-surface-variant font-body-sm py-lg">Nenhum funcionário encontrado.</p>
+            )}
+          </div>
+
+          {/* Actions */}
+          <div className="flex justify-end gap-sm mt-sm border-t border-outline-variant pt-md">
+            <button type="button" onClick={() => setIsAlocarOpen(false)} className="px-md py-sm rounded text-primary hover:bg-primary-fixed">Cancelar</button>
+            <button type="button" onClick={handleAlocar} className="px-md py-sm rounded bg-primary text-on-primary hover:opacity-90 flex items-center gap-xs">
+              <span className="material-symbols-outlined text-[18px]">group_add</span>
+              Confirmar Alocação
+            </button>
           </div>
         </div>
       </Modal>
