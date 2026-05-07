@@ -111,16 +111,16 @@ const Aeronaves: React.FC = () => {
                           {aero.tipo}
                         </span>
                       </td>
-                      <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant">{aero.capacidade} pax/kg</td>
+                      <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant">{aero.capacidade} passageiros</td>
                       <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant">{aero.alcance} km</td>
                       <td className="py-md px-lg text-right">
                         <div className="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
                           <button
-                            aria-label={`Ver detalhes de ${aero.codigo}`}
+                            aria-label={`Ver etapas de ${aero.codigo}`}
                             className="p-xs text-secondary hover:text-primary hover:bg-primary-fixed rounded transition-colors"
-                            onClick={() => navigate(`/aeronaves/${aero.id}`)}
+                            onClick={() => navigate(`/etapas?search=${aero.codigo}`)}
                           >
-                            <span aria-hidden="true" className="material-symbols-outlined text-[20px]">visibility</span>
+                            <span aria-hidden="true" className="material-symbols-outlined text-[20px]">assignment</span>
                           </button>
                           <button
                             aria-label={`Editar ${aero.codigo}`}

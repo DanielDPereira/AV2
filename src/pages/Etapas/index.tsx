@@ -1,11 +1,17 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState, Fragment, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import Layout from '../../components/Layout';
 import Modal from '../../components/Modal';
 import { type Etapa, mockEtapas } from '../../types/etapas';
 
 const Etapas: React.FC = () => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const initialSearch = queryParams.get('search') || '';
+
   const [etapas, setEtapas] = useState<Etapa[]>(mockEtapas);
+  const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [novaEtapa, setNovaEtapa] = useState({
     aeronave: '',
@@ -13,10 +19,16 @@ const Etapas: React.FC = () => {
     prazo: ''
   });
 
+  const filteredEtapas = etapas.filter(etapa => 
+    etapa.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    etapa.aeronaveCodigo.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
     const etapa: Etapa = {
       id: Math.random().toString(),
+      aeronaveCodigo: novaEtapa.aeronave,
       nome: novaEtapa.nome,
       prazo: novaEtapa.prazo,
       status: 'Pendente',
@@ -62,8 +74,10 @@ const Etapas: React.FC = () => {
                   <span className="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
                   <input 
                     className="w-full pl-[36px] pr-sm py-xs border border-outline-variant rounded bg-surface-container-lowest font-body-sm text-body-sm focus:border-primary-container focus:ring-2 focus:ring-primary-fixed focus:outline-none transition-all" 
-                    placeholder="Buscar etapa..." 
+                    placeholder="Buscar etapa ou aeronave..." 
                     type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </div>
                 <div className="flex gap-sm">
@@ -79,6 +93,7 @@ const Etapas: React.FC = () => {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="border-b border-outline-variant bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">
+                      <th className="px-lg py-md font-semibold">Aeronave</th>
                       <th className="px-lg py-md font-semibold w-1/3">Nome da Etapa</th>
                       <th className="px-lg py-md font-semibold">Prazo (Data)</th>
                       <th className="px-lg py-md font-semibold">Status</th>
@@ -86,9 +101,12 @@ const Etapas: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody className="font-body-sm text-body-sm text-on-surface">
-                    {etapas.map((etapa) => (
+                    {filteredEtapas.map((etapa) => (
                       <Fragment key={etapa.id}>
                         <tr className="border-b border-outline-variant bg-surface-container-lowest hover:bg-surface-container-low transition-colors group">
+                          <td className="px-lg py-md align-top font-code text-primary font-medium">
+                            {etapa.aeronaveCodigo}
+                          </td>
                           <td className="px-lg py-md align-top">
                             <div className="flex items-center gap-sm">
                               <span className={`material-symbols-outlined ${etapa.isExpanded ? 'text-primary' : 'text-outline'} text-[20px]`}>
@@ -131,7 +149,7 @@ const Etapas: React.FC = () => {
                         </tr>
                         {etapa.isExpanded && etapa.funcionariosAlocados && (
                           <tr className="bg-surface-container-lowest border-b border-outline-variant">
-                            <td className="px-lg pb-md" colSpan={4}>
+                            <td className="px-lg pb-md" colSpan={5}>
                               <div className="ml-[28px] p-md border-l-2 border-primary bg-surface-container-low rounded-r-lg flex flex-col gap-md">
                                 <div className="flex flex-col md:flex-row justify-between gap-md">
                                   <div className="flex-1">
