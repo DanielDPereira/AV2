@@ -1,8 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, NivelPermissao } from '../contexts/AuthContext';
+import RotaProtegida from '../components/RotaProtegida';
 import Login from '../pages/Login';
 import Dashboard from '../pages/Dashboard';
 import Aeronaves from '../pages/Aeronaves';
-
 import Etapas from '../pages/Etapas';
 import Pecas from '../pages/Pecas';
 import Funcionarios from '../pages/Funcionarios';
@@ -12,18 +13,55 @@ import Testes from '../pages/Testes';
 export const AppRouter = () => {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/aeronaves" element={<Aeronaves />} />
+      <AuthProvider>
+        <Routes>
+          {/* Rota pública */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/login" element={<Login />} />
 
-        <Route path="/etapas" element={<Etapas />} />
-        <Route path="/pecas" element={<Pecas />} />
-        <Route path="/funcionarios" element={<Funcionarios />} />
-        <Route path="/relatorios" element={<Relatorios />} />
-        <Route path="/testes" element={<Testes />} />
-      </Routes>
+          {/* Rotas protegidas — qualquer funcionário autenticado */}
+          <Route path="/dashboard" element={
+            <RotaProtegida>
+              <Dashboard />
+            </RotaProtegida>
+          } />
+          <Route path="/aeronaves" element={
+            <RotaProtegida>
+              <Aeronaves />
+            </RotaProtegida>
+          } />
+          <Route path="/pecas" element={
+            <RotaProtegida>
+              <Pecas />
+            </RotaProtegida>
+          } />
+          <Route path="/etapas" element={
+            <RotaProtegida>
+              <Etapas />
+            </RotaProtegida>
+          } />
+          <Route path="/testes" element={
+            <RotaProtegida>
+              <Testes />
+            </RotaProtegida>
+          } />
+          <Route path="/relatorios" element={
+            <RotaProtegida>
+              <Relatorios />
+            </RotaProtegida>
+          } />
+
+          {/* Rota exclusiva do ADMINISTRADOR — Controle de Colaboradores */}
+          <Route path="/funcionarios" element={
+            <RotaProtegida niveisPermitidos={[NivelPermissao.ADMINISTRADOR]}>
+              <Funcionarios />
+            </RotaProtegida>
+          } />
+
+          {/* Qualquer outra rota → redireciona para login */}
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   );
 };
