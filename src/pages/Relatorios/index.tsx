@@ -47,9 +47,9 @@ const Relatorios: React.FC = () => {
               <h2 className="text-h3 font-h3 text-on-surface">Histórico Recente</h2>
               <div className="relative w-[250px]">
                 <span className="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
-                <input 
-                  className="w-full pl-[36px] pr-sm py-xs bg-surface-container-lowest border border-outline-variant rounded focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary-fixed-dim transition-all text-body-sm" 
-                  placeholder="Pesquisar arquivo..." 
+                <input
+                  className="w-full pl-[36px] pr-sm py-xs bg-surface-container-lowest border border-outline-variant rounded focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary-fixed-dim transition-all text-body-sm"
+                  placeholder="Pesquisar arquivo..."
                   type="text"
                 />
               </div>
@@ -111,11 +111,11 @@ const Relatorios: React.FC = () => {
         <form className="flex flex-col gap-md" onSubmit={handleGerarRelatorio}>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Código da Aeronave</label>
-            <input type="text" value={novoRelatorio.aeronave} onChange={(e) => setNovoRelatorio({...novoRelatorio, aeronave: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+            <input type="text" value={novoRelatorio.aeronave} onChange={(e) => setNovoRelatorio({ ...novoRelatorio, aeronave: e.target.value })} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
           </div>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Deseja gerar o .txt em disco?</label>
-            <select value={novoRelatorio.gerarDisco} onChange={(e) => setNovoRelatorio({...novoRelatorio, gerarDisco: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required>
+            <select value={novoRelatorio.gerarDisco} onChange={(e) => setNovoRelatorio({ ...novoRelatorio, gerarDisco: e.target.value })} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required>
               <option value="s">Sim</option>
               <option value="n">Não</option>
             </select>
