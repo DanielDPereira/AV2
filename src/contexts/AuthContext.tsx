@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
+import fotoDanielDias from '../assets/DanielDias.png';
 
 // ── Enums de Permissão (espelhando AV1) ──────────────────────────────────────
 export enum NivelPermissao {
@@ -15,6 +16,7 @@ export interface UsuarioAutenticado {
   telefone: string;
   endereco: string;
   nivelPermissao: NivelPermissao;
+  foto?: string;
 }
 
 // ── Banco de dados local de funcionários (3 logins pré-configurados) ─────────
@@ -28,17 +30,19 @@ interface FuncionarioDB {
   telefone: string;
   endereco: string;
   nivelPermissao: NivelPermissao;
+  foto?: string;
 }
 
 const funcionariosDB: FuncionarioDB[] = [
   {
     id: '1',
-    nome: 'Carlos Silva',
+    nome: 'Daniel Dias',
     usuario: 'admin',
     senha: 'admin',
     telefone: '+55 11 98765-4321',
     endereco: 'Av. Paulista, 1000, São Paulo - SP',
     nivelPermissao: NivelPermissao.ADMINISTRADOR,
+    foto: fotoDanielDias,
   },
   {
     id: '2',
@@ -110,6 +114,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       telefone: func.telefone,
       endereco: func.endereco,
       nivelPermissao: func.nivelPermissao,
+      foto: func.foto,
     };
 
     setUsuario(usuarioAutenticado);

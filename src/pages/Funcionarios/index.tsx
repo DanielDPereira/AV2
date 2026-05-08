@@ -118,7 +118,13 @@ const Funcionarios: React.FC = () => {
                     <tr key={func.id} className="hover:bg-surface-container-low transition-colors group">
                       <td className="py-md px-lg">
                         <div className="flex items-center gap-md">
-                          <div className={`w-10 h-10 rounded-full ${func.iniciaisVariant} flex items-center justify-center font-label-md text-label-md shrink-0`}>{func.iniciais}</div>
+                          <div className={`w-10 h-10 rounded-full ${func.iniciaisVariant} flex items-center justify-center font-label-md text-label-md shrink-0 overflow-hidden`}>
+                            {func.foto ? (
+                              <img src={func.foto} alt={func.nome} className="w-full h-full object-cover" />
+                            ) : (
+                              func.iniciais
+                            )}
+                          </div>
                           <div className="min-w-0"><p className="font-label-md text-label-md text-on-surface truncate">{func.nome}</p><p className="font-body-sm text-body-sm text-on-surface-variant truncate">@{func.usuario}</p></div>
                         </div>
                       </td>

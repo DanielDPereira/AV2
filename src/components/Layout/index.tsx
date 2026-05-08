@@ -91,9 +91,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <span className="font-label-md text-label-md text-on-surface-variant hidden md:block">
               {usuario?.nome || 'Usuário'}
             </span>
-            {/* Avatar com iniciais */}
-            <div className="w-8 h-8 rounded-full border border-outline-variant bg-primary-fixed text-on-primary-fixed flex items-center justify-center font-label-sm text-label-sm font-bold">
-              {usuario ? getIniciais(usuario.nome) : '??'}
+            {/* Avatar com foto ou iniciais */}
+            <div className="w-8 h-8 rounded-full border border-outline-variant bg-primary-fixed text-on-primary-fixed flex items-center justify-center font-label-sm text-label-sm font-bold overflow-hidden">
+              {usuario?.foto ? (
+                <img src={usuario.foto} alt={usuario.nome} className="w-full h-full object-cover" />
+              ) : (
+                usuario ? getIniciais(usuario.nome) : '??'
+              )}
             </div>
           </div>
           <button 
