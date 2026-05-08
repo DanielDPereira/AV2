@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, NivelPermissao } from '../contexts/AuthContext';
 import RotaProtegida from '../components/RotaProtegida';
 import Login from '../pages/Login';
+import Professor from '../pages/Professor';
 import Dashboard from '../pages/Dashboard';
 import Aeronaves from '../pages/Aeronaves';
 import Etapas from '../pages/Etapas';
@@ -18,6 +19,7 @@ export const AppRouter = () => {
           {/* Rota pública */}
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/professor" element={<Professor />} />
 
           {/* Rotas protegidas — qualquer funcionário autenticado */}
           <Route path="/dashboard" element={
