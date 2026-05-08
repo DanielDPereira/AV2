@@ -6,7 +6,16 @@ import Tooltip from '../../components/Tooltip';
 import { type Etapa, type FuncionarioAlocado, mockEtapas } from '../../types/etapas';
 import { mockFuncionarios } from '../../types/funcionarios';
 
-const inputCls = "px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none";
+const inputCls = "px-sm py-xs border border-outline-variant rounded-lg bg-surface-container-lowest text-on-surface focus:border-primary focus:ring-2 focus:ring-primary-fixed-dim focus:outline-none w-full transition-all";
+const btnPrimaryCls = "w-full md:w-auto bg-primary text-on-primary px-lg py-sm rounded-lg font-label-md text-label-md flex items-center justify-center gap-xs shadow-md hover:bg-primary-container hover:text-on-primary-container transition-all active:scale-[0.98]";
+const btnFilterCls = "w-full md:w-auto flex items-center justify-center gap-xs px-md py-sm border rounded-lg font-label-sm text-label-sm transition-all";
+const searchInputCls = "w-full pl-10 pr-sm py-2 border border-outline-variant rounded-lg bg-surface-container-lowest font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-fixed-dim transition-all placeholder:text-outline-variant";
+const tableHeaderCls = "px-lg py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider bg-surface-container-low border-b border-outline-variant";
+const actionBtnBaseCls = "p-1.5 transition-colors rounded-full";
+const actionBtnEditCls = `${actionBtnBaseCls} text-on-surface-variant hover:text-primary hover:bg-primary-fixed-dim/20`;
+const actionBtnDeleteCls = `${actionBtnBaseCls} text-on-surface-variant hover:text-error hover:bg-error-container/30`;
+const actionBtnViewCls = `${actionBtnBaseCls} text-on-surface-variant hover:text-primary hover:bg-primary-fixed-dim/20`;
+const actionBtnAddCls = `${actionBtnBaseCls} text-on-surface-variant hover:text-primary hover:bg-primary-fixed-dim/20`;
 
 const statusMeta: Record<string, { variant: string; icon: string }> = {
   'Pendente': { variant: 'bg-surface-variant text-on-surface-variant', icon: 'chevron_right' },
@@ -18,6 +27,12 @@ const corVariants = [
   'bg-primary-fixed-dim', 'bg-secondary-fixed-dim', 'bg-tertiary-fixed',
   'bg-primary-container', 'bg-secondary-container', 'bg-error-container',
 ];
+
+const formatDate = (isoDate: string) => {
+  if (!isoDate) return '';
+  const [year, month, day] = isoDate.split('-');
+  return `${day}/${month}/${year}`;
+};
 
 const Etapas: React.FC = () => {
   const location = useLocation();
@@ -43,11 +58,18 @@ const Etapas: React.FC = () => {
   const [alocarTarget, setAlocarTarget] = useState<Etapa | null>(null);
   const [selectedFuncIds, setSelectedFuncIds] = useState<Set<string>>(new Set());
   const [alocarSearch, setAlocarSearch] = useState('');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [filters, setFilters] = useState({ status: 'Todos', aeronave: 'Todas' });
 
-  const filteredEtapas = etapas.filter(etapa =>
-    etapa.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    etapa.aeronaveCodigo.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const uniqueAeronaves = Array.from(new Set(etapas.map(e => e.aeronaveCodigo)));
+
+  const filteredEtapas = etapas.filter(etapa => {
+    const matchesSearch = etapa.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         etapa.aeronaveCodigo.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = filters.status === 'Todos' || etapa.status === filters.status;
+    const matchesAeronave = filters.aeronave === 'Todas' || etapa.aeronaveCodigo === filters.aeronave;
+    return matchesSearch && matchesStatus && matchesAeronave;
+  });
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,7 +100,7 @@ const Etapas: React.FC = () => {
   const openDelete = (et: Etapa) => { setDeleteTarget(et); setIsDeleteOpen(true); };
   const handleDelete = () => { if (!deleteTarget) return; setEtapas(etapas.filter(et => et.id !== deleteTarget.id)); setIsDeleteOpen(false); };
 
-  // ── Alocar Funcionários ─────────────────────────────────────────────
+  // ── Alocação de Funcionários ────────────────────────────────────────
   const openAlocar = (et: Etapa) => {
     setAlocarTarget(et);
     const alreadyAllocated = new Set((et.funcionariosAlocados || []).map(f => f.id));
@@ -127,86 +149,109 @@ const Etapas: React.FC = () => {
 
   return (
     <Layout>
-      <div className="p-xl flex flex-col min-h-full">
-          {/* Header Section */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-xl gap-md">
-            <div>
-              <nav className="flex items-center gap-xs font-body-sm text-on-surface-variant mb-xs">
-                <span className="hover:text-primary cursor-pointer transition-colors">Sistema</span>
-                <span className="material-symbols-outlined text-[16px]">chevron_right</span>
-                <span className="font-medium text-on-surface">Etapas</span>
-              </nav>
-              <h1 className="font-h2 text-h2 text-on-surface">Etapas de Produção</h1>
-              <p className="font-body-md text-body-md text-on-surface-variant mt-xs">Controle operacional das fases de montagem.</p>
+      <div className="flex flex-col min-h-full">
+        {/* Action Bar */}
+        <div className="sticky top-0 z-40 bg-surface-container-low/95 backdrop-blur-sm border-b border-outline-variant/30 px-4 md:px-8 lg:px-xl py-4 md:py-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <nav className="flex items-center gap-xs text-on-surface-variant font-label-sm text-label-sm mb-xs">
+              <span className="hover:text-primary cursor-pointer transition-colors">Sistema</span>
+              <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+              <span className="text-primary-container font-bold">Etapas</span>
+            </nav>
+            <h1 className="font-h2 text-h2 text-on-surface">Etapas de Produção</h1>
+            <p className="font-body-md text-body-md text-on-surface-variant mt-xs hidden md:block">Controle operacional das fases de montagem.</p>
+          </div>
+          <div className="flex flex-col md:flex-row items-center gap-md w-full sm:w-auto">
+            <div className="relative w-full md:w-[300px]">
+              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
+              <input
+                className={searchInputCls}
+                placeholder="Buscar etapa ou aeronave..."
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
-            <button onClick={() => setIsModalOpen(true)} className="bg-primary text-on-primary font-label-md text-label-md px-lg py-sm rounded flex items-center gap-xs shadow-sm hover:bg-primary-container transition-all">
-              <span className="material-symbols-outlined text-[18px]">add</span>Nova Etapa
+            <button 
+              onClick={() => setIsFilterOpen(true)}
+              className={`${btnFilterCls} ${ (filters.status !== 'Todos' || filters.aeronave !== 'Todas') ? 'border-primary bg-primary-fixed text-primary shadow-sm' : 'border-outline-variant text-on-surface-variant hover:bg-surface-container-low'}`}>
+              <span className="material-symbols-outlined text-[18px]">filter_list</span>
+              Filtros {(filters.status !== 'Todos' || filters.aeronave !== 'Todas') && '•'}
+            </button>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className={btnPrimaryCls}>
+              <span className="material-symbols-outlined text-[18px]">add</span>
+              Nova Etapa
             </button>
           </div>
+        </div>
 
-          {/* Dashboard Content Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
-            <div className="lg:col-span-12 bg-surface-container-lowest rounded-xl border border-outline-variant shadow-[0_4px_12px_rgba(0,0,0,0.04)] overflow-hidden">
-              <div className="px-lg py-md border-b border-outline-variant flex justify-between items-center bg-surface-bright">
-                <div className="relative w-64">
-                  <span className="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
-                  <input className="w-full pl-[36px] pr-sm py-xs border border-outline-variant rounded bg-surface-container-lowest font-body-sm text-body-sm focus:border-primary-container focus:ring-2 focus:ring-primary-fixed focus:outline-none transition-all" placeholder="Buscar etapa ou aeronave..." type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
-                </div>
-                <div className="flex gap-sm">
-                  <button className="px-md py-xs border border-outline-variant rounded font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container transition-colors flex items-center gap-xs">
-                    <span className="material-symbols-outlined text-[16px]">filter_list</span>Filtros
-                  </button>
-                </div>
-              </div>
-
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
+        {/* Content Area */}
+        <div className="p-4 md:p-8 lg:p-xl flex-1">
+          <div className="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden flex flex-col">
+            <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse min-w-[700px] md:min-w-0">
                   <thead>
-                    <tr className="border-b border-outline-variant bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">
-                      <th className="px-lg py-md font-semibold">Aeronave</th>
-                      <th className="px-lg py-md font-semibold w-1/3">Nome da Etapa</th>
-                      <th className="px-lg py-md font-semibold">Prazo (Data)</th>
-                      <th className="px-lg py-md font-semibold">Status</th>
-                      <th className="px-lg py-md font-semibold text-right">Ações</th>
+                    <tr className="bg-surface-container-low">
+                      <th className={tableHeaderCls}>Aeronave</th>
+                      <th className={`${tableHeaderCls} w-1/3`}>Nome da Etapa</th>
+                      <th className={`${tableHeaderCls} hidden sm:table-cell`}>Prazo (Data)</th>
+                      <th className={tableHeaderCls}>Status</th>
+                      <th className={`${tableHeaderCls} text-right`}>Ações</th>
                     </tr>
                   </thead>
                   <tbody className="font-body-sm text-body-sm text-on-surface">
                     {filteredEtapas.map((etapa) => (
                       <Fragment key={etapa.id}>
                         <tr className="border-b border-outline-variant bg-surface-container-lowest hover:bg-surface-container-low transition-colors group">
-                          <td className="px-lg py-md align-top font-code text-primary font-medium">{etapa.aeronaveCodigo}</td>
-                          <td className="px-lg py-md align-top">
+                          <td className="px-md md:px-lg py-md align-top font-code text-primary font-medium">{etapa.aeronaveCodigo}</td>
+                          <td className="px-md md:px-lg py-md align-top">
                             <div className="flex items-center gap-sm">
                               <span className={`material-symbols-outlined ${etapa.isExpanded ? 'text-primary' : 'text-outline'} text-[20px]`}>{etapa.icon}</span>
                               <div className="font-medium text-on-surface">{etapa.nome}</div>
                             </div>
                           </td>
-                          <td className="px-lg py-md align-top text-on-surface-variant">{etapa.prazo}</td>
-                          <td className="px-lg py-md align-top"><span className={`inline-flex items-center px-2 py-0.5 rounded ${etapa.statusBadgeVariant} font-label-sm text-[11px] uppercase`}>{etapa.status}</span></td>
-                          <td className="px-lg py-md text-right align-top">
+                          <td className="px-md md:px-lg py-md align-top text-on-surface-variant hidden sm:table-cell">{formatDate(etapa.prazo)}</td>
+                          <td className="px-md md:px-lg py-md align-top"><span className={`inline-flex items-center px-2 py-0.5 rounded ${etapa.statusBadgeVariant} font-label-sm text-[11px] uppercase`}>{etapa.status}</span></td>
+                          <td className="px-md md:px-lg py-md text-right align-top">
                             <div className="flex items-center justify-end gap-xs">
                               {etapa.status === 'Pendente' && (
-                                <button onClick={() => handleIniciar(etapa.id)} className="bg-primary text-on-primary hover:bg-primary-container text-label-sm px-sm py-1 rounded transition-colors flex items-center gap-xs">
-                                  <span className="material-symbols-outlined text-[16px]">play_arrow</span>Iniciar
+                                <button onClick={() => handleIniciar(etapa.id)} className="bg-primary text-on-primary hover:bg-primary-container text-label-sm px-sm py-1 rounded transition-colors flex items-center gap-xs shadow-sm">
+                                  <span className="material-symbols-outlined text-[16px]">play_arrow</span>
+                                  <span className="hidden lg:inline">Iniciar</span>
                                 </button>
                               )}
                               {etapa.status === 'Em andamento' && (
-                                <button onClick={() => handleFinalizar(etapa.id)} className="bg-error-container text-on-error-container hover:bg-error text-label-sm px-sm py-1 rounded transition-colors flex items-center gap-xs">
-                                  <span className="material-symbols-outlined text-[16px]">stop</span>Finalizar
+                                <button onClick={() => handleFinalizar(etapa.id)} className="bg-error-container text-on-error-container hover:bg-error text-label-sm px-sm py-1 rounded transition-colors flex items-center gap-xs shadow-sm">
+                                  <span className="material-symbols-outlined text-[16px]">stop</span>
+                                  <span className="hidden lg:inline">Finalizar</span>
                                 </button>
                               )}
-                              <div className="flex items-center gap-xs opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
-                                <Tooltip label="Alocar Funcionários"><button aria-label={`Alocar funcionários em ${etapa.nome}`} className="p-1 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-highest" onClick={() => openAlocar(etapa)}><span aria-hidden="true" className="material-symbols-outlined text-[20px]">person_add</span></button></Tooltip>
-                                <Tooltip label="Editar"><button aria-label={`Editar ${etapa.nome}`} className="p-1 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-highest" onClick={() => openEdit(etapa)}><span aria-hidden="true" className="material-symbols-outlined text-[20px]">edit</span></button></Tooltip>
-                                <Tooltip label="Excluir"><button aria-label={`Excluir ${etapa.nome}`} className="p-1 text-on-surface-variant hover:text-error transition-colors rounded-full hover:bg-error-container" onClick={() => openDelete(etapa)}><span aria-hidden="true" className="material-symbols-outlined text-[20px]">delete</span></button></Tooltip>
+                              <div className="flex items-center gap-xs lg:opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
+                                <Tooltip label="Alocar Funcionários">
+                                  <button aria-label={`Alocar funcionários em ${etapa.nome}`} className={actionBtnAddCls} onClick={() => openAlocar(etapa)}>
+                                    <span aria-hidden="true" className="material-symbols-outlined text-[20px]">person_add</span>
+                                  </button>
+                                </Tooltip>
+                                <Tooltip label="Editar">
+                                  <button aria-label={`Editar ${etapa.nome}`} className={actionBtnEditCls} onClick={() => openEdit(etapa)}>
+                                    <span aria-hidden="true" className="material-symbols-outlined text-[20px]">edit</span>
+                                  </button>
+                                </Tooltip>
+                                <Tooltip label="Excluir">
+                                  <button aria-label={`Excluir ${etapa.nome}`} className={actionBtnDeleteCls} onClick={() => openDelete(etapa)}>
+                                    <span aria-hidden="true" className="material-symbols-outlined text-[20px]">delete</span>
+                                  </button>
+                                </Tooltip>
                               </div>
                             </div>
                           </td>
                         </tr>
                         {etapa.isExpanded && etapa.funcionariosAlocados && (
                           <tr className="bg-surface-container-lowest border-b border-outline-variant">
-                            <td className="px-lg pb-md" colSpan={5}>
-                              <div className="ml-[28px] p-md border-l-2 border-primary bg-surface-container-low rounded-r-lg flex flex-col gap-md">
+                            <td className="px-md md:px-lg pb-md" colSpan={5}>
+                              <div className="sm:ml-[28px] p-4 border-l-2 border-primary bg-surface-container-low rounded-r-lg flex flex-col gap-md">
                                 <div className="flex flex-col md:flex-row justify-between gap-md">
                                   <div className="flex-1">
                                     <h4 className="font-label-sm text-on-surface-variant uppercase mb-sm">Funcionários Alocados</h4>
@@ -217,7 +262,7 @@ const Etapas: React.FC = () => {
                                           <span className="text-body-sm">{func.nome}</span>
                                           <button
                                             onClick={() => handleDesalocar(etapa.id, func.id)}
-                                            className="ml-xs text-outline hover:text-error transition-colors opacity-0 group-hover/chip:opacity-100"
+                                            className="ml-xs text-outline hover:text-error transition-colors opacity-100 lg:opacity-0 group-hover/chip:opacity-100"
                                             aria-label={`Remover ${func.nome}`}
                                           >
                                             <span className="material-symbols-outlined text-[14px]">close</span>
@@ -240,15 +285,19 @@ const Etapas: React.FC = () => {
                 </table>
               </div>
 
-              <div className="px-lg py-md border-t border-outline-variant bg-surface-bright flex items-center justify-between">
-                <span className="font-body-sm text-body-sm text-on-surface-variant">Mostrando 1 a {filteredEtapas.length} de 24 etapas</span>
+              <div className="px-md md:px-lg py-md border-t border-outline-variant bg-surface-bright flex flex-col sm:flex-row items-center justify-between gap-md mt-auto">
+                <span className="font-body-sm text-body-sm text-on-surface-variant text-center sm:text-left">Mostrando 1 a {filteredEtapas.length} de {etapas.length} etapas</span>
                 <div className="flex gap-xs">
-                  <button className="p-1 rounded border border-outline-variant text-outline hover:bg-surface-container transition-colors" disabled><span className="material-symbols-outlined text-[18px]">chevron_left</span></button>
-                  <button className="p-1 rounded border border-outline-variant text-on-surface hover:bg-surface-container transition-colors"><span className="material-symbols-outlined text-[18px]">chevron_right</span></button>
+                  <button className="p-1 rounded-lg border border-outline-variant text-outline hover:bg-surface-container transition-colors disabled:opacity-50" disabled>
+                    <span className="material-symbols-outlined text-[20px]">chevron_left</span>
+                  </button>
+                  <button className="p-1 rounded-lg border border-outline-variant text-on-surface hover:bg-surface-container transition-colors">
+                    <span className="material-symbols-outlined text-[20px]">chevron_right</span>
+                  </button>
                 </div>
               </div>
-            </div>
           </div>
+        </div>
       </div>
 
       {/* Modal: Cadastrar */}
@@ -256,7 +305,7 @@ const Etapas: React.FC = () => {
         <form className="flex flex-col gap-md" onSubmit={handleCreate}>
           <div className="flex flex-col gap-xs"><label className="font-label-md text-on-surface">Código Aeronave</label><input type="text" value={novaEtapa.aeronave} onChange={(e) => setNovaEtapa({...novaEtapa, aeronave: e.target.value})} className={inputCls} required /></div>
           <div className="flex flex-col gap-xs"><label className="font-label-md text-on-surface">Nome da etapa</label><input type="text" value={novaEtapa.nome} onChange={(e) => setNovaEtapa({...novaEtapa, nome: e.target.value})} className={inputCls} required /></div>
-          <div className="flex flex-col gap-xs"><label className="font-label-md text-on-surface">Prazo</label><input type="text" value={novaEtapa.prazo} onChange={(e) => setNovaEtapa({...novaEtapa, prazo: e.target.value})} className={inputCls} required /></div>
+          <div className="flex flex-col gap-xs"><label className="font-label-md text-on-surface">Prazo</label><input type="date" value={novaEtapa.prazo} onChange={(e) => setNovaEtapa({...novaEtapa, prazo: e.target.value})} className={inputCls} required /></div>
           <div className="flex justify-end gap-sm mt-md">
             <button type="button" onClick={() => setIsModalOpen(false)} className="px-md py-sm rounded text-primary hover:bg-primary-fixed">Cancelar</button>
             <button type="submit" className="px-md py-sm rounded bg-primary text-on-primary hover:opacity-90">Criar</button>
@@ -269,7 +318,7 @@ const Etapas: React.FC = () => {
         <form className="flex flex-col gap-md" onSubmit={handleEdit}>
           <div className="flex flex-col gap-xs"><label className="font-label-md text-on-surface">Aeronave</label><input type="text" value={editForm.aeronaveCodigo} onChange={(e) => setEditForm({...editForm, aeronaveCodigo: e.target.value})} className={inputCls} required /></div>
           <div className="flex flex-col gap-xs"><label className="font-label-md text-on-surface">Nome da Etapa</label><input type="text" value={editForm.nome} onChange={(e) => setEditForm({...editForm, nome: e.target.value})} className={inputCls} required /></div>
-          <div className="flex flex-col gap-xs"><label className="font-label-md text-on-surface">Prazo</label><input type="text" value={editForm.prazo} onChange={(e) => setEditForm({...editForm, prazo: e.target.value})} className={inputCls} required /></div>
+          <div className="flex flex-col gap-xs"><label className="font-label-md text-on-surface">Prazo</label><input type="date" value={editForm.prazo} onChange={(e) => setEditForm({...editForm, prazo: e.target.value})} className={inputCls} required /></div>
           <div className="flex flex-col gap-xs"><label className="font-label-md text-on-surface">Status</label><select value={editForm.status} onChange={(e) => setEditForm({...editForm, status: e.target.value})} className={inputCls} required><option value="Pendente">Pendente</option><option value="Em andamento">Em andamento</option><option value="Concluída">Concluída</option></select></div>
           <div className="flex justify-end gap-sm mt-md">
             <button type="button" onClick={() => setIsEditOpen(false)} className="px-md py-sm rounded text-primary hover:bg-primary-fixed">Cancelar</button>
@@ -295,7 +344,6 @@ const Etapas: React.FC = () => {
         </div>
       </Modal>
 
-      {/* Modal: Alocar Funcionários */}
       <Modal isOpen={isAlocarOpen} onClose={() => setIsAlocarOpen(false)} title={`Alocar Funcionários — ${alocarTarget?.nome || ''}`}>
         <div className="flex flex-col gap-md">
           {/* Etapa info */}
@@ -369,6 +417,58 @@ const Etapas: React.FC = () => {
             <button type="button" onClick={handleAlocar} className="px-md py-sm rounded bg-primary text-on-primary hover:opacity-90 flex items-center gap-xs">
               <span className="material-symbols-outlined text-[18px]">group_add</span>
               Confirmar Alocação
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Modal: Filtros */}
+      <Modal isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} title="Filtros de Etapas">
+        <div className="flex flex-col gap-lg">
+          <div className="flex flex-col gap-md">
+            <label className="font-label-md text-on-surface">Status da Etapa</label>
+            <div className="flex flex-wrap gap-sm">
+              {['Todos', 'Pendente', 'Em andamento', 'Concluída'].map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setFilters({ ...filters, status: s })}
+                  className={`px-md py-xs rounded-full border transition-all font-label-sm ${filters.status === s ? 'bg-primary text-on-primary border-primary' : 'bg-surface-container-lowest text-on-surface-variant border-outline-variant hover:border-primary/50'}`}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-md">
+            <label className="font-label-md text-on-surface">Aeronave</label>
+            <div className="relative">
+              <select 
+                value={filters.aeronave} 
+                onChange={(e) => setFilters({ ...filters, aeronave: e.target.value })}
+                className="w-full px-md py-sm border border-outline-variant rounded-lg bg-surface-container-lowest text-on-surface focus:border-primary outline-none appearance-none"
+              >
+                <option value="Todas">Todas as Aeronaves</option>
+                {uniqueAeronaves.map(code => (
+                  <option key={code} value={code}>{code}</option>
+                ))}
+              </select>
+              <span className="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 pointer-events-none text-outline">expand_more</span>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-sm pt-md border-t border-outline-variant">
+            <button 
+              onClick={() => { setFilters({ status: 'Todos', aeronave: 'Todas' }); setIsFilterOpen(false); }}
+              className="px-md py-sm rounded text-error hover:bg-error-container/20 transition-colors font-label-md"
+            >
+              Limpar Filtros
+            </button>
+            <button 
+              onClick={() => setIsFilterOpen(false)}
+              className="px-md py-sm rounded bg-primary text-on-primary hover:opacity-90 transition-opacity font-label-md"
+            >
+              Aplicar Filtros
             </button>
           </div>
         </div>

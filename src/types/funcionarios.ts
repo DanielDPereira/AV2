@@ -1,3 +1,5 @@
+import fotoDanielDias from '../assets/DanielDias.png';
+
 export interface Funcionario {
   id: string;
   iniciais: string;
@@ -8,19 +10,21 @@ export interface Funcionario {
   endereco: string;
   nivel: 'Administrador' | 'Engenheiro' | 'Operador';
   nivelVariant: string;
+  foto?: string;
 }
 
 export const mockFuncionarios: Funcionario[] = [
   {
     id: '1',
-    iniciais: 'CS',
+    iniciais: 'DD',
     iniciaisVariant: 'bg-primary-fixed text-on-primary-fixed',
-    nome: 'Carlos Silva',
+    nome: 'Daniel Dias',
     usuario: 'admin',
     telefone: '+55 11 98765-4321',
     endereco: 'Av. Paulista, 1000, São Paulo - SP',
     nivel: 'Administrador',
     nivelVariant: 'bg-primary-container text-on-primary-container border-primary-container',
+    foto: fotoDanielDias,
   },
   {
     id: '2',
