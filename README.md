@@ -1,73 +1,76 @@
-# React + TypeScript + Vite
+# Aerocode GUI ✈️
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Descrição do Projeto
+O **Aerocode GUI** é um sistema de gerenciamento industrial de alta performance voltado para a cadeia de produção e manutenção aeronáutica. O software oferece uma interface gráfica moderna e intuitiva para o controle rigoroso de estoque de peças, gestão estratégica de colaboradores, monitoramento em tempo real de etapas produtivas e execução de protocolos de testes de qualidade.
 
-Currently, two official plugins are available:
+## Contexto Acadêmico
+Este projeto foi desenvolvido como requisito avaliativo para a disciplina de **Programação Orientada a Objetos (POO)** na **Fatec São José dos Campos**.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+*   **Instituição:** Fatec São José dos Campos - Prof. Jessen Vidal
+*   **Matéria:** Programação Orientada a Objetos (POO)
+*   **Professor:** Eng. Dr. Gerson Penha Neto
+*   **Desenvolvedor:** [Daniel Dias Pereira](https://github.com/DanielDPereira)
 
-## React Compiler
+## Evolução do Projeto
+O Aerocode GUI representa a maturidade tecnológica do projeto (AV2), sendo uma evolução direta do [Aerocode CLI](https://github.com/DanielDPereira/AV1/). Enquanto a primeira versão focava na solidez da lógica de negócios via linha de comando, esta versão expande o ecossistema para a web, implementando uma interface gráfica robusta, responsiva e seguindo padrões avançados de UX/UI.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Funcionalidades Principais
+-   📊 **Dashboard Operacional:** Visão analítica e consolidada do status do sistema.
+-   🛩️ **Gestão de Aeronaves:** Cadastro e acompanhamento detalhado de modelos e unidades.
+-   ⚙️ **Fluxo de Etapas:** Controle granular das fases de montagem, manutenção e inspeção.
+-   📦 **Inventário de Peças:** Gestão inteligente de componentes e insumos industriais.
+-   👥 **Gestão de Colaboradores:** Sistema de RBAC (Role-Based Access Control) com níveis de permissão:
+    -   **Administrador:** Acesso total ao sistema e gestão de pessoal.
+    -   **Engenheiro:** Gestão técnica e operacional.
+    -   **Operador:** Execução e acompanhamento de tarefas.
+-   🧪 **Controle de Qualidade:** Registro sistemático de testes e validações técnicas.
+-   📄 **Relatórios:** Geração de dados para auditoria e otimização de processos.
 
-## Expanding the ESLint configuration
+## Tecnologias Utilizadas
+A stack tecnológica foi selecionada para garantir escalabilidade, performance e segurança:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+-   **React 19:** Biblioteca de ponta para interfaces reativas.
+-   **TypeScript:** Tipagem estática para robustez e redução de bugs em tempo de compilação.
+-   **Vite:** Tooling de última geração para desenvolvimento ágil.
+-   **Tailwind CSS 4:** Estilização utilitária para um design premium e responsivo.
+-   **React Router Dom 7:** Navegação fluida e segura entre módulos.
+-   **Context API:** Gerenciamento centralizado de estado e autenticação.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Pré-requisitos
+Para rodar este projeto localmente, você deve ter instalado:
+-   [Node.js](https://nodejs.org/) (v20 ou superior)
+-   [npm](https://www.npmjs.com/) ou [yarn](https://yarnpkg.com/)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Como Executar
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1.  **Clone o repositório:**
+    ```bash
+    git clone https://github.com/DanielDPereira/AV2.git
+    cd AV2
+    ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2.  **Instale as dependências:**
+    ```bash
+    npm install
+    ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+3.  **Inicie o ambiente de desenvolvimento:**
+    ```bash
+    npm run dev
+    ```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+4.  **Acesso:**
+    Abra o seu navegador no endereço indicado pelo terminal (geralmente `http://localhost:5173`).
+
+---
+
+## Documentação e Relatórios
+Para detalhes técnicos sobre a arquitetura do sistema, diagramas de classe (UML) e fundamentação teórica de POO aplicada, acesse o documento abaixo:
+
+📂 **[Relatório para desenvolvimento - Aerocode - GUI.pdf](./Docs/Relatório%20para%20desenvolvimento%20-%20Aerocode%20-%20GUI.pdf)**
+
+> [!IMPORTANT]
+> **Atenção:** Recomenda-se a leitura do relatório acima para uma compreensão completa da arquitetura do projeto e das decisões de design implementadas.
+
+---
+*Desenvolvido com dedicação para a disciplina de POO - Fatec SJC.*
