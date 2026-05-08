@@ -127,9 +127,9 @@ const Etapas: React.FC = () => {
 
   return (
     <Layout>
-      <div className="p-xl flex flex-col min-h-full">
+      <div className="p-4 md:p-8 lg:p-xl flex flex-col min-h-full">
           {/* Header Section */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-xl gap-md">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 md:mb-xl gap-4">
             <div>
               <nav className="flex items-center gap-xs font-body-sm text-on-surface-variant mb-xs">
                 <span className="hover:text-primary cursor-pointer transition-colors">Sistema</span>
@@ -139,7 +139,7 @@ const Etapas: React.FC = () => {
               <h1 className="font-h2 text-h2 text-on-surface">Etapas de Produção</h1>
               <p className="font-body-md text-body-md text-on-surface-variant mt-xs">Controle operacional das fases de montagem.</p>
             </div>
-            <button onClick={() => setIsModalOpen(true)} className="bg-primary text-on-primary font-label-md text-label-md px-lg py-sm rounded flex items-center gap-xs shadow-sm hover:bg-primary-container transition-all">
+            <button onClick={() => setIsModalOpen(true)} className="w-full md:w-auto bg-primary text-on-primary font-label-md text-label-md px-lg py-sm rounded flex items-center justify-center gap-xs shadow-sm hover:bg-primary-container transition-all">
               <span className="material-symbols-outlined text-[18px]">add</span>Nova Etapa
             </button>
           </div>
@@ -147,55 +147,57 @@ const Etapas: React.FC = () => {
           {/* Dashboard Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
             <div className="lg:col-span-12 bg-surface-container-lowest rounded-xl border border-outline-variant shadow-[0_4px_12px_rgba(0,0,0,0.04)] overflow-hidden">
-              <div className="px-lg py-md border-b border-outline-variant flex justify-between items-center bg-surface-bright">
-                <div className="relative w-64">
+              <div className="px-md md:px-lg py-md border-b border-outline-variant flex flex-col sm:flex-row justify-between items-center bg-surface-bright gap-md">
+                <div className="relative w-full sm:w-64">
                   <span className="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
                   <input className="w-full pl-[36px] pr-sm py-xs border border-outline-variant rounded bg-surface-container-lowest font-body-sm text-body-sm focus:border-primary-container focus:ring-2 focus:ring-primary-fixed focus:outline-none transition-all" placeholder="Buscar etapa ou aeronave..." type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
                 </div>
-                <div className="flex gap-sm">
-                  <button className="px-md py-xs border border-outline-variant rounded font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container transition-colors flex items-center gap-xs">
+                <div className="flex gap-sm w-full sm:w-auto">
+                  <button className="flex-1 sm:flex-none px-md py-xs border border-outline-variant rounded font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container transition-colors flex items-center justify-center gap-xs">
                     <span className="material-symbols-outlined text-[16px]">filter_list</span>Filtros
                   </button>
                 </div>
               </div>
 
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
+                <table className="w-full text-left border-collapse min-w-[700px] md:min-w-0">
                   <thead>
                     <tr className="border-b border-outline-variant bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">
-                      <th className="px-lg py-md font-semibold">Aeronave</th>
-                      <th className="px-lg py-md font-semibold w-1/3">Nome da Etapa</th>
-                      <th className="px-lg py-md font-semibold">Prazo (Data)</th>
-                      <th className="px-lg py-md font-semibold">Status</th>
-                      <th className="px-lg py-md font-semibold text-right">Ações</th>
+                      <th className="px-md md:px-lg py-md font-semibold">Aeronave</th>
+                      <th className="px-md md:px-lg py-md font-semibold w-1/3">Nome da Etapa</th>
+                      <th className="px-md md:px-lg py-md font-semibold hidden sm:table-cell">Prazo (Data)</th>
+                      <th className="px-md md:px-lg py-md font-semibold">Status</th>
+                      <th className="px-md md:px-lg py-md font-semibold text-right">Ações</th>
                     </tr>
                   </thead>
                   <tbody className="font-body-sm text-body-sm text-on-surface">
                     {filteredEtapas.map((etapa) => (
                       <Fragment key={etapa.id}>
                         <tr className="border-b border-outline-variant bg-surface-container-lowest hover:bg-surface-container-low transition-colors group">
-                          <td className="px-lg py-md align-top font-code text-primary font-medium">{etapa.aeronaveCodigo}</td>
-                          <td className="px-lg py-md align-top">
+                          <td className="px-md md:px-lg py-md align-top font-code text-primary font-medium">{etapa.aeronaveCodigo}</td>
+                          <td className="px-md md:px-lg py-md align-top">
                             <div className="flex items-center gap-sm">
                               <span className={`material-symbols-outlined ${etapa.isExpanded ? 'text-primary' : 'text-outline'} text-[20px]`}>{etapa.icon}</span>
                               <div className="font-medium text-on-surface">{etapa.nome}</div>
                             </div>
                           </td>
-                          <td className="px-lg py-md align-top text-on-surface-variant">{etapa.prazo}</td>
-                          <td className="px-lg py-md align-top"><span className={`inline-flex items-center px-2 py-0.5 rounded ${etapa.statusBadgeVariant} font-label-sm text-[11px] uppercase`}>{etapa.status}</span></td>
-                          <td className="px-lg py-md text-right align-top">
+                          <td className="px-md md:px-lg py-md align-top text-on-surface-variant hidden sm:table-cell">{etapa.prazo}</td>
+                          <td className="px-md md:px-lg py-md align-top"><span className={`inline-flex items-center px-2 py-0.5 rounded ${etapa.statusBadgeVariant} font-label-sm text-[11px] uppercase`}>{etapa.status}</span></td>
+                          <td className="px-md md:px-lg py-md text-right align-top">
                             <div className="flex items-center justify-end gap-xs">
                               {etapa.status === 'Pendente' && (
                                 <button onClick={() => handleIniciar(etapa.id)} className="bg-primary text-on-primary hover:bg-primary-container text-label-sm px-sm py-1 rounded transition-colors flex items-center gap-xs">
-                                  <span className="material-symbols-outlined text-[16px]">play_arrow</span>Iniciar
+                                  <span className="material-symbols-outlined text-[16px]">play_arrow</span>
+                                  <span className="hidden lg:inline">Iniciar</span>
                                 </button>
                               )}
                               {etapa.status === 'Em andamento' && (
                                 <button onClick={() => handleFinalizar(etapa.id)} className="bg-error-container text-on-error-container hover:bg-error text-label-sm px-sm py-1 rounded transition-colors flex items-center gap-xs">
-                                  <span className="material-symbols-outlined text-[16px]">stop</span>Finalizar
+                                  <span className="material-symbols-outlined text-[16px]">stop</span>
+                                  <span className="hidden lg:inline">Finalizar</span>
                                 </button>
                               )}
-                              <div className="flex items-center gap-xs opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
+                              <div className="flex items-center gap-xs lg:opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
                                 <Tooltip label="Alocar Funcionários"><button aria-label={`Alocar funcionários em ${etapa.nome}`} className="p-1 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-highest" onClick={() => openAlocar(etapa)}><span aria-hidden="true" className="material-symbols-outlined text-[20px]">person_add</span></button></Tooltip>
                                 <Tooltip label="Editar"><button aria-label={`Editar ${etapa.nome}`} className="p-1 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-highest" onClick={() => openEdit(etapa)}><span aria-hidden="true" className="material-symbols-outlined text-[20px]">edit</span></button></Tooltip>
                                 <Tooltip label="Excluir"><button aria-label={`Excluir ${etapa.nome}`} className="p-1 text-on-surface-variant hover:text-error transition-colors rounded-full hover:bg-error-container" onClick={() => openDelete(etapa)}><span aria-hidden="true" className="material-symbols-outlined text-[20px]">delete</span></button></Tooltip>
@@ -205,8 +207,8 @@ const Etapas: React.FC = () => {
                         </tr>
                         {etapa.isExpanded && etapa.funcionariosAlocados && (
                           <tr className="bg-surface-container-lowest border-b border-outline-variant">
-                            <td className="px-lg pb-md" colSpan={5}>
-                              <div className="ml-[28px] p-md border-l-2 border-primary bg-surface-container-low rounded-r-lg flex flex-col gap-md">
+                            <td className="px-md md:px-lg pb-md" colSpan={5}>
+                              <div className="sm:ml-[28px] p-4 border-l-2 border-primary bg-surface-container-low rounded-r-lg flex flex-col gap-md">
                                 <div className="flex flex-col md:flex-row justify-between gap-md">
                                   <div className="flex-1">
                                     <h4 className="font-label-sm text-on-surface-variant uppercase mb-sm">Funcionários Alocados</h4>
@@ -217,7 +219,7 @@ const Etapas: React.FC = () => {
                                           <span className="text-body-sm">{func.nome}</span>
                                           <button
                                             onClick={() => handleDesalocar(etapa.id, func.id)}
-                                            className="ml-xs text-outline hover:text-error transition-colors opacity-0 group-hover/chip:opacity-100"
+                                            className="ml-xs text-outline hover:text-error transition-colors opacity-100 lg:opacity-0 group-hover/chip:opacity-100"
                                             aria-label={`Remover ${func.nome}`}
                                           >
                                             <span className="material-symbols-outlined text-[14px]">close</span>
@@ -240,8 +242,8 @@ const Etapas: React.FC = () => {
                 </table>
               </div>
 
-              <div className="px-lg py-md border-t border-outline-variant bg-surface-bright flex items-center justify-between">
-                <span className="font-body-sm text-body-sm text-on-surface-variant">Mostrando 1 a {filteredEtapas.length} de 24 etapas</span>
+              <div className="px-md md:px-lg py-md border-t border-outline-variant bg-surface-bright flex flex-col sm:flex-row items-center justify-between gap-md">
+                <span className="font-body-sm text-body-sm text-on-surface-variant text-center sm:text-left">Mostrando 1 a {filteredEtapas.length} de 24 etapas</span>
                 <div className="flex gap-xs">
                   <button className="p-1 rounded border border-outline-variant text-outline hover:bg-surface-container transition-colors" disabled><span className="material-symbols-outlined text-[18px]">chevron_left</span></button>
                   <button className="p-1 rounded border border-outline-variant text-on-surface hover:bg-surface-container transition-colors"><span className="material-symbols-outlined text-[18px]">chevron_right</span></button>

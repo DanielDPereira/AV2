@@ -85,7 +85,7 @@ const Testes: React.FC = () => {
     <Layout>
       <div className="flex flex-col min-h-full">
         {/* Action Bar */}
-        <div className="sticky top-0 z-40 bg-surface-container-low/95 backdrop-blur-sm border-b border-outline-variant/30 px-xl py-lg flex justify-between items-center">
+        <div className="sticky top-0 z-40 bg-surface-container-low/95 backdrop-blur-sm border-b border-outline-variant/30 px-4 md:px-8 lg:px-xl py-4 md:py-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <nav className="flex items-center gap-xs text-on-surface-variant font-label-sm text-label-sm mb-xs">
               <span className="hover:text-primary cursor-pointer transition-colors">Sistema</span>
@@ -94,16 +94,16 @@ const Testes: React.FC = () => {
             </nav>
             <h1 className="font-h2 text-h2 text-on-surface">Inspeções e Testes</h1>
           </div>
-          <div className="flex items-center gap-md">
-            <div className="relative w-[300px]">
+          <div className="flex flex-col md:flex-row items-center gap-md w-full sm:w-auto">
+            <div className="relative w-full md:w-[300px]">
               <span className="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
               <input
-                className="w-full pl-[36px] pr-sm py-[10px] bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-fixed-dim transition-all placeholder:text-outline-variant"
+                className="w-full pl-[36px] pr-sm py-2 md:py-[10px] bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-fixed-dim transition-all placeholder:text-outline-variant"
                 placeholder="Buscar por aeronave..."
                 type="text"
               />
             </div>
-            <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-xs px-lg py-[10px] bg-primary text-on-primary rounded-lg font-label-md text-label-md shadow-sm hover:opacity-90 transition-opacity active:scale-[0.98]">
+            <button onClick={() => setIsModalOpen(true)} className="w-full md:w-auto flex items-center justify-center gap-xs px-lg py-2 md:py-[10px] bg-primary text-on-primary rounded-lg font-label-md text-label-md shadow-sm hover:opacity-90 transition-opacity active:scale-[0.98]">
               <span className="material-symbols-outlined text-[20px]">add</span>
               Novo Teste
             </button>
@@ -111,63 +111,65 @@ const Testes: React.FC = () => {
         </div>
 
         {/* Content Area */}
-        <div className="p-xl flex-1">
+        <div className="p-4 md:p-8 lg:p-xl flex-1">
           <div className="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-surface-container-low border-b border-outline-variant">
-                  <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant">Aeronave</th>
-                  <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant">Tipo de Teste</th>
-                  <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant">Resultado</th>
-                  <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant text-right">Ações</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-outline-variant">
-                {testes.map((teste) => (
-                  <tr key={teste.id} className="hover:bg-surface-container-low transition-colors group">
-                    <td className="py-md px-lg font-body-md text-body-md text-on-surface">
-                      <div className="flex items-center gap-sm">
-                        <span className="material-symbols-outlined text-outline-variant text-[18px]">flight</span>
-                        {teste.aeronave}
-                      </div>
-                    </td>
-                    <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant">
-                      {teste.tipo}
-                    </td>
-                    <td className="py-md px-lg">
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-[12px] font-semibold border ${teste.resultadoVariant}`}>
-                        {teste.resultado}
-                      </span>
-                    </td>
-                    <td className="py-md px-lg text-right">
-                      <div className="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
-                        <Tooltip label="Editar">
-                          <button
-                            aria-label={`Editar teste de ${teste.aeronave}`}
-                            className="p-1 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-highest"
-                            onClick={() => openEdit(teste)}
-                          >
-                            <span aria-hidden="true" className="material-symbols-outlined text-[20px]">edit</span>
-                          </button>
-                        </Tooltip>
-                        <Tooltip label="Alterar Resultado">
-                          <button
-                            aria-label={`Aprovar ou reprovar teste de ${teste.aeronave}`}
-                            className="p-1 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-highest"
-                            onClick={() => openResult(teste)}
-                          >
-                            <span aria-hidden="true" className="material-symbols-outlined text-[20px]">fact_check</span>
-                          </button>
-                        </Tooltip>
-                      </div>
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse min-w-[600px] md:min-w-0">
+                <thead>
+                  <tr className="bg-surface-container-low border-b border-outline-variant">
+                    <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant">Aeronave</th>
+                    <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant">Tipo de Teste</th>
+                    <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant">Resultado</th>
+                    <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant text-right">Ações</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-outline-variant">
+                  {testes.map((teste) => (
+                    <tr key={teste.id} className="hover:bg-surface-container-low transition-colors group">
+                      <td className="py-md px-lg font-body-md text-body-md text-on-surface">
+                        <div className="flex items-center gap-sm">
+                          <span className="material-symbols-outlined text-outline-variant text-[18px]">flight</span>
+                          {teste.aeronave}
+                        </div>
+                      </td>
+                      <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant">
+                        {teste.tipo}
+                      </td>
+                      <td className="py-md px-lg">
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-[12px] font-semibold border ${teste.resultadoVariant}`}>
+                          {teste.resultado}
+                        </span>
+                      </td>
+                      <td className="py-md px-lg text-right">
+                        <div className="flex items-center justify-end gap-sm lg:opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
+                          <Tooltip label="Editar">
+                            <button
+                              aria-label={`Editar teste de ${teste.aeronave}`}
+                              className="p-1 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-highest"
+                              onClick={() => openEdit(teste)}
+                            >
+                              <span aria-hidden="true" className="material-symbols-outlined text-[20px]">edit</span>
+                            </button>
+                          </Tooltip>
+                          <Tooltip label="Alterar Resultado">
+                            <button
+                              aria-label={`Aprovar ou reprovar teste de ${teste.aeronave}`}
+                              className="p-1 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-highest"
+                              onClick={() => openResult(teste)}
+                            >
+                              <span aria-hidden="true" className="material-symbols-outlined text-[20px]">fact_check</span>
+                            </button>
+                          </Tooltip>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
             {/* Pagination Footer */}
-            <div className="p-md border-t border-outline-variant bg-surface-container-lowest flex items-center justify-between">
-              <span className="text-body-sm font-body-sm text-secondary">Mostrando 1 a {testes.length} de {testes.length} testes</span>
+            <div className="p-4 border-t border-outline-variant bg-surface-container-lowest flex flex-col sm:flex-row items-center justify-between gap-4">
+              <span className="text-body-sm font-body-sm text-secondary text-center sm:text-left">Mostrando 1 a {testes.length} de {testes.length} testes</span>
               <div className="flex items-center gap-sm">
                 <button className="text-secondary hover:text-primary p-xs rounded hover:bg-surface-variant transition-colors disabled:opacity-50" disabled>
                   <span className="material-symbols-outlined">chevron_left</span>

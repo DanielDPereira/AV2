@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth, NivelPermissao } from '../../contexts/AuthContext';
 
@@ -10,10 +10,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { usuario, fazerLogout, temPermissao } = useAuth();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleLogout = () => {
     fazerLogout();
     navigate('/login');
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const closeSidebar = () => {
+    setIsSidebarOpen(false);
   };
 
   // Definição de todos os itens de menu com seus níveis de permissão
@@ -59,18 +68,27 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="bg-surface-container-low text-on-surface font-body-md text-body-md antialiased h-screen overflow-hidden flex flex-col">
       {/* Header Fixo */}
-      <nav className="fixed top-0 w-full z-50 h-16 bg-white border-b border-outline-variant flex items-center justify-between px-8">
-        <div className="flex items-center gap-xl">
+      <nav className="fixed top-0 w-full z-50 h-16 bg-white border-b border-outline-variant flex items-center justify-between px-4 md:px-8">
+        <div className="flex items-center gap-sm md:gap-xl">
+          {/* Mobile Menu Toggle */}
+          <button 
+            onClick={toggleSidebar}
+            className="p-2 -ml-2 text-on-surface-variant lg:hidden"
+          >
+            <span className="material-symbols-outlined">{isSidebarOpen ? 'close' : 'menu'}</span>
+          </button>
+          
           <span className="text-xl font-bold tracking-tighter text-primary">Aerocode</span>
-          <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest hidden md:block">Sistema de Gestão Industrial</span>
+          <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest hidden lg:block">Sistema de Gestão Industrial</span>
         </div>
-        <div className="flex items-center gap-lg">
-          <div className="flex items-center gap-sm">
-            {/* Badge de nível de permissão */}
-            <span className={`inline-flex items-center px-2 py-0.5 rounded-full font-label-sm text-[11px] ${nivelBadge.classes}`}>
+        
+        <div className="flex items-center gap-md md:gap-lg">
+          <div className="flex items-center gap-xs md:gap-sm">
+            {/* Badge de nível de permissão - Hidden on very small screens */}
+            <span className={`hidden sm:inline-flex items-center px-2 py-0.5 rounded-full font-label-sm text-[11px] ${nivelBadge.classes}`}>
               {nivelBadge.label}
             </span>
-            <span className="font-label-md text-label-md text-on-surface-variant">
+            <span className="font-label-md text-label-md text-on-surface-variant hidden md:block">
               {usuario?.nome || 'Usuário'}
             </span>
             {/* Avatar com iniciais */}
@@ -83,14 +101,27 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             className="font-label-sm text-label-sm text-primary font-semibold hover:opacity-80 transition-opacity flex items-center gap-xs"
           >
             <span className="material-symbols-outlined text-[18px]">logout</span>
-            Sair
+            <span className="hidden sm:inline">Sair</span>
           </button>
         </div>
       </nav>
 
-      <div className="flex flex-1 pt-16 h-full">
-        {/* Sidebar Fixa */}
-        <aside className="w-64 h-full bg-surface-container border-r border-outline-variant flex flex-col py-6">
+      <div className="flex flex-1 pt-16 h-full relative">
+        {/* Overlay para mobile */}
+        {isSidebarOpen && (
+          <div 
+            className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+            onClick={closeSidebar}
+          />
+        )}
+
+        {/* Sidebar */}
+        <aside className={`
+          fixed lg:static inset-y-0 left-0 z-50
+          w-64 h-full bg-surface-container border-r border-outline-variant flex flex-col py-6
+          transform transition-transform duration-300 ease-in-out
+          ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        `}>
           <nav className="flex-1 flex flex-col space-y-1">
             {menuItems.map(item => {
               const isActive = location.pathname.startsWith(item.path);
@@ -98,6 +129,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <Link
                   key={item.path}
                   to={item.path}
+                  onClick={closeSidebar}
                   className={`flex items-center gap-md px-md py-sm transition-colors ${isActive
                       ? 'bg-white text-primary border-l-4 border-primary font-bold'
                       : 'text-on-surface-variant border-l-4 border-transparent hover:bg-surface-variant hover:text-on-surface'
@@ -124,7 +156,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </aside>
 
         {/* Área Principal */}
-        <main className="flex-1 overflow-y-auto bg-surface-container-low relative">
+        <main className="flex-1 overflow-y-auto bg-surface-container-low relative w-full">
           {children}
         </main>
       </div>
@@ -133,3 +165,4 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 };
 
 export default Layout;
+

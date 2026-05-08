@@ -74,7 +74,7 @@ const Aeronaves: React.FC = () => {
     <Layout>
       <div className="flex flex-col min-h-full">
         {/* Action Bar */}
-        <div className="sticky top-0 z-40 bg-surface-container-low/95 backdrop-blur-sm border-b border-outline-variant/30 px-xl py-lg flex justify-between items-center">
+        <div className="sticky top-0 z-40 bg-surface-container-low/95 backdrop-blur-sm border-b border-outline-variant/30 px-4 md:px-8 lg:px-xl py-4 md:py-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <nav className="flex items-center gap-xs text-on-surface-variant font-label-sm text-label-sm mb-xs">
               <span className="hover:text-primary cursor-pointer transition-colors">Sistema</span>
@@ -83,18 +83,18 @@ const Aeronaves: React.FC = () => {
             </nav>
             <h1 className="font-h2 text-h2 text-on-surface">Gestão de Frota</h1>
           </div>
-          <div className="flex items-center gap-md">
-            <div className="relative w-[300px]">
+          <div className="flex flex-col md:flex-row items-center gap-md w-full sm:w-auto">
+            <div className="relative w-full md:w-[300px]">
               <span className="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
               <input
-                className="w-full pl-[36px] pr-sm py-[10px] bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-fixed-dim transition-all placeholder:text-outline-variant"
+                className="w-full pl-[36px] pr-sm py-2 md:py-[10px] bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-fixed-dim transition-all placeholder:text-outline-variant"
                 placeholder="Buscar aeronave..."
                 type="text"
               />
             </div>
             <button
               onClick={() => setIsModalOpen(true)}
-              className="bg-primary text-on-primary px-lg py-[10px] rounded-lg font-label-md text-label-md flex items-center gap-sm shadow-md hover:bg-primary-container transition-all active:scale-[0.98]">
+              className="w-full md:w-auto bg-primary text-on-primary px-lg py-2 md:py-[10px] rounded-lg font-label-md text-label-md flex items-center justify-center gap-sm shadow-md hover:bg-primary-container transition-all active:scale-[0.98]">
               <span className="material-symbols-outlined text-[18px]">add</span>
               Nova Aeronave
             </button>
@@ -102,21 +102,21 @@ const Aeronaves: React.FC = () => {
         </div>
 
         {/* Content Area */}
-        <div className="p-xl flex flex-col gap-lg flex-1">
+        <div className="p-4 md:p-8 lg:p-xl flex flex-col gap-6 md:gap-lg flex-1">
           {/* Metrics Cards */}
-          <div className="grid grid-cols-3 gap-md">
-            <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm relative overflow-hidden">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-md">
+            <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm relative overflow-hidden h-24 md:h-auto flex flex-col justify-center md:justify-start">
               <div className="font-label-md text-label-md text-on-surface-variant mb-xs">Total Registrado</div>
               <div className="font-h2 text-h2 text-on-surface">142</div>
-              <div className="absolute -right-2 -bottom-2 opacity-5">
+              <div className="absolute -right-2 -bottom-2 opacity-5 hidden md:block">
                 <span className="material-symbols-outlined text-[80px]">flight</span>
               </div>
             </div>
-            <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm">
+            <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm h-24 md:h-auto flex flex-col justify-center md:justify-start">
               <div className="font-label-md text-label-md text-on-surface-variant mb-xs">Em Produção</div>
               <div className="font-h2 text-h2 text-primary-container">18</div>
             </div>
-            <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm">
+            <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm h-24 md:h-auto flex flex-col justify-center md:justify-start">
               <div className="font-label-md text-label-md text-on-surface-variant mb-xs">Aguardando Testes</div>
               <div className="font-h2 text-h2 text-tertiary-container">05</div>
             </div>
@@ -125,14 +125,14 @@ const Aeronaves: React.FC = () => {
           {/* Data Table Container */}
           <div className="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden flex flex-col flex-1">
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+              <table className="w-full text-left border-collapse min-w-[700px] md:min-w-0">
                 <thead>
                   <tr className="bg-surface-container-low border-b border-outline-variant">
                     <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant whitespace-nowrap">Código</th>
                     <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant whitespace-nowrap">Modelo</th>
                     <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant whitespace-nowrap">Tipo</th>
-                    <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant whitespace-nowrap">Capacidade</th>
-                    <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant whitespace-nowrap">Alcance</th>
+                    <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant whitespace-nowrap hidden sm:table-cell">Capacidade</th>
+                    <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant whitespace-nowrap hidden lg:table-cell">Alcance</th>
                     <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant whitespace-nowrap text-right">Ações</th>
                   </tr>
                 </thead>
@@ -146,10 +146,10 @@ const Aeronaves: React.FC = () => {
                           {aero.tipo}
                         </span>
                       </td>
-                      <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant">{aero.capacidade} passageiros</td>
-                      <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant">{aero.alcance} km</td>
+                      <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant hidden sm:table-cell">{aero.capacidade} pax</td>
+                      <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant hidden lg:table-cell">{aero.alcance} km</td>
                       <td className="py-md px-lg text-right">
-                        <div className="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
+                        <div className="flex items-center justify-end gap-sm lg:opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
                           <Tooltip label="Ver Etapas">
                             <button
                               aria-label={`Ver etapas de ${aero.codigo}`}
@@ -185,8 +185,8 @@ const Aeronaves: React.FC = () => {
               </table>
             </div>
             {/* Table Footer / Pagination */}
-            <div className="px-lg py-sm border-t border-outline-variant bg-surface-container-low flex items-center justify-between mt-auto">
-              <span className="font-body-sm text-body-sm text-on-surface-variant">Mostrando 1 a {aeronaves.length} de {aeronaves.length} aeronaves</span>
+            <div className="px-lg py-sm border-t border-outline-variant bg-surface-container-low flex flex-col sm:flex-row items-center justify-between mt-auto gap-md">
+              <span className="font-body-sm text-body-sm text-on-surface-variant text-center sm:text-left">Mostrando 1 a {aeronaves.length} de {aeronaves.length} aeronaves</span>
               <div className="flex items-center gap-xs">
                 <button className="p-xs border border-outline-variant rounded text-on-surface-variant hover:bg-surface-container disabled:opacity-50" disabled>
                   <span className="material-symbols-outlined text-[18px]">chevron_left</span>

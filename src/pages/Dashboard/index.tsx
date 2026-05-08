@@ -47,100 +47,100 @@ const Dashboard: React.FC = () => {
 
   return (
     <Layout>
-      <div className="p-xl">
-        <div className="max-w-7xl mx-auto space-y-xl">
+      <div className="p-4 md:p-8 lg:p-xl">
+        <div className="max-w-7xl mx-auto space-y-6 md:space-y-xl">
             {/* Header & Botões Rápidos */}
-            <div className="flex items-center justify-between">
-              <h1 className="font-h1 text-h1 text-on-surface">Dashboard</h1>
-              <div className="flex gap-sm">
-                <button onClick={() => setIsModalPecaOpen(true)} className="bg-surface-container-lowest border border-outline text-on-surface font-label-md text-label-md px-md py-sm rounded hover:shadow-sm transition-all flex items-center gap-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-md">
+              <h1 className="font-h1 text-h2 md:text-h1 text-on-surface">Dashboard</h1>
+              <div className="flex flex-wrap gap-xs md:gap-sm">
+                <button onClick={() => setIsModalPecaOpen(true)} className="flex-1 sm:flex-none bg-surface-container-lowest border border-outline text-on-surface font-label-sm md:font-label-md text-label-sm md:text-label-md px-sm md:px-md py-xs md:py-sm rounded hover:shadow-sm transition-all flex items-center justify-center gap-xs">
                   <span className="material-symbols-outlined text-[18px]">add</span>
-                  Nova Peça
+                  Peça
                 </button>
-                <button onClick={() => setIsModalEtapaOpen(true)} className="bg-surface-container-lowest border border-outline text-on-surface font-label-md text-label-md px-md py-sm rounded hover:shadow-sm transition-all flex items-center gap-xs">
+                <button onClick={() => setIsModalEtapaOpen(true)} className="flex-1 sm:flex-none bg-surface-container-lowest border border-outline text-on-surface font-label-sm md:font-label-md text-label-sm md:text-label-md px-sm md:px-md py-xs md:py-sm rounded hover:shadow-sm transition-all flex items-center justify-center gap-xs">
                   <span className="material-symbols-outlined text-[18px]">add</span>
-                  Nova Etapa
+                  Etapa
                 </button>
-                <button onClick={() => setIsModalAeronaveOpen(true)} className="bg-primary text-on-primary font-label-md text-label-md px-md py-sm rounded hover:shadow-md transition-all flex items-center gap-xs">
+                <button onClick={() => setIsModalAeronaveOpen(true)} className="flex-1 sm:flex-none bg-primary text-on-primary font-label-sm md:font-label-md text-label-sm md:text-label-md px-sm md:px-md py-xs md:py-sm rounded hover:shadow-md transition-all flex items-center justify-center gap-xs">
                   <span className="material-symbols-outlined text-[18px]">add</span>
-                  Nova Aeronave
+                  Aeronave
                 </button>
               </div>
             </div>
 
             {/* 4 Cards de Resumo */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
-              <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm flex flex-col justify-between h-40">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-gutter">
+              <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-md md:p-lg shadow-sm flex flex-col justify-between h-32 md:h-40">
                 <div className="flex justify-between items-start">
                   <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Aeronaves</span>
                   <div className="w-8 h-8 rounded bg-primary-fixed flex items-center justify-center text-on-primary-fixed">
                     <span className="material-symbols-outlined">flight</span>
                   </div>
                 </div>
-                <div className="font-h1 text-h1 text-on-surface">{stats.aircrafts}</div>
+                <div className="font-h1 text-h2 md:text-h1 text-on-surface">{stats.aircrafts}</div>
               </div>
 
-              <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm flex flex-col justify-between h-40">
+              <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-md md:p-lg shadow-sm flex flex-col justify-between h-32 md:h-40">
                 <div className="flex justify-between items-start">
                   <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Peças</span>
                   <div className="w-8 h-8 rounded bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed">
                     <span className="material-symbols-outlined">settings_input_component</span>
                   </div>
                 </div>
-                <div className="font-h1 text-h1 text-on-surface">{stats.parts.toLocaleString('pt-BR')}</div>
+                <div className="font-h1 text-h2 md:text-h1 text-on-surface">{stats.parts.toLocaleString('pt-BR')}</div>
               </div>
 
-              <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm flex flex-col justify-between h-40">
+              <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-md md:p-lg shadow-sm flex flex-col justify-between h-32 md:h-40">
                 <div className="flex justify-between items-start">
                   <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Etapas</span>
                   <div className="w-8 h-8 rounded bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed">
                     <span className="material-symbols-outlined">account_tree</span>
                   </div>
                 </div>
-                <div className="font-h1 text-h1 text-on-surface">{stats.stages}</div>
+                <div className="font-h1 text-h2 md:text-h1 text-on-surface">{stats.stages}</div>
               </div>
 
-              <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm flex flex-col justify-between h-40">
+              <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-md md:p-lg shadow-sm flex flex-col justify-between h-32 md:h-40">
                 <div className="flex justify-between items-start">
                   <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Testes</span>
                   <div className="w-8 h-8 rounded bg-surface-variant flex items-center justify-center text-on-surface-variant">
                     <span className="material-symbols-outlined">biotech</span>
                   </div>
                 </div>
-                <div className="font-h1 text-h1 text-on-surface">{stats.tests.toLocaleString('pt-BR')}</div>
+                <div className="font-h1 text-h2 md:text-h1 text-on-surface">{stats.tests.toLocaleString('pt-BR')}</div>
               </div>
             </div>
 
             {/* Lista de Últimas Aeronaves */}
             <div className="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden">
-              <div className="px-lg py-md border-b border-outline-variant flex justify-between items-center">
+              <div className="px-md md:px-lg py-md border-b border-outline-variant flex justify-between items-center">
                 <h2 className="font-h3 text-h3 text-on-surface">Últimas aeronaves</h2>
                 <Link to="/aeronaves" className="font-label-sm text-label-sm text-primary hover:underline">Ver todas</Link>
               </div>
               
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
+                <table className="w-full text-left border-collapse min-w-[600px] md:min-w-0">
                   <thead>
                     <tr className="bg-surface-container-low border-b border-outline-variant font-label-sm text-label-sm text-on-surface-variant">
-                      <th className="px-lg py-sm font-semibold">Identificador</th>
-                      <th className="px-lg py-sm font-semibold">Modelo</th>
-                      <th className="px-lg py-sm font-semibold">Fase Atual</th>
-                      <th className="px-lg py-sm font-semibold">Status</th>
-                      <th className="px-lg py-sm font-semibold text-right">Ações</th>
+                      <th className="px-md md:px-lg py-sm font-semibold">Identificador</th>
+                      <th className="px-md md:px-lg py-sm font-semibold">Modelo</th>
+                      <th className="px-md md:px-lg py-sm font-semibold hidden sm:table-cell">Fase Atual</th>
+                      <th className="px-md md:px-lg py-sm font-semibold">Status</th>
+                      <th className="px-md md:px-lg py-sm font-semibold text-right">Ações</th>
                     </tr>
                   </thead>
                   <tbody className="font-body-sm text-body-sm text-on-surface">
                     {aircrafts.map(aircraft => (
                       <tr key={aircraft.id} className="border-b border-outline-variant hover:bg-surface-container-low transition-colors">
-                        <td className="px-lg py-md font-code">{aircraft.identifier}</td>
-                        <td className="px-lg py-md">{aircraft.model}</td>
-                        <td className="px-lg py-md">{aircraft.currentPhase}</td>
-                        <td className="px-lg py-md">
+                        <td className="px-md md:px-lg py-md font-code">{aircraft.identifier}</td>
+                        <td className="px-md md:px-lg py-md">{aircraft.model}</td>
+                        <td className="px-md md:px-lg py-md hidden sm:table-cell">{aircraft.currentPhase}</td>
+                        <td className="px-md md:px-lg py-md">
                           <span className={`inline-flex items-center px-2 py-1 rounded font-label-sm text-label-sm ${getStatusClasses(aircraft.status)}`}>
                             {aircraft.status}
                           </span>
                         </td>
-                        <td className="px-lg py-md text-right">
+                        <td className="px-md md:px-lg py-md text-right">
                           <button className="text-secondary hover:text-primary transition-colors">
                             <span className="material-symbols-outlined text-[20px]">more_vert</span>
                           </button>
