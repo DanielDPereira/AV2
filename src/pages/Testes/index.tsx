@@ -34,6 +34,20 @@ const Testes: React.FC = () => {
   const [isResultOpen, setIsResultOpen] = useState(false);
   const [resultTarget, setResultTarget] = useState<Teste | null>(null);
   const [resultVal, setResultVal] = useState<'s' | 'n'>('s');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [filters, setFilters] = useState({ tipo: 'Todos', resultado: 'Todos', aeronave: 'Todas' });
+
+  const uniqueAeronaves = Array.from(new Set(testes.filter(t => t.aeronave).map(t => t.aeronave!)));
+
+  const filteredTestes = testes.filter(teste => {
+    const matchesSearch = (teste.aeronave && teste.aeronave.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                         teste.tipo.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesTipo = filters.tipo === 'Todos' || teste.tipo === filters.tipo;
+    const matchesResultado = filters.resultado === 'Todos' || teste.resultado === filters.resultado;
+    const matchesAeronave = filters.aeronave === 'Todas' || teste.aeronave === filters.aeronave;
+    return matchesSearch && matchesTipo && matchesResultado && matchesAeronave;
+  });
 
   const handleCreateTeste = (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,8 +115,16 @@ const Testes: React.FC = () => {
                 className="w-full pl-[36px] pr-sm py-2 md:py-[10px] bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-fixed-dim transition-all placeholder:text-outline-variant"
                 placeholder="Buscar por aeronave..."
                 type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
+            <button 
+              onClick={() => setIsFilterOpen(true)}
+              className={`w-full md:w-auto flex items-center justify-center gap-xs px-md py-2 md:py-[10px] border rounded-lg font-label-md text-label-md transition-all ${ (filters.tipo !== 'Todos' || filters.resultado !== 'Todos' || filters.aeronave !== 'Todas') ? 'border-primary bg-primary-fixed text-primary' : 'border-outline-variant text-on-surface-variant hover:bg-surface-container-low'}`}>
+              <span className="material-symbols-outlined text-[20px]">filter_list</span>
+              Filtros { (filters.tipo !== 'Todos' || filters.resultado !== 'Todos' || filters.aeronave !== 'Todas') && '•'}
+            </button>
             <button onClick={() => setIsModalOpen(true)} className="w-full md:w-auto flex items-center justify-center gap-xs px-lg py-2 md:py-[10px] bg-primary text-on-primary rounded-lg font-label-md text-label-md shadow-sm hover:opacity-90 transition-opacity active:scale-[0.98]">
               <span className="material-symbols-outlined text-[20px]">add</span>
               Novo Teste
@@ -124,7 +146,7 @@ const Testes: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-outline-variant">
-                  {testes.map((teste) => (
+                  {filteredTestes.map((teste) => (
                     <tr key={teste.id} className="hover:bg-surface-container-low transition-colors group">
                       <td className="py-md px-lg font-body-md text-body-md text-on-surface">
                         <div className="flex items-center gap-sm">
@@ -169,7 +191,7 @@ const Testes: React.FC = () => {
             </div>
             {/* Pagination Footer */}
             <div className="p-4 border-t border-outline-variant bg-surface-container-lowest flex flex-col sm:flex-row items-center justify-between gap-4">
-              <span className="text-body-sm font-body-sm text-secondary text-center sm:text-left">Mostrando 1 a {testes.length} de {testes.length} testes</span>
+              <span className="text-body-sm font-body-sm text-secondary text-center sm:text-left">Mostrando 1 a {filteredTestes.length} de {filteredTestes.length} testes</span>
               <div className="flex items-center gap-sm">
                 <button className="text-secondary hover:text-primary p-xs rounded hover:bg-surface-variant transition-colors disabled:opacity-50" disabled>
                   <span className="material-symbols-outlined">chevron_left</span>
@@ -269,6 +291,77 @@ const Testes: React.FC = () => {
           <div className="flex justify-end gap-sm">
             <button type="button" onClick={() => setIsResultOpen(false)} className="px-md py-sm rounded text-primary hover:bg-primary-fixed">Cancelar</button>
             <button type="button" onClick={handleResult} className="px-md py-sm rounded bg-primary text-on-primary hover:opacity-90">Confirmar</button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Modal: Filtros */}
+      <Modal isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} title="Filtros de Testes">
+        <div className="flex flex-col gap-lg">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
+            <div className="flex flex-col gap-md">
+              <label className="font-label-md text-on-surface font-semibold">Tipo de Teste</label>
+              <div className="flex flex-col gap-sm">
+                {['Todos', 'Elétrico', 'Hidráulico', 'Aerodinâmico'].map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => setFilters({ ...filters, tipo: t })}
+                    className={`flex items-center justify-between px-md py-sm rounded-lg border-2 transition-all ${filters.tipo === t ? 'border-primary bg-primary-fixed/30' : 'border-outline-variant hover:border-primary/30'}`}
+                  >
+                    <span className="font-body-md">{t}</span>
+                    {filters.tipo === t && <span className="material-symbols-outlined text-primary text-[20px]">check_circle</span>}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-md">
+              <label className="font-label-md text-on-surface font-semibold">Resultado</label>
+              <div className="flex flex-col gap-sm">
+                {['Todos', 'Aprovado', 'Reprovado'].map((r) => (
+                  <button
+                    key={r}
+                    onClick={() => setFilters({ ...filters, resultado: r })}
+                    className={`flex items-center justify-between px-md py-sm rounded-lg border-2 transition-all ${filters.resultado === r ? 'border-primary bg-primary-fixed/30' : 'border-outline-variant hover:border-primary/30'}`}
+                  >
+                    <span className="font-body-md">{r}</span>
+                    {filters.resultado === r && <span className="material-symbols-outlined text-primary text-[20px]">check_circle</span>}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-md">
+            <label className="font-label-md text-on-surface font-semibold">Aeronave</label>
+            <div className="relative">
+              <select 
+                value={filters.aeronave} 
+                onChange={(e) => setFilters({ ...filters, aeronave: e.target.value })}
+                className="w-full px-md py-sm border border-outline-variant rounded-lg bg-surface-container-lowest text-on-surface focus:border-primary outline-none appearance-none"
+              >
+                <option value="Todas">Todas as Aeronaves</option>
+                {uniqueAeronaves.map(code => (
+                  <option key={code} value={code}>{code}</option>
+                ))}
+              </select>
+              <span className="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 pointer-events-none text-outline">expand_more</span>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-sm pt-md border-t border-outline-variant">
+            <button 
+              onClick={() => { setFilters({ tipo: 'Todos', resultado: 'Todos', aeronave: 'Todas' }); setIsFilterOpen(false); }}
+              className="px-md py-sm rounded text-error hover:bg-error-container/20 transition-colors font-label-md"
+            >
+              Limpar Filtros
+            </button>
+            <button 
+              onClick={() => setIsFilterOpen(false)}
+              className="px-md py-sm rounded bg-primary text-on-primary hover:opacity-90 transition-opacity font-label-md"
+            >
+              Aplicar Filtros
+            </button>
           </div>
         </div>
       </Modal>

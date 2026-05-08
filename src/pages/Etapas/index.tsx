@@ -43,11 +43,18 @@ const Etapas: React.FC = () => {
   const [alocarTarget, setAlocarTarget] = useState<Etapa | null>(null);
   const [selectedFuncIds, setSelectedFuncIds] = useState<Set<string>>(new Set());
   const [alocarSearch, setAlocarSearch] = useState('');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [filters, setFilters] = useState({ status: 'Todos', aeronave: 'Todas' });
 
-  const filteredEtapas = etapas.filter(etapa =>
-    etapa.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    etapa.aeronaveCodigo.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const uniqueAeronaves = Array.from(new Set(etapas.map(e => e.aeronaveCodigo)));
+
+  const filteredEtapas = etapas.filter(etapa => {
+    const matchesSearch = etapa.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         etapa.aeronaveCodigo.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = filters.status === 'Todos' || etapa.status === filters.status;
+    const matchesAeronave = filters.aeronave === 'Todas' || etapa.aeronaveCodigo === filters.aeronave;
+    return matchesSearch && matchesStatus && matchesAeronave;
+  });
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -153,8 +160,11 @@ const Etapas: React.FC = () => {
                   <input className="w-full pl-[36px] pr-sm py-xs border border-outline-variant rounded bg-surface-container-lowest font-body-sm text-body-sm focus:border-primary-container focus:ring-2 focus:ring-primary-fixed focus:outline-none transition-all" placeholder="Buscar etapa ou aeronave..." type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
                 </div>
                 <div className="flex gap-sm w-full sm:w-auto">
-                  <button className="flex-1 sm:flex-none px-md py-xs border border-outline-variant rounded font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container transition-colors flex items-center justify-center gap-xs">
-                    <span className="material-symbols-outlined text-[16px]">filter_list</span>Filtros
+                  <button 
+                    onClick={() => setIsFilterOpen(true)}
+                    className={`flex-1 sm:flex-none px-md py-xs border rounded font-label-sm text-label-sm transition-colors flex items-center justify-center gap-xs ${ (filters.status !== 'Todos' || filters.aeronave !== 'Todas') ? 'border-primary bg-primary-fixed text-primary' : 'border-outline-variant text-on-surface-variant hover:bg-surface-container'}`}>
+                    <span className="material-symbols-outlined text-[16px]">filter_list</span>
+                    Filtros {(filters.status !== 'Todos' || filters.aeronave !== 'Todas') && '•'}
                   </button>
                 </div>
               </div>
@@ -297,7 +307,6 @@ const Etapas: React.FC = () => {
         </div>
       </Modal>
 
-      {/* Modal: Alocar Funcionários */}
       <Modal isOpen={isAlocarOpen} onClose={() => setIsAlocarOpen(false)} title={`Alocar Funcionários — ${alocarTarget?.nome || ''}`}>
         <div className="flex flex-col gap-md">
           {/* Etapa info */}
@@ -371,6 +380,58 @@ const Etapas: React.FC = () => {
             <button type="button" onClick={handleAlocar} className="px-md py-sm rounded bg-primary text-on-primary hover:opacity-90 flex items-center gap-xs">
               <span className="material-symbols-outlined text-[18px]">group_add</span>
               Confirmar Alocação
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Modal: Filtros */}
+      <Modal isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} title="Filtros de Etapas">
+        <div className="flex flex-col gap-lg">
+          <div className="flex flex-col gap-md">
+            <label className="font-label-md text-on-surface">Status da Etapa</label>
+            <div className="flex flex-wrap gap-sm">
+              {['Todos', 'Pendente', 'Em andamento', 'Concluída'].map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setFilters({ ...filters, status: s })}
+                  className={`px-md py-xs rounded-full border transition-all font-label-sm ${filters.status === s ? 'bg-primary text-on-primary border-primary' : 'bg-surface-container-lowest text-on-surface-variant border-outline-variant hover:border-primary/50'}`}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-md">
+            <label className="font-label-md text-on-surface">Aeronave</label>
+            <div className="relative">
+              <select 
+                value={filters.aeronave} 
+                onChange={(e) => setFilters({ ...filters, aeronave: e.target.value })}
+                className="w-full px-md py-sm border border-outline-variant rounded-lg bg-surface-container-lowest text-on-surface focus:border-primary outline-none appearance-none"
+              >
+                <option value="Todas">Todas as Aeronaves</option>
+                {uniqueAeronaves.map(code => (
+                  <option key={code} value={code}>{code}</option>
+                ))}
+              </select>
+              <span className="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 pointer-events-none text-outline">expand_more</span>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-sm pt-md border-t border-outline-variant">
+            <button 
+              onClick={() => { setFilters({ status: 'Todos', aeronave: 'Todas' }); setIsFilterOpen(false); }}
+              className="px-md py-sm rounded text-error hover:bg-error-container/20 transition-colors font-label-md"
+            >
+              Limpar Filtros
+            </button>
+            <button 
+              onClick={() => setIsFilterOpen(false)}
+              className="px-md py-sm rounded bg-primary text-on-primary hover:opacity-90 transition-opacity font-label-md"
+            >
+              Aplicar Filtros
             </button>
           </div>
         </div>

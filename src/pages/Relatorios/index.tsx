@@ -7,7 +7,18 @@ import { type Relatorio, mockRelatorios } from '../../types/relatorios';
 const Relatorios: React.FC = () => {
   const [relatorios] = useState<Relatorio[]>(mockRelatorios);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [novoRelatorio, setNovoRelatorio] = useState({ aeronave: '', gerarDisco: 's' });
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filters, setFilters] = useState({ aeronave: 'Todas' });
+
+  const uniqueAeronaves = Array.from(new Set(relatorios.map(r => r.aeronaveCodigo)));
+
+  const filteredRelatorios = relatorios.filter(rel => {
+    const matchesSearch = rel.nomeArquivo.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesAeronave = filters.aeronave === 'Todas' || rel.aeronaveCodigo === filters.aeronave;
+    return matchesSearch && matchesAeronave;
+  });
 
   const handleGerarRelatorio = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,9 +40,11 @@ const Relatorios: React.FC = () => {
             <h1 className="font-h2 text-h2 text-on-surface">Central de Relatórios</h1>
           </div>
           <div className="flex flex-col md:flex-row items-center gap-md w-full sm:w-auto">
-            <button className="w-full md:w-auto flex items-center justify-center gap-xs px-md py-2 border border-outline-variant text-on-surface-variant bg-surface-container-lowest hover:bg-surface-variant rounded-lg font-label-md text-label-md transition-colors">
+            <button 
+              onClick={() => setIsFilterOpen(true)}
+              className={`w-full md:w-auto flex items-center justify-center gap-xs px-md py-2 border rounded-lg font-label-md text-label-md transition-all ${filters.aeronave !== 'Todas' ? 'border-primary bg-primary-fixed text-primary' : 'border-outline-variant text-on-surface-variant bg-surface-container-lowest hover:bg-surface-variant'}`}>
               <span className="material-symbols-outlined text-[20px]">filter_alt</span>
-              Filtros Avançados
+              Filtros Avançados {filters.aeronave !== 'Todas' && '•'}
             </button>
             <button onClick={() => setIsModalOpen(true)} className="w-full md:w-auto flex items-center justify-center gap-xs px-lg py-2 md:py-[10px] bg-primary text-on-primary rounded-lg font-label-md text-label-md shadow-sm hover:opacity-90 transition-opacity active:scale-[0.98]">
               <span className="material-symbols-outlined text-[20px]">add_chart</span>
@@ -51,6 +64,8 @@ const Relatorios: React.FC = () => {
                   className="w-full pl-[36px] pr-sm py-2 bg-surface-container-lowest border border-outline-variant rounded focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary-fixed-dim transition-all text-body-sm"
                   placeholder="Pesquisar arquivo..."
                   type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
             </div>
@@ -65,7 +80,7 @@ const Relatorios: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-outline-variant">
-                  {relatorios.map((relatorio) => (
+                  {filteredRelatorios.map((relatorio) => (
                     <tr key={relatorio.id} className="hover:bg-surface-container-low transition-colors group">
                       <td className="py-md px-lg">
                         <div className="flex items-center gap-md">
@@ -127,6 +142,43 @@ const Relatorios: React.FC = () => {
             <button type="submit" className="px-md py-sm rounded bg-primary text-on-primary hover:opacity-90">Gerar Relatório</button>
           </div>
         </form>
+      </Modal>
+
+      {/* Modal: Filtros */}
+      <Modal isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} title="Filtros de Relatórios">
+        <div className="flex flex-col gap-lg">
+          <div className="flex flex-col gap-md">
+            <label className="font-label-md text-on-surface font-semibold">Filtrar por Aeronave</label>
+            <div className="relative">
+              <select 
+                value={filters.aeronave} 
+                onChange={(e) => setFilters({ ...filters, aeronave: e.target.value })}
+                className="w-full px-md py-sm border border-outline-variant rounded-lg bg-surface-container-lowest text-on-surface focus:border-primary outline-none appearance-none"
+              >
+                <option value="Todas">Todas as Aeronaves</option>
+                {uniqueAeronaves.map(code => (
+                  <option key={code} value={code}>{code}</option>
+                ))}
+              </select>
+              <span className="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 pointer-events-none text-outline">expand_more</span>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-sm pt-md border-t border-outline-variant">
+            <button 
+              onClick={() => { setFilters({ aeronave: 'Todas' }); setIsFilterOpen(false); }}
+              className="px-md py-sm rounded text-error hover:bg-error-container/20 transition-colors font-label-md"
+            >
+              Limpar
+            </button>
+            <button 
+              onClick={() => setIsFilterOpen(false)}
+              className="px-md py-sm rounded bg-primary text-on-primary hover:opacity-90 transition-opacity font-label-md"
+            >
+              Aplicar Filtros
+            </button>
+          </div>
+        </div>
       </Modal>
     </Layout>
   );

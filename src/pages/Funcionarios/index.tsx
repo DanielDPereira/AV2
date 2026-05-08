@@ -22,6 +22,15 @@ const Funcionarios: React.FC = () => {
   const [editForm, setEditForm] = useState({ nome: '', telefone: '', endereco: '', usuario: '', tipo: '1' });
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Funcionario | null>(null);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [filters, setFilters] = useState({ nivel: 'Todos', search: '' });
+
+  const filteredFuncionarios = funcionarios.filter(f => {
+    const matchesSearch = f.nome.toLowerCase().includes(filters.search.toLowerCase()) || 
+                         f.usuario.toLowerCase().includes(filters.search.toLowerCase());
+    const matchesNivel = filters.nivel === 'Todos' || f.nivel === filters.nivel;
+    return matchesSearch && matchesNivel;
+  });
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,10 +72,19 @@ const Funcionarios: React.FC = () => {
             <div className="p-4 border-b border-outline-variant bg-surface-container-low flex flex-col sm:flex-row justify-between items-center gap-4">
               <div className="relative w-full sm:w-72">
                 <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
-                <input className="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-DEFAULT focus:border-primary focus:ring-1 focus:ring-primary outline-none font-body-sm text-body-sm text-on-surface transition-all" placeholder="Buscar por nome ou usuário..." type="text" />
+                <input 
+                  className="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-DEFAULT focus:border-primary focus:ring-1 focus:ring-primary outline-none font-body-sm text-body-sm text-on-surface transition-all" 
+                  placeholder="Buscar por nome ou usuário..." 
+                  type="text" 
+                  value={filters.search}
+                  onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+                />
               </div>
-              <button className="w-full sm:w-auto flex items-center justify-center gap-xs px-md py-2 border border-outline-variant rounded-DEFAULT text-on-surface-variant hover:bg-surface-container-lowest transition-colors font-label-sm text-label-sm">
-                <span className="material-symbols-outlined text-[18px]">filter_list</span>Filtros
+              <button 
+                onClick={() => setIsFilterOpen(true)}
+                className={`w-full sm:w-auto flex items-center justify-center gap-xs px-md py-2 border rounded-DEFAULT transition-colors font-label-sm text-label-sm ${filters.nivel !== 'Todos' ? 'border-primary bg-primary-fixed text-primary' : 'border-outline-variant text-on-surface-variant hover:bg-surface-container-lowest'}`}>
+                <span className="material-symbols-outlined text-[18px]">filter_list</span>
+                Filtros {filters.nivel !== 'Todos' && '•'}
               </button>
             </div>
             <div className="overflow-x-auto">
@@ -81,7 +99,7 @@ const Funcionarios: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-outline-variant bg-surface-container-lowest">
-                  {funcionarios.map((func) => (
+                  {filteredFuncionarios.map((func) => (
                     <tr key={func.id} className="hover:bg-surface-container-low transition-colors group">
                       <td className="py-md px-lg">
                         <div className="flex items-center gap-md">
@@ -104,7 +122,7 @@ const Funcionarios: React.FC = () => {
               </table>
             </div>
             <div className="p-md border-t border-outline-variant bg-surface-container-lowest flex flex-col sm:flex-row items-center justify-between gap-md">
-              <span className="font-body-sm text-body-sm text-on-surface-variant text-center sm:text-left">Mostrando 1 a {funcionarios.length} de 124 funcionários</span>
+              <span className="font-body-sm text-body-sm text-on-surface-variant text-center sm:text-left">Mostrando 1 a {filteredFuncionarios.length} de {filteredFuncionarios.length} funcionários</span>
               <div className="flex items-center gap-sm">
                 <button className="p-1 text-outline hover:text-on-surface transition-colors disabled:opacity-50" disabled><span className="material-symbols-outlined text-[20px]">chevron_left</span></button>
                 <button className="p-1 text-outline hover:text-on-surface transition-colors"><span className="material-symbols-outlined text-[20px]">chevron_right</span></button>
@@ -154,6 +172,41 @@ const Funcionarios: React.FC = () => {
           <div className="flex justify-end gap-sm">
             <button type="button" onClick={() => setIsDeleteOpen(false)} className="px-md py-sm rounded text-primary hover:bg-primary-fixed">Cancelar</button>
             <button type="button" onClick={handleDelete} className="px-md py-sm rounded bg-error text-on-error hover:opacity-90">Excluir</button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Modal: Filtros */}
+      <Modal isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} title="Filtros de Funcionários">
+        <div className="flex flex-col gap-lg">
+          <div className="flex flex-col gap-md">
+            <label className="font-label-md text-on-surface">Nível de Acesso</label>
+            <div className="grid grid-cols-1 gap-sm">
+              {['Todos', 'Operador', 'Engenheiro', 'Administrador'].map((n) => (
+                <button
+                  key={n}
+                  onClick={() => setFilters({ ...filters, nivel: n })}
+                  className={`flex items-center justify-between px-md py-sm rounded-lg border-2 transition-all ${filters.nivel === n ? 'border-primary bg-primary-fixed/30' : 'border-outline-variant hover:border-primary/30'}`}
+                >
+                  <span className="font-body-md">{n}</span>
+                  {filters.nivel === n && <span className="material-symbols-outlined text-primary">check_circle</span>}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="flex justify-end gap-sm pt-md border-t border-outline-variant">
+            <button 
+              onClick={() => { setFilters({ nivel: 'Todos', search: '' }); setIsFilterOpen(false); }}
+              className="px-md py-sm rounded text-error hover:bg-error-container/20 transition-colors"
+            >
+              Limpar Filtros
+            </button>
+            <button 
+              onClick={() => setIsFilterOpen(false)}
+              className="px-md py-sm rounded bg-primary text-on-primary hover:opacity-90 transition-opacity"
+            >
+              Aplicar Filtros
+            </button>
           </div>
         </div>
       </Modal>

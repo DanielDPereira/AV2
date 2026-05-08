@@ -22,6 +22,17 @@ const Aeronaves: React.FC = () => {
   // Delete state
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Aeronave | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [filters, setFilters] = useState({ tipo: 'Todos', minCapacidade: '' });
+
+  const filteredAeronaves = aeronaves.filter(aero => {
+    const matchesSearch = aero.codigo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         aero.modelo.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesTipo = filters.tipo === 'Todos' || aero.tipo === filters.tipo;
+    const matchesCapacidade = !filters.minCapacidade || aero.capacidade >= Number(filters.minCapacidade);
+    return matchesSearch && matchesTipo && matchesCapacidade;
+  });
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -90,8 +101,16 @@ const Aeronaves: React.FC = () => {
                 className="w-full pl-[36px] pr-sm py-2 md:py-[10px] bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-fixed-dim transition-all placeholder:text-outline-variant"
                 placeholder="Buscar aeronave..."
                 type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
+            <button 
+              onClick={() => setIsFilterOpen(true)}
+              className={`w-full md:w-auto flex items-center justify-center gap-xs px-md py-2 md:py-[10px] border rounded-lg font-label-md text-label-md transition-all ${ (filters.tipo !== 'Todos' || filters.minCapacidade !== '') ? 'border-primary bg-primary-fixed text-primary' : 'border-outline-variant text-on-surface-variant hover:bg-surface-container-low'}`}>
+              <span className="material-symbols-outlined text-[20px]">filter_list</span>
+              Filtros { (filters.tipo !== 'Todos' || filters.minCapacidade !== '') && '•'}
+            </button>
             <button
               onClick={() => setIsModalOpen(true)}
               className="w-full md:w-auto bg-primary text-on-primary px-lg py-2 md:py-[10px] rounded-lg font-label-md text-label-md flex items-center justify-center gap-sm shadow-md hover:bg-primary-container transition-all active:scale-[0.98]">
@@ -137,7 +156,7 @@ const Aeronaves: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-outline-variant/50">
-                  {aeronaves.map((aero) => (
+                  {filteredAeronaves.map((aero) => (
                     <tr key={aero.id} className="hover:bg-surface-container transition-colors group">
                       <td className="py-md px-lg font-code text-code text-on-surface font-semibold">{aero.codigo}</td>
                       <td className="py-md px-lg font-body-sm text-body-sm text-on-surface">{aero.modelo}</td>
@@ -146,7 +165,7 @@ const Aeronaves: React.FC = () => {
                           {aero.tipo}
                         </span>
                       </td>
-                      <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant hidden sm:table-cell">{aero.capacidade} pax</td>
+                      <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant hidden sm:table-cell">{aero.capacidade} passageiros</td>
                       <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant hidden lg:table-cell">{aero.alcance} km</td>
                       <td className="py-md px-lg text-right">
                         <div className="flex items-center justify-end gap-sm lg:opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
@@ -186,7 +205,7 @@ const Aeronaves: React.FC = () => {
             </div>
             {/* Table Footer / Pagination */}
             <div className="px-lg py-sm border-t border-outline-variant bg-surface-container-low flex flex-col sm:flex-row items-center justify-between mt-auto gap-md">
-              <span className="font-body-sm text-body-sm text-on-surface-variant text-center sm:text-left">Mostrando 1 a {aeronaves.length} de {aeronaves.length} aeronaves</span>
+              <span className="font-body-sm text-body-sm text-on-surface-variant text-center sm:text-left">Mostrando 1 a {filteredAeronaves.length} de {filteredAeronaves.length} aeronaves</span>
               <div className="flex items-center gap-xs">
                 <button className="p-xs border border-outline-variant rounded text-on-surface-variant hover:bg-surface-container disabled:opacity-50" disabled>
                   <span className="material-symbols-outlined text-[18px]">chevron_left</span>
@@ -266,7 +285,6 @@ const Aeronaves: React.FC = () => {
         </form>
       </Modal>
 
-      {/* Modal: Excluir Aeronave */}
       <Modal isOpen={isDeleteOpen} onClose={() => setIsDeleteOpen(false)} title="Confirmar Exclusão">
         <div className="flex flex-col gap-lg">
           <div className="flex items-start gap-md">
@@ -281,6 +299,55 @@ const Aeronaves: React.FC = () => {
           <div className="flex justify-end gap-sm">
             <button type="button" onClick={() => setIsDeleteOpen(false)} className="px-md py-sm rounded text-primary hover:bg-primary-fixed">Cancelar</button>
             <button type="button" onClick={handleDelete} className="px-md py-sm rounded bg-error text-on-error hover:opacity-90">Excluir</button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Modal: Filtros */}
+      <Modal isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} title="Filtros de Frota">
+        <div className="flex flex-col gap-lg">
+          <div className="flex flex-col gap-md">
+            <label className="font-label-md text-on-surface font-semibold">Tipo de Aeronave</label>
+            <div className="grid grid-cols-3 gap-sm">
+              {['Todos', 'Comercial', 'Militar'].map((t) => (
+                <button
+                  key={t}
+                  onClick={() => setFilters({ ...filters, tipo: t })}
+                  className={`px-md py-sm rounded-lg border-2 transition-all font-label-sm ${filters.tipo === t ? 'border-primary bg-primary-fixed/30 text-primary' : 'border-outline-variant hover:border-primary/30 text-on-surface-variant'}`}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-md">
+            <label className="font-label-md text-on-surface font-semibold">Capacidade Mínima (Passageiros)</label>
+            <div className="relative">
+              <span className="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline">group</span>
+              <input 
+                type="number" 
+                placeholder="Ex: 100" 
+                value={filters.minCapacidade}
+                onChange={(e) => setFilters({ ...filters, minCapacidade: e.target.value })}
+                className="w-full pl-[40px] pr-md py-sm border border-outline-variant rounded-lg bg-surface-container-lowest text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-sm pt-md border-t border-outline-variant">
+            <button 
+              onClick={() => { setFilters({ tipo: 'Todos', minCapacidade: '' }); setIsFilterOpen(false); }}
+              className="px-md py-sm rounded text-error hover:bg-error-container/20 transition-colors font-label-md"
+            >
+              Limpar
+            </button>
+            <button 
+              onClick={() => setIsFilterOpen(false)}
+              className="px-md py-sm rounded bg-primary text-on-primary hover:opacity-90 transition-opacity font-label-md"
+            >
+              Aplicar Filtros
+            </button>
           </div>
         </div>
       </Modal>
