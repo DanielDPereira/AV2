@@ -126,7 +126,6 @@ const Dashboard: React.FC = () => {
                       <th className="px-md md:px-lg py-sm font-semibold">Modelo</th>
                       <th className="px-md md:px-lg py-sm font-semibold hidden sm:table-cell">Fase Atual</th>
                       <th className="px-md md:px-lg py-sm font-semibold">Status</th>
-                      <th className="px-md md:px-lg py-sm font-semibold text-right">Ações</th>
                     </tr>
                   </thead>
                   <tbody className="font-body-sm text-body-sm text-on-surface">
@@ -139,11 +138,6 @@ const Dashboard: React.FC = () => {
                           <span className={`inline-flex items-center px-2 py-1 rounded font-label-sm text-label-sm ${getStatusClasses(aircraft.status)}`}>
                             {aircraft.status}
                           </span>
-                        </td>
-                        <td className="px-md md:px-lg py-md text-right">
-                          <button className="text-secondary hover:text-primary transition-colors">
-                            <span className="material-symbols-outlined text-[20px]">more_vert</span>
-                          </button>
                         </td>
                       </tr>
                     ))}
