@@ -2,17 +2,40 @@ import React, { useState } from 'react';
 
 import Layout from '../../components/Layout';
 import Modal from '../../components/Modal';
+import Tooltip from '../../components/Tooltip';
 import { type Peca, mockPecas } from '../../types/pecas';
+
+const inputCls = "px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none w-full";
+
+type StatusKey = 'producao' | 'transporte' | 'pronta';
+
+const statusOptions: Record<StatusKey, { label: Peca['status']; icon: string; variant: string }> = {
+  producao: { label: 'Em produção', icon: 'precision_manufacturing', variant: 'bg-primary-fixed text-on-primary-fixed' },
+  transporte: { label: 'Em transporte', icon: 'local_shipping', variant: 'bg-secondary-container text-on-secondary-container' },
+  pronta: { label: 'Pronta', icon: 'check_circle', variant: 'bg-surface-tint text-on-primary' },
+};
+
+const statusToKey = (status: Peca['status']): StatusKey =>
+  status === 'Em produção' ? 'producao' : status === 'Em transporte' ? 'transporte' : 'pronta';
 
 const Pecas: React.FC = () => {
   const [pecas, setPecas] = useState<Peca[]>(mockPecas);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [novaPeca, setNovaPeca] = useState({
-    aeronave: '',
-    nome: '',
-    fornecedor: '',
-    tipo: 'Nacional'
-  });
+  const [novaPeca, setNovaPeca] = useState({ aeronave: '', nome: '', fornecedor: '', tipo: 'Nacional' });
+
+  // Edit state
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editTarget, setEditTarget] = useState<Peca | null>(null);
+  const [editForm, setEditForm] = useState({ aeronave: '', nome: '', fornecedor: '', tipo: 'Nacional' });
+
+  // Delete state
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<Peca | null>(null);
+
+  // Status state
+  const [isStatusOpen, setIsStatusOpen] = useState(false);
+  const [statusTarget, setStatusTarget] = useState<Peca | null>(null);
+  const [statusVal, setStatusVal] = useState<StatusKey>('producao');
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,153 +46,209 @@ const Pecas: React.FC = () => {
       fornecedor: novaPeca.fornecedor,
       tipo: novaPeca.tipo as 'Nacional' | 'Importada',
       status: 'Em produção',
-      statusBadgeVariant: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-      statusIcon: 'manufacturing',
-      tipoBadgeVariant: novaPeca.tipo === 'Nacional' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'
+      statusBadgeVariant: statusOptions.producao.variant,
+      statusIcon: statusOptions.producao.icon,
+      tipoBadgeVariant: novaPeca.tipo === 'Nacional' ? 'bg-secondary-fixed text-on-secondary-fixed' : 'bg-tertiary-fixed text-on-tertiary-fixed',
     };
     setPecas([peca, ...pecas]);
     setIsModalOpen(false);
     setNovaPeca({ aeronave: '', nome: '', fornecedor: '', tipo: 'Nacional' });
   };
 
+  const openEdit = (p: Peca) => {
+    setEditTarget(p);
+    setEditForm({ aeronave: p.aeronave || '', nome: p.nome, fornecedor: p.fornecedor, tipo: p.tipo });
+    setIsEditOpen(true);
+  };
+  const handleEdit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editTarget) return;
+    setPecas(pecas.map(p =>
+      p.id === editTarget.id
+        ? {
+            ...p,
+            aeronave: editForm.aeronave,
+            nome: editForm.nome,
+            fornecedor: editForm.fornecedor,
+            tipo: editForm.tipo as 'Nacional' | 'Importada',
+            tipoBadgeVariant: editForm.tipo === 'Nacional' ? 'bg-secondary-fixed text-on-secondary-fixed' : 'bg-tertiary-fixed text-on-tertiary-fixed',
+          }
+        : p
+    ));
+    setIsEditOpen(false);
+  };
+
+  const openDelete = (p: Peca) => { setDeleteTarget(p); setIsDeleteOpen(true); };
+  const handleDelete = () => {
+    if (!deleteTarget) return;
+    setPecas(pecas.filter(p => p.id !== deleteTarget.id));
+    setIsDeleteOpen(false);
+  };
+
+  const openStatus = (p: Peca) => {
+    setStatusTarget(p);
+    setStatusVal(statusToKey(p.status));
+    setIsStatusOpen(true);
+  };
+  const handleStatus = () => {
+    if (!statusTarget) return;
+    const opt = statusOptions[statusVal];
+    setPecas(pecas.map(p =>
+      p.id === statusTarget.id
+        ? { ...p, status: opt.label, statusIcon: opt.icon, statusBadgeVariant: opt.variant }
+        : p
+    ));
+    setIsStatusOpen(false);
+  };
+
   return (
     <Layout>
       <div className="p-xl flex flex-col gap-lg min-h-full">
-          {/* Header Section */}
-          <div className="flex flex-col gap-xs">
-            <nav aria-label="Breadcrumb" className="flex text-body-sm font-body-sm text-secondary">
-              <ol className="inline-flex items-center space-x-1">
-                <li className="inline-flex items-center">
-                  <span className="text-secondary cursor-pointer hover:underline">Home</span>
-                </li>
-                <li>
-                  <div className="flex items-center">
-                    <span className="material-symbols-outlined text-[16px] mx-1">chevron_right</span>
-                    <span className="text-on-surface font-medium">Peças</span>
-                  </div>
-                </li>
-              </ol>
-            </nav>
-            <div className="flex items-center justify-between">
-              <h1 className="text-h2 font-h2 text-on-surface">Gestão de Peças</h1>
-              <button 
-                onClick={() => setIsModalOpen(true)}
-                className="bg-primary text-on-primary text-label-md font-label-md px-md py-sm rounded-lg shadow-sm hover:opacity-90 transition-opacity flex items-center gap-xs">
-                <span className="material-symbols-outlined text-[18px]">add</span>
-                Nova Peça
-              </button>
+        {/* Header Section */}
+        <div className="flex flex-col gap-xs">
+          <nav aria-label="Breadcrumb" className="flex text-body-sm font-body-sm text-secondary">
+            <ol className="inline-flex items-center space-x-1">
+              <li className="inline-flex items-center">
+                <span className="text-secondary cursor-pointer hover:underline">Home</span>
+              </li>
+              <li>
+                <div className="flex items-center">
+                  <span className="material-symbols-outlined text-[16px] mx-1">chevron_right</span>
+                  <span className="text-on-surface font-medium">Peças</span>
+                </div>
+              </li>
+            </ol>
+          </nav>
+          <div className="flex items-center justify-between">
+            <h1 className="text-h2 font-h2 text-on-surface">Gestão de Peças</h1>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="bg-primary text-on-primary text-label-md font-label-md px-md py-sm rounded-lg shadow-sm hover:opacity-90 transition-opacity flex items-center gap-xs">
+              <span className="material-symbols-outlined text-[18px]">add</span>
+              Nova Peça
+            </button>
+          </div>
+        </div>
+
+        {/* Table Card */}
+        <div className="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden flex flex-col">
+          {/* Table Toolbar */}
+          <div className="p-md border-b border-outline-variant flex items-center justify-between bg-surface-container-low">
+            <div className="relative w-64">
+              <span className="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline">search</span>
+              <input
+                className="w-full pl-xl pr-sm py-sm text-body-sm font-body-sm border border-outline-variant rounded-lg focus:border-primary focus:ring-1 focus:ring-primary bg-surface-container-lowest text-on-surface outline-none transition-all"
+                placeholder="Buscar peças..."
+                type="text"
+              />
             </div>
+            <button className="flex items-center gap-xs text-body-sm font-body-sm text-secondary border border-outline-variant px-sm py-xs rounded-lg hover:bg-surface-variant transition-colors">
+              <span className="material-symbols-outlined text-[18px]">filter_list</span>
+              Filtros
+            </button>
           </div>
 
-          {/* Table Card */}
-          <div className="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden flex flex-col">
-            {/* Table Toolbar */}
-            <div className="p-md border-b border-outline-variant flex items-center justify-between bg-surface-container-low">
-              <div className="relative w-64">
-                <span className="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline">search</span>
-                <input 
-                  className="w-full pl-xl pr-sm py-sm text-body-sm font-body-sm border border-outline-variant rounded-lg focus:border-primary focus:ring-1 focus:ring-primary bg-surface-container-lowest text-on-surface outline-none transition-all" 
-                  placeholder="Buscar peças..." 
-                  type="text"
-                />
-              </div>
-              <button className="flex items-center gap-xs text-body-sm font-body-sm text-secondary border border-outline-variant px-sm py-xs rounded-lg hover:bg-surface-variant transition-colors">
-                <span className="material-symbols-outlined text-[18px]">filter_list</span>
-                Filtros
-              </button>
-            </div>
-
-            {/* Data Table */}
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-surface-container-low border-b border-outline-variant">
-                    <th className="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap">Nome</th>
-                    <th className="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap">Tipo</th>
-                    <th className="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap">Fornecedor</th>
-                    <th className="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap">Aeronave Associada</th>
-                    <th className="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap">Status</th>
-                    <th className="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap text-right">Ações</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-outline-variant">
-                  {pecas.map((peca) => (
-                    <tr key={peca.id} className="hover:bg-surface-container-low transition-colors group">
-                      <td className="p-md text-body-sm font-body-sm text-on-surface font-medium">{peca.nome}</td>
-                      <td className="p-md">
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-label-sm font-label-sm ${peca.tipoBadgeVariant}`}>
-                          {peca.tipo}
-                        </span>
-                      </td>
-                      <td className="p-md text-body-sm font-body-sm text-secondary">{peca.fornecedor}</td>
-                      <td className="p-md text-body-sm font-body-sm text-on-surface">{peca.aeronave || '-'}</td>
-                      <td className="p-md">
-                        <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-label-sm font-label-sm ${peca.statusBadgeVariant}`}>
-                          <span className="material-symbols-outlined text-[14px]">{peca.statusIcon}</span>
-                          {peca.status}
-                        </span>
-                      </td>
-                      <td className="p-md text-right">
-                        <div className="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
+          {/* Data Table */}
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-surface-container-low border-b border-outline-variant">
+                  <th className="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap">Nome</th>
+                  <th className="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap">Tipo</th>
+                  <th className="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap">Fornecedor</th>
+                  <th className="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap">Aeronave Associada</th>
+                  <th className="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap">Status</th>
+                  <th className="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-outline-variant">
+                {pecas.map((peca) => (
+                  <tr key={peca.id} className="hover:bg-surface-container-low transition-colors group">
+                    <td className="p-md text-body-sm font-body-sm text-on-surface font-medium">{peca.nome}</td>
+                    <td className="p-md">
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-label-sm font-label-sm ${peca.tipoBadgeVariant}`}>
+                        {peca.tipo}
+                      </span>
+                    </td>
+                    <td className="p-md text-body-sm font-body-sm text-secondary">{peca.fornecedor}</td>
+                    <td className="p-md text-body-sm font-body-sm text-on-surface">{peca.aeronave || '-'}</td>
+                    <td className="p-md">
+                      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-label-sm font-label-sm ${peca.statusBadgeVariant}`}>
+                        <span className="material-symbols-outlined text-[14px]">{peca.statusIcon}</span>
+                        {peca.status}
+                      </span>
+                    </td>
+                    <td className="p-md text-right">
+                      <div className="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
+                        <Tooltip label="Editar">
                           <button
                             aria-label={`Editar peça ${peca.nome}`}
-                            className="text-secondary hover:text-primary transition-colors flex items-center"
+                            className="p-1 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-highest"
+                            onClick={() => openEdit(peca)}
                           >
                             <span aria-hidden="true" className="material-symbols-outlined text-[20px]">edit</span>
                           </button>
+                        </Tooltip>
+                        <Tooltip label="Alterar Status">
                           <button
                             aria-label={`Alterar status de ${peca.nome}`}
-                            className="text-secondary hover:text-primary transition-colors flex items-center"
+                            className="p-1 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-highest"
+                            onClick={() => openStatus(peca)}
                           >
                             <span aria-hidden="true" className="material-symbols-outlined text-[20px]">published_with_changes</span>
                           </button>
+                        </Tooltip>
+                        <Tooltip label="Excluir">
                           <button
                             aria-label={`Excluir peça ${peca.nome}`}
-                            className="text-secondary hover:text-error transition-colors flex items-center"
+                            className="p-1 text-on-surface-variant hover:text-error transition-colors rounded-full hover:bg-error-container"
+                            onClick={() => openDelete(peca)}
                           >
                             <span aria-hidden="true" className="material-symbols-outlined text-[20px]">delete</span>
                           </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            
-            {/* Pagination */}
-            <div className="p-md border-t border-outline-variant bg-surface-container-lowest flex items-center justify-between">
-              <span className="text-body-sm font-body-sm text-secondary">Mostrando 1 a 4 de 24 peças</span>
-              <div className="flex items-center gap-sm">
-                <button className="text-secondary hover:text-primary p-xs rounded hover:bg-surface-variant transition-colors disabled:opacity-50" disabled>
-                  <span className="material-symbols-outlined">chevron_left</span>
-                </button>
-                <span className="text-body-sm font-body-sm text-on-surface font-medium w-8 text-center">1</span>
-                <button className="text-secondary hover:text-primary p-xs rounded hover:bg-surface-variant transition-colors">
-                  <span className="material-symbols-outlined">chevron_right</span>
-                </button>
-              </div>
+                        </Tooltip>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          <div className="p-md border-t border-outline-variant bg-surface-container-lowest flex items-center justify-between">
+            <span className="text-body-sm font-body-sm text-secondary">Mostrando 1 a {pecas.length} de {pecas.length} peças</span>
+            <div className="flex items-center gap-sm">
+              <button className="text-secondary hover:text-primary p-xs rounded hover:bg-surface-variant transition-colors disabled:opacity-50" disabled>
+                <span className="material-symbols-outlined">chevron_left</span>
+              </button>
+              <span className="text-body-sm font-body-sm text-on-surface font-medium w-8 text-center">1</span>
+              <button className="text-secondary hover:text-primary p-xs rounded hover:bg-surface-variant transition-colors">
+                <span className="material-symbols-outlined">chevron_right</span>
+              </button>
             </div>
           </div>
+        </div>
       </div>
 
+      {/* Modal: Nova Peça */}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Adicionar Peça a uma Aeronave">
         <form className="flex flex-col gap-md" onSubmit={handleCreate}>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Código da Aeronave alvo</label>
-            <input type="text" value={novaPeca.aeronave} onChange={(e) => setNovaPeca({...novaPeca, aeronave: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+            <input type="text" value={novaPeca.aeronave} onChange={(e) => setNovaPeca({ ...novaPeca, aeronave: e.target.value })} className={inputCls} required />
           </div>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Nome do componente</label>
-            <input type="text" value={novaPeca.nome} onChange={(e) => setNovaPeca({...novaPeca, nome: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+            <input type="text" value={novaPeca.nome} onChange={(e) => setNovaPeca({ ...novaPeca, nome: e.target.value })} className={inputCls} required />
           </div>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Empresa fornecedora</label>
-            <input type="text" value={novaPeca.fornecedor} onChange={(e) => setNovaPeca({...novaPeca, fornecedor: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+            <input type="text" value={novaPeca.fornecedor} onChange={(e) => setNovaPeca({ ...novaPeca, fornecedor: e.target.value })} className={inputCls} required />
           </div>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Origem</label>
-            <select value={novaPeca.tipo} onChange={(e) => setNovaPeca({...novaPeca, tipo: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required>
+            <select value={novaPeca.tipo} onChange={(e) => setNovaPeca({ ...novaPeca, tipo: e.target.value })} className={inputCls} required>
               <option value="Nacional">1- Nacional</option>
               <option value="Importada">2- Importada</option>
             </select>
@@ -179,6 +258,81 @@ const Pecas: React.FC = () => {
             <button type="submit" className="px-md py-sm rounded bg-primary text-on-primary hover:opacity-90">Cadastrar</button>
           </div>
         </form>
+      </Modal>
+
+      {/* Modal: Editar Peça */}
+      <Modal isOpen={isEditOpen} onClose={() => setIsEditOpen(false)} title={`Editar — ${editTarget?.nome || ''}`}>
+        <form className="flex flex-col gap-md" onSubmit={handleEdit}>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Código da Aeronave</label>
+            <input type="text" value={editForm.aeronave} onChange={(e) => setEditForm({ ...editForm, aeronave: e.target.value })} className={inputCls} />
+          </div>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Nome do componente</label>
+            <input type="text" value={editForm.nome} onChange={(e) => setEditForm({ ...editForm, nome: e.target.value })} className={inputCls} required />
+          </div>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Empresa fornecedora</label>
+            <input type="text" value={editForm.fornecedor} onChange={(e) => setEditForm({ ...editForm, fornecedor: e.target.value })} className={inputCls} required />
+          </div>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Origem</label>
+            <select value={editForm.tipo} onChange={(e) => setEditForm({ ...editForm, tipo: e.target.value })} className={inputCls} required>
+              <option value="Nacional">1- Nacional</option>
+              <option value="Importada">2- Importada</option>
+            </select>
+          </div>
+          <div className="flex justify-end gap-sm mt-md">
+            <button type="button" onClick={() => setIsEditOpen(false)} className="px-md py-sm rounded text-primary hover:bg-primary-fixed">Cancelar</button>
+            <button type="submit" className="px-md py-sm rounded bg-primary text-on-primary hover:opacity-90">Salvar Alterações</button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Modal: Alterar Status */}
+      <Modal isOpen={isStatusOpen} onClose={() => setIsStatusOpen(false)} title={`Status — ${statusTarget?.nome || ''}`}>
+        <div className="flex flex-col gap-lg">
+          <p className="font-body-md text-body-md text-on-surface">Selecione o novo status da peça:</p>
+          <div className="flex flex-col gap-sm">
+            {(Object.entries(statusOptions) as [StatusKey, typeof statusOptions[StatusKey]][]).map(([key, opt]) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setStatusVal(key)}
+                className={`flex items-center gap-md p-md rounded-xl border-2 transition-all text-left ${statusVal === key ? 'border-primary bg-primary-fixed/30' : 'border-outline-variant hover:border-primary/40'}`}
+              >
+                <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-label-sm font-label-sm ${opt.variant}`}>
+                  <span className="material-symbols-outlined text-[14px]">{opt.icon}</span>
+                </span>
+                <span className="font-label-md text-on-surface">{opt.label}</span>
+                {statusVal === key && <span className="material-symbols-outlined text-primary ml-auto text-[20px]">check_circle</span>}
+              </button>
+            ))}
+          </div>
+          <div className="flex justify-end gap-sm">
+            <button type="button" onClick={() => setIsStatusOpen(false)} className="px-md py-sm rounded text-primary hover:bg-primary-fixed">Cancelar</button>
+            <button type="button" onClick={handleStatus} className="px-md py-sm rounded bg-primary text-on-primary hover:opacity-90">Confirmar</button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Modal: Excluir Peça */}
+      <Modal isOpen={isDeleteOpen} onClose={() => setIsDeleteOpen(false)} title="Confirmar Exclusão">
+        <div className="flex flex-col gap-lg">
+          <div className="flex items-start gap-md">
+            <div className="w-10 h-10 rounded-full bg-error-container flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined text-error text-[20px]">warning</span>
+            </div>
+            <div>
+              <p className="font-body-md text-body-md text-on-surface">Tem certeza que deseja excluir a peça <strong>{deleteTarget?.nome}</strong>?</p>
+              <p className="font-body-sm text-body-sm text-on-surface-variant mt-xs">Esta ação não poderá ser desfeita.</p>
+            </div>
+          </div>
+          <div className="flex justify-end gap-sm">
+            <button type="button" onClick={() => setIsDeleteOpen(false)} className="px-md py-sm rounded text-primary hover:bg-primary-fixed">Cancelar</button>
+            <button type="button" onClick={handleDelete} className="px-md py-sm rounded bg-error text-on-error hover:opacity-90">Excluir</button>
+          </div>
+        </div>
       </Modal>
     </Layout>
   );

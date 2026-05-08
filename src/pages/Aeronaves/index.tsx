@@ -3,19 +3,25 @@ import { useNavigate } from 'react-router-dom';
 
 import Layout from '../../components/Layout';
 import Modal from '../../components/Modal';
+import Tooltip from '../../components/Tooltip';
 import { type Aeronave, mockAeronaves } from '../../types/aeronaves';
+
+const inputCls = "px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none w-full";
 
 const Aeronaves: React.FC = () => {
   const navigate = useNavigate();
   const [aeronaves, setAeronaves] = useState<Aeronave[]>(mockAeronaves);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [novaAeronave, setNovaAeronave] = useState({
-    codigo: '',
-    modelo: '',
-    tipo: 'Comercial',
-    capacidade: '',
-    alcance: ''
-  });
+  const [novaAeronave, setNovaAeronave] = useState({ codigo: '', modelo: '', tipo: 'Comercial', capacidade: '', alcance: '' });
+
+  // Edit state
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editTarget, setEditTarget] = useState<Aeronave | null>(null);
+  const [editForm, setEditForm] = useState({ codigo: '', modelo: '', tipo: 'Comercial', capacidade: '', alcance: '' });
+
+  // Delete state
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<Aeronave | null>(null);
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,17 +32,48 @@ const Aeronaves: React.FC = () => {
       tipo: novaAeronave.tipo as 'Comercial' | 'Militar',
       capacidade: Number(novaAeronave.capacidade),
       alcance: Number(novaAeronave.alcance),
-      tipoBadgeColor: novaAeronave.tipo === 'Comercial' ? 'bg-blue-100 text-blue-800 border-blue-200' : 'bg-green-100 text-green-800 border-green-200'
+      tipoBadgeColor: novaAeronave.tipo === 'Comercial' ? 'bg-secondary-fixed text-on-secondary-fixed' : 'bg-tertiary-fixed text-on-tertiary-fixed',
     };
     setAeronaves([aero, ...aeronaves]);
     setIsModalOpen(false);
     setNovaAeronave({ codigo: '', modelo: '', tipo: 'Comercial', capacidade: '', alcance: '' });
   };
 
+  const openEdit = (a: Aeronave) => {
+    setEditTarget(a);
+    setEditForm({ codigo: a.codigo, modelo: a.modelo, tipo: a.tipo, capacidade: String(a.capacidade), alcance: String(a.alcance) });
+    setIsEditOpen(true);
+  };
+  const handleEdit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editTarget) return;
+    setAeronaves(aeronaves.map(a =>
+      a.id === editTarget.id
+        ? {
+            ...a,
+            codigo: editForm.codigo,
+            modelo: editForm.modelo,
+            tipo: editForm.tipo as 'Comercial' | 'Militar',
+            capacidade: Number(editForm.capacidade),
+            alcance: Number(editForm.alcance),
+            tipoBadgeColor: editForm.tipo === 'Comercial' ? 'bg-secondary-fixed text-on-secondary-fixed' : 'bg-tertiary-fixed text-on-tertiary-fixed',
+          }
+        : a
+    ));
+    setIsEditOpen(false);
+  };
+
+  const openDelete = (a: Aeronave) => { setDeleteTarget(a); setIsDeleteOpen(true); };
+  const handleDelete = () => {
+    if (!deleteTarget) return;
+    setAeronaves(aeronaves.filter(a => a.id !== deleteTarget.id));
+    setIsDeleteOpen(false);
+  };
+
   return (
     <Layout>
       <div className="flex flex-col min-h-full">
-        {/* Action Bar (Sticky beneath TopNavBar) */}
+        {/* Action Bar */}
         <div className="sticky top-0 z-40 bg-surface-container-low/95 backdrop-blur-sm border-b border-outline-variant/30 px-xl py-lg flex justify-between items-center">
           <div>
             <nav className="flex items-center gap-xs text-on-surface-variant font-label-sm text-label-sm mb-xs">
@@ -47,7 +84,6 @@ const Aeronaves: React.FC = () => {
             <h1 className="font-h2 text-h2 text-on-surface">Gestão de Frota</h1>
           </div>
           <div className="flex items-center gap-md">
-            {/* Search Field */}
             <div className="relative w-[300px]">
               <span className="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
               <input
@@ -56,7 +92,6 @@ const Aeronaves: React.FC = () => {
                 type="text"
               />
             </div>
-            {/* Primary Action Button */}
             <button
               onClick={() => setIsModalOpen(true)}
               className="bg-primary text-on-primary px-lg py-[10px] rounded-lg font-label-md text-label-md flex items-center gap-sm shadow-md hover:bg-primary-container transition-all active:scale-[0.98]">
@@ -115,25 +150,33 @@ const Aeronaves: React.FC = () => {
                       <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant">{aero.alcance} km</td>
                       <td className="py-md px-lg text-right">
                         <div className="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
-                          <button
-                            aria-label={`Ver etapas de ${aero.codigo}`}
-                            className="p-xs text-secondary hover:text-primary hover:bg-primary-fixed rounded transition-colors"
-                            onClick={() => navigate(`/etapas?search=${aero.codigo}`)}
-                          >
-                            <span aria-hidden="true" className="material-symbols-outlined text-[20px]">assignment</span>
-                          </button>
-                          <button
-                            aria-label={`Editar ${aero.codigo}`}
-                            className="p-xs text-secondary hover:text-primary hover:bg-primary-fixed rounded transition-colors"
-                          >
-                            <span aria-hidden="true" className="material-symbols-outlined text-[20px]">edit</span>
-                          </button>
-                          <button
-                            aria-label={`Excluir ${aero.codigo}`}
-                            className="p-xs text-secondary hover:text-error hover:bg-error-container rounded transition-colors"
-                          >
-                            <span aria-hidden="true" className="material-symbols-outlined text-[20px]">delete</span>
-                          </button>
+                          <Tooltip label="Ver Etapas">
+                            <button
+                              aria-label={`Ver etapas de ${aero.codigo}`}
+                              className="p-xs text-secondary hover:text-primary hover:bg-primary-fixed rounded transition-colors"
+                              onClick={() => navigate(`/etapas?search=${aero.codigo}`)}
+                            >
+                              <span aria-hidden="true" className="material-symbols-outlined text-[20px]">assignment</span>
+                            </button>
+                          </Tooltip>
+                          <Tooltip label="Editar">
+                            <button
+                              aria-label={`Editar ${aero.codigo}`}
+                              className="p-xs text-secondary hover:text-primary hover:bg-primary-fixed rounded transition-colors"
+                              onClick={() => openEdit(aero)}
+                            >
+                              <span aria-hidden="true" className="material-symbols-outlined text-[20px]">edit</span>
+                            </button>
+                          </Tooltip>
+                          <Tooltip label="Excluir">
+                            <button
+                              aria-label={`Excluir ${aero.codigo}`}
+                              className="p-xs text-secondary hover:text-error hover:bg-error-container rounded transition-colors"
+                              onClick={() => openDelete(aero)}
+                            >
+                              <span aria-hidden="true" className="material-symbols-outlined text-[20px]">delete</span>
+                            </button>
+                          </Tooltip>
                         </div>
                       </td>
                     </tr>
@@ -143,7 +186,7 @@ const Aeronaves: React.FC = () => {
             </div>
             {/* Table Footer / Pagination */}
             <div className="px-lg py-sm border-t border-outline-variant bg-surface-container-low flex items-center justify-between mt-auto">
-              <span className="font-body-sm text-body-sm text-on-surface-variant">Mostrando 1 a 4 de 142 aeronaves</span>
+              <span className="font-body-sm text-body-sm text-on-surface-variant">Mostrando 1 a {aeronaves.length} de {aeronaves.length} aeronaves</span>
               <div className="flex items-center gap-xs">
                 <button className="p-xs border border-outline-variant rounded text-on-surface-variant hover:bg-surface-container disabled:opacity-50" disabled>
                   <span className="material-symbols-outlined text-[18px]">chevron_left</span>
@@ -157,27 +200,28 @@ const Aeronaves: React.FC = () => {
         </div>
       </div>
 
+      {/* Modal: Nova Aeronave */}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Cadastrar nova Aeronave">
         <form className="flex flex-col gap-md" onSubmit={handleCreate}>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Código único</label>
-            <input type="text" value={novaAeronave.codigo} onChange={(e) => setNovaAeronave({ ...novaAeronave, codigo: e.target.value })} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+            <input type="text" value={novaAeronave.codigo} onChange={(e) => setNovaAeronave({ ...novaAeronave, codigo: e.target.value })} className={inputCls} required />
           </div>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Modelo</label>
-            <input type="text" value={novaAeronave.modelo} onChange={(e) => setNovaAeronave({ ...novaAeronave, modelo: e.target.value })} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+            <input type="text" value={novaAeronave.modelo} onChange={(e) => setNovaAeronave({ ...novaAeronave, modelo: e.target.value })} className={inputCls} required />
           </div>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Capacidade de Passageiros</label>
-            <input type="number" value={novaAeronave.capacidade} onChange={(e) => setNovaAeronave({ ...novaAeronave, capacidade: e.target.value })} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+            <input type="number" value={novaAeronave.capacidade} onChange={(e) => setNovaAeronave({ ...novaAeronave, capacidade: e.target.value })} className={inputCls} required />
           </div>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Alcance em Km</label>
-            <input type="number" value={novaAeronave.alcance} onChange={(e) => setNovaAeronave({ ...novaAeronave, alcance: e.target.value })} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+            <input type="number" value={novaAeronave.alcance} onChange={(e) => setNovaAeronave({ ...novaAeronave, alcance: e.target.value })} className={inputCls} required />
           </div>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Tipo</label>
-            <select value={novaAeronave.tipo} onChange={(e) => setNovaAeronave({ ...novaAeronave, tipo: e.target.value })} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required>
+            <select value={novaAeronave.tipo} onChange={(e) => setNovaAeronave({ ...novaAeronave, tipo: e.target.value })} className={inputCls} required>
               <option value="Comercial">1- Comercial</option>
               <option value="Militar">2- Militar</option>
             </select>
@@ -187,6 +231,58 @@ const Aeronaves: React.FC = () => {
             <button type="submit" className="px-md py-sm rounded bg-primary text-on-primary hover:opacity-90">Cadastrar</button>
           </div>
         </form>
+      </Modal>
+
+      {/* Modal: Editar Aeronave */}
+      <Modal isOpen={isEditOpen} onClose={() => setIsEditOpen(false)} title={`Editar — ${editTarget?.codigo || ''}`}>
+        <form className="flex flex-col gap-md" onSubmit={handleEdit}>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Código único</label>
+            <input type="text" value={editForm.codigo} onChange={(e) => setEditForm({ ...editForm, codigo: e.target.value })} className={inputCls} required />
+          </div>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Modelo</label>
+            <input type="text" value={editForm.modelo} onChange={(e) => setEditForm({ ...editForm, modelo: e.target.value })} className={inputCls} required />
+          </div>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Capacidade de Passageiros</label>
+            <input type="number" value={editForm.capacidade} onChange={(e) => setEditForm({ ...editForm, capacidade: e.target.value })} className={inputCls} required />
+          </div>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Alcance em Km</label>
+            <input type="number" value={editForm.alcance} onChange={(e) => setEditForm({ ...editForm, alcance: e.target.value })} className={inputCls} required />
+          </div>
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-md text-on-surface">Tipo</label>
+            <select value={editForm.tipo} onChange={(e) => setEditForm({ ...editForm, tipo: e.target.value })} className={inputCls} required>
+              <option value="Comercial">1- Comercial</option>
+              <option value="Militar">2- Militar</option>
+            </select>
+          </div>
+          <div className="flex justify-end gap-sm mt-md">
+            <button type="button" onClick={() => setIsEditOpen(false)} className="px-md py-sm rounded text-primary hover:bg-primary-fixed">Cancelar</button>
+            <button type="submit" className="px-md py-sm rounded bg-primary text-on-primary hover:opacity-90">Salvar Alterações</button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Modal: Excluir Aeronave */}
+      <Modal isOpen={isDeleteOpen} onClose={() => setIsDeleteOpen(false)} title="Confirmar Exclusão">
+        <div className="flex flex-col gap-lg">
+          <div className="flex items-start gap-md">
+            <div className="w-10 h-10 rounded-full bg-error-container flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined text-error text-[20px]">warning</span>
+            </div>
+            <div>
+              <p className="font-body-md text-body-md text-on-surface">Tem certeza que deseja excluir a aeronave <strong>{deleteTarget?.codigo}</strong> ({deleteTarget?.modelo})?</p>
+              <p className="font-body-sm text-body-sm text-on-surface-variant mt-xs">Esta ação não poderá ser desfeita.</p>
+            </div>
+          </div>
+          <div className="flex justify-end gap-sm">
+            <button type="button" onClick={() => setIsDeleteOpen(false)} className="px-md py-sm rounded text-primary hover:bg-primary-fixed">Cancelar</button>
+            <button type="button" onClick={handleDelete} className="px-md py-sm rounded bg-error text-on-error hover:opacity-90">Excluir</button>
+          </div>
+        </div>
       </Modal>
     </Layout>
   );
