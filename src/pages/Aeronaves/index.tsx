@@ -6,7 +6,15 @@ import Modal from '../../components/Modal';
 import Tooltip from '../../components/Tooltip';
 import { type Aeronave, mockAeronaves } from '../../types/aeronaves';
 
-const inputCls = "px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none w-full";
+const inputCls = "px-sm py-xs border border-outline-variant rounded-lg bg-surface-container-lowest text-on-surface focus:border-primary focus:ring-2 focus:ring-primary-fixed-dim focus:outline-none w-full transition-all";
+const btnPrimaryCls = "w-full md:w-auto bg-primary text-on-primary px-lg py-sm rounded-lg font-label-md text-label-md flex items-center justify-center gap-xs shadow-md hover:bg-primary-container hover:text-on-primary-container transition-all active:scale-[0.98]";
+const btnFilterCls = "w-full md:w-auto flex items-center justify-center gap-xs px-md py-sm border rounded-lg font-label-sm text-label-sm transition-all";
+const searchInputCls = "w-full pl-10 pr-sm py-2 border border-outline-variant rounded-lg bg-surface-container-lowest font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-fixed-dim transition-all placeholder:text-outline-variant";
+const tableHeaderCls = "px-lg py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider bg-surface-container-low border-b border-outline-variant";
+const actionBtnBaseCls = "p-1.5 transition-colors rounded-full";
+const actionBtnEditCls = `${actionBtnBaseCls} text-on-surface-variant hover:text-primary hover:bg-primary-fixed-dim/20`;
+const actionBtnDeleteCls = `${actionBtnBaseCls} text-on-surface-variant hover:text-error hover:bg-error-container/30`;
+const actionBtnViewCls = `${actionBtnBaseCls} text-on-surface-variant hover:text-primary hover:bg-primary-fixed-dim/20`;
 
 const Aeronaves: React.FC = () => {
   const navigate = useNavigate();
@@ -96,9 +104,9 @@ const Aeronaves: React.FC = () => {
           </div>
           <div className="flex flex-col md:flex-row items-center gap-md w-full sm:w-auto">
             <div className="relative w-full md:w-[300px]">
-              <span className="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
+              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
               <input
-                className="w-full pl-[36px] pr-sm py-2 md:py-[10px] bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-fixed-dim transition-all placeholder:text-outline-variant"
+                className={searchInputCls}
                 placeholder="Buscar aeronave..."
                 type="text"
                 value={searchTerm}
@@ -107,13 +115,13 @@ const Aeronaves: React.FC = () => {
             </div>
             <button 
               onClick={() => setIsFilterOpen(true)}
-              className={`w-full md:w-auto flex items-center justify-center gap-xs px-md py-2 md:py-[10px] border rounded-lg font-label-md text-label-md transition-all ${ (filters.tipo !== 'Todos' || filters.minCapacidade !== '') ? 'border-primary bg-primary-fixed text-primary' : 'border-outline-variant text-on-surface-variant hover:bg-surface-container-low'}`}>
-              <span className="material-symbols-outlined text-[20px]">filter_list</span>
+              className={`${btnFilterCls} ${ (filters.tipo !== 'Todos' || filters.minCapacidade !== '') ? 'border-primary bg-primary-fixed text-primary shadow-sm' : 'border-outline-variant text-on-surface-variant hover:bg-surface-container-low'}`}>
+              <span className="material-symbols-outlined text-[18px]">filter_list</span>
               Filtros { (filters.tipo !== 'Todos' || filters.minCapacidade !== '') && '•'}
             </button>
             <button
               onClick={() => setIsModalOpen(true)}
-              className="w-full md:w-auto bg-primary text-on-primary px-lg py-2 md:py-[10px] rounded-lg font-label-md text-label-md flex items-center justify-center gap-sm shadow-md hover:bg-primary-container transition-all active:scale-[0.98]">
+              className={btnPrimaryCls}>
               <span className="material-symbols-outlined text-[18px]">add</span>
               Nova Aeronave
             </button>
@@ -146,13 +154,13 @@ const Aeronaves: React.FC = () => {
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse min-w-[700px] md:min-w-0">
                 <thead>
-                  <tr className="bg-surface-container-low border-b border-outline-variant">
-                    <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant whitespace-nowrap">Código</th>
-                    <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant whitespace-nowrap">Modelo</th>
-                    <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant whitespace-nowrap">Tipo</th>
-                    <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant whitespace-nowrap hidden sm:table-cell">Capacidade</th>
-                    <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant whitespace-nowrap hidden lg:table-cell">Alcance</th>
-                    <th className="py-md px-lg font-label-md text-label-md text-on-surface-variant whitespace-nowrap text-right">Ações</th>
+                  <tr className="bg-surface-container-low">
+                    <th className={tableHeaderCls}>Código</th>
+                    <th className={tableHeaderCls}>Modelo</th>
+                    <th className={tableHeaderCls}>Tipo</th>
+                    <th className={`${tableHeaderCls} hidden sm:table-cell`}>Capacidade</th>
+                    <th className={`${tableHeaderCls} hidden lg:table-cell`}>Alcance</th>
+                    <th className={`${tableHeaderCls} text-right`}>Ações</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-outline-variant/50">
@@ -168,11 +176,11 @@ const Aeronaves: React.FC = () => {
                       <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant hidden sm:table-cell">{aero.capacidade} passageiros</td>
                       <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant hidden lg:table-cell">{aero.alcance} km</td>
                       <td className="py-md px-lg text-right">
-                        <div className="flex items-center justify-end gap-sm lg:opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
+                        <div className="flex items-center justify-end gap-xs lg:opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
                           <Tooltip label="Ver Etapas">
                             <button
                               aria-label={`Ver etapas de ${aero.codigo}`}
-                              className="p-xs text-secondary hover:text-primary hover:bg-primary-fixed rounded transition-colors"
+                              className={actionBtnViewCls}
                               onClick={() => navigate(`/etapas?search=${aero.codigo}`)}
                             >
                               <span aria-hidden="true" className="material-symbols-outlined text-[20px]">assignment</span>
@@ -181,7 +189,7 @@ const Aeronaves: React.FC = () => {
                           <Tooltip label="Editar">
                             <button
                               aria-label={`Editar ${aero.codigo}`}
-                              className="p-xs text-secondary hover:text-primary hover:bg-primary-fixed rounded transition-colors"
+                              className={actionBtnEditCls}
                               onClick={() => openEdit(aero)}
                             >
                               <span aria-hidden="true" className="material-symbols-outlined text-[20px]">edit</span>
@@ -190,7 +198,7 @@ const Aeronaves: React.FC = () => {
                           <Tooltip label="Excluir">
                             <button
                               aria-label={`Excluir ${aero.codigo}`}
-                              className="p-xs text-secondary hover:text-error hover:bg-error-container rounded transition-colors"
+                              className={actionBtnDeleteCls}
                               onClick={() => openDelete(aero)}
                             >
                               <span aria-hidden="true" className="material-symbols-outlined text-[20px]">delete</span>
@@ -207,11 +215,11 @@ const Aeronaves: React.FC = () => {
             <div className="px-lg py-sm border-t border-outline-variant bg-surface-container-low flex flex-col sm:flex-row items-center justify-between mt-auto gap-md">
               <span className="font-body-sm text-body-sm text-on-surface-variant text-center sm:text-left">Mostrando 1 a {filteredAeronaves.length} de {filteredAeronaves.length} aeronaves</span>
               <div className="flex items-center gap-xs">
-                <button className="p-xs border border-outline-variant rounded text-on-surface-variant hover:bg-surface-container disabled:opacity-50" disabled>
-                  <span className="material-symbols-outlined text-[18px]">chevron_left</span>
+                <button className="p-1 rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface-container disabled:opacity-50 transition-colors" disabled>
+                  <span className="material-symbols-outlined text-[20px]">chevron_left</span>
                 </button>
-                <button className="p-xs border border-outline-variant rounded text-on-surface-variant hover:bg-surface-container">
-                  <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+                <button className="p-1 rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors">
+                  <span className="material-symbols-outlined text-[20px]">chevron_right</span>
                 </button>
               </div>
             </div>

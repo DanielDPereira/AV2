@@ -5,7 +5,16 @@ import Modal from '../../components/Modal';
 import Tooltip from '../../components/Tooltip';
 import { type Peca, mockPecas } from '../../types/pecas';
 
-const inputCls = "px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none w-full";
+const inputCls = "px-sm py-xs border border-outline-variant rounded-lg bg-surface-container-lowest text-on-surface focus:border-primary focus:ring-2 focus:ring-primary-fixed-dim focus:outline-none w-full transition-all";
+const btnPrimaryCls = "w-full md:w-auto bg-primary text-on-primary px-lg py-sm rounded-lg font-label-md text-label-md flex items-center justify-center gap-xs shadow-md hover:bg-primary-container hover:text-on-primary-container transition-all active:scale-[0.98]";
+const btnFilterCls = "w-full md:w-auto flex items-center justify-center gap-xs px-md py-sm border rounded-lg font-label-sm text-label-sm transition-all";
+const searchInputCls = "w-full pl-10 pr-sm py-2 border border-outline-variant rounded-lg bg-surface-container-lowest font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-fixed-dim transition-all placeholder:text-outline-variant";
+const tableHeaderCls = "px-lg py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider bg-surface-container-low border-b border-outline-variant";
+const actionBtnBaseCls = "p-1.5 transition-colors rounded-full";
+const actionBtnEditCls = `${actionBtnBaseCls} text-on-surface-variant hover:text-primary hover:bg-primary-fixed-dim/20`;
+const actionBtnDeleteCls = `${actionBtnBaseCls} text-on-surface-variant hover:text-error hover:bg-error-container/30`;
+const actionBtnViewCls = `${actionBtnBaseCls} text-on-surface-variant hover:text-primary hover:bg-primary-fixed-dim/20`;
+const actionBtnStatusCls = `${actionBtnBaseCls} text-on-surface-variant hover:text-primary hover:bg-primary-fixed-dim/20`;
 
 type StatusKey = 'producao' | 'transporte' | 'pronta';
 
@@ -117,41 +126,22 @@ const Pecas: React.FC = () => {
 
   return (
     <Layout>
-      <div className="p-4 md:p-8 lg:p-xl flex flex-col gap-6 md:gap-lg min-h-full">
-        {/* Header Section */}
-        <div className="flex flex-col gap-xs">
-          <nav aria-label="Breadcrumb" className="flex text-body-sm font-body-sm text-secondary">
-            <ol className="inline-flex items-center space-x-1">
-              <li className="inline-flex items-center">
-                <span className="text-secondary cursor-pointer hover:underline">Home</span>
-              </li>
-              <li>
-                <div className="flex items-center">
-                  <span className="material-symbols-outlined text-[16px] mx-1">chevron_right</span>
-                  <span className="text-on-surface font-medium">Peças</span>
-                </div>
-              </li>
-            </ol>
-          </nav>
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <h1 className="text-h2 font-h2 text-on-surface">Gestão de Peças</h1>
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="w-full md:w-auto bg-primary text-on-primary text-label-md font-label-md px-md py-sm rounded-lg shadow-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-xs">
-              <span className="material-symbols-outlined text-[18px]">add</span>
-              Nova Peça
-            </button>
+      <div className="flex flex-col min-h-full">
+        {/* Action Bar */}
+        <div className="sticky top-0 z-40 bg-surface-container-low/95 backdrop-blur-sm border-b border-outline-variant/30 px-4 md:px-8 lg:px-xl py-4 md:py-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <nav className="flex items-center gap-xs text-on-surface-variant font-label-sm text-label-sm mb-xs">
+              <span className="hover:text-primary cursor-pointer transition-colors">Sistema</span>
+              <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+              <span className="text-primary-container font-bold">Peças</span>
+            </nav>
+            <h1 className="font-h2 text-h2 text-on-surface">Inventário de Peças</h1>
           </div>
-        </div>
-
-        {/* Table Card */}
-        <div className="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden flex flex-col">
-          {/* Table Toolbar */}
-          <div className="p-4 border-b border-outline-variant flex flex-col sm:flex-row items-center justify-between bg-surface-container-low gap-4">
-            <div className="relative w-full sm:w-64">
-              <span className="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline">search</span>
+          <div className="flex flex-col md:flex-row items-center gap-md w-full sm:w-auto">
+            <div className="relative w-full md:w-[300px]">
+              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
               <input
-                className="w-full pl-xl pr-sm py-2 text-body-sm font-body-sm border border-outline-variant rounded-lg focus:border-primary focus:ring-1 focus:ring-primary bg-surface-container-lowest text-on-surface outline-none transition-all"
+                className={searchInputCls}
                 placeholder="Buscar peças..."
                 type="text"
                 value={searchTerm}
@@ -160,96 +150,102 @@ const Pecas: React.FC = () => {
             </div>
             <button 
               onClick={() => setIsFilterOpen(true)}
-              className={`w-full sm:w-auto flex items-center justify-center gap-xs px-md py-2 border rounded-lg text-body-sm font-body-sm transition-colors ${ (filters.tipo !== 'Todos' || filters.status !== 'Todos' || filters.aeronave !== 'Todas') ? 'border-primary bg-primary-fixed text-primary' : 'border-outline-variant text-secondary hover:bg-surface-variant'}`}>
+              className={`${btnFilterCls} ${ (filters.tipo !== 'Todos' || filters.status !== 'Todos' || filters.aeronave !== 'Todas') ? 'border-primary bg-primary-fixed text-primary shadow-sm' : 'border-outline-variant text-on-surface-variant hover:bg-surface-container-low'}`}>
               <span className="material-symbols-outlined text-[18px]">filter_list</span>
               Filtros { (filters.tipo !== 'Todos' || filters.status !== 'Todos' || filters.aeronave !== 'Todas') && '•'}
             </button>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className={btnPrimaryCls}>
+              <span className="material-symbols-outlined text-[18px]">add</span>
+              Nova Peça
+            </button>
           </div>
+        </div>
 
-          {/* Data Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse min-w-[900px] md:min-w-0">
-              <thead>
-                <tr className="bg-surface-container-low border-b border-outline-variant">
-                  <th className="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap">Nome</th>
-                  <th className="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap">Tipo</th>
-                  <th className="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap hidden lg:table-cell">Fornecedor</th>
-                  <th className="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap hidden sm:table-cell">Aeronave</th>
-                  <th className="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap">Status</th>
-                  <th className="p-md text-label-md font-label-md text-on-surface-variant whitespace-nowrap text-right">Ações</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-outline-variant">
-                {filteredPecas.map((peca) => (
-                  <tr key={peca.id} className="hover:bg-surface-container-low transition-colors group">
-                    <td className="p-md text-body-sm font-body-sm text-on-surface font-medium">{peca.nome}</td>
-                    <td className="p-md">
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-label-sm font-label-sm ${peca.tipoBadgeVariant}`}>
-                        {peca.tipo}
-                      </span>
-                    </td>
-                    <td className="p-md text-body-sm font-body-sm text-secondary hidden lg:table-cell">{peca.fornecedor}</td>
-                    <td className="p-md text-body-sm font-body-sm text-on-surface hidden sm:table-cell">{peca.aeronave || '-'}</td>
-                    <td className="p-md">
-                      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-label-sm font-label-sm ${peca.statusBadgeVariant}`}>
-                        <span className="material-symbols-outlined text-[14px]">{peca.statusIcon}</span>
-                        {peca.status}
-                      </span>
-                    </td>
-                    <td className="p-md text-right">
-                      <div className="flex items-center justify-end gap-sm lg:opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
-                        <Tooltip label="Editar">
-                          <button
-                            aria-label={`Editar peça ${peca.nome}`}
-                            className="p-1 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-highest"
-                            onClick={() => openEdit(peca)}
-                          >
-                            <span aria-hidden="true" className="material-symbols-outlined text-[20px]">edit</span>
-                          </button>
-                        </Tooltip>
-                        <Tooltip label="Alterar Status">
-                          <button
-                            aria-label={`Alterar status de ${peca.nome}`}
-                            className="p-1 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-highest"
-                            onClick={() => openStatus(peca)}
-                          >
-                            <span aria-hidden="true" className="material-symbols-outlined text-[20px]">published_with_changes</span>
-                          </button>
-                        </Tooltip>
-                        <Tooltip label="Excluir">
-                          <button
-                            aria-label={`Excluir peça ${peca.nome}`}
-                            className="p-1 text-on-surface-variant hover:text-error transition-colors rounded-full hover:bg-error-container"
-                            onClick={() => openDelete(peca)}
-                          >
-                            <span aria-hidden="true" className="material-symbols-outlined text-[20px]">delete</span>
-                          </button>
-                        </Tooltip>
-                      </div>
-                    </td>
+        <div className="p-4 md:p-8 lg:p-xl flex flex-col gap-6 md:gap-lg flex-1">
+          <div className="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden flex flex-col flex-1">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse min-w-[900px] md:min-w-0">
+                <thead>
+                  <tr className="bg-surface-container-low">
+                    <th className={tableHeaderCls}>Nome</th>
+                    <th className={tableHeaderCls}>Tipo</th>
+                    <th className={`${tableHeaderCls} hidden lg:table-cell`}>Fornecedor</th>
+                    <th className={`${tableHeaderCls} hidden sm:table-cell`}>Aeronave</th>
+                    <th className={tableHeaderCls}>Status</th>
+                    <th className={`${tableHeaderCls} text-right`}>Ações</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-outline-variant">
+                  {filteredPecas.map((peca) => (
+                    <tr key={peca.id} className="hover:bg-surface-container-low transition-colors group">
+                      <td className="p-md text-body-sm font-body-sm text-on-surface font-medium">{peca.nome}</td>
+                      <td className="p-md">
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-label-sm font-label-sm ${peca.tipoBadgeVariant}`}>
+                          {peca.tipo}
+                        </span>
+                      </td>
+                      <td className="p-md text-body-sm font-body-sm text-secondary hidden lg:table-cell">{peca.fornecedor}</td>
+                      <td className="p-md text-body-sm font-body-sm text-on-surface hidden sm:table-cell">{peca.aeronave || '-'}</td>
+                      <td className="p-md">
+                        <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-label-sm font-label-sm ${peca.statusBadgeVariant}`}>
+                          <span className="material-symbols-outlined text-[14px]">{peca.statusIcon}</span>
+                          {peca.status}
+                        </span>
+                      </td>
+                      <td className="p-md text-right">
+                        <div className="flex items-center justify-end gap-xs lg:opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
+                          <Tooltip label="Editar">
+                            <button
+                              aria-label={`Editar peça ${peca.nome}`}
+                              className={actionBtnEditCls}
+                              onClick={() => openEdit(peca)}
+                            >
+                              <span aria-hidden="true" className="material-symbols-outlined text-[20px]">edit</span>
+                            </button>
+                          </Tooltip>
+                          <Tooltip label="Alterar Status">
+                            <button
+                              aria-label={`Alterar status de ${peca.nome}`}
+                              className={actionBtnStatusCls}
+                              onClick={() => openStatus(peca)}
+                            >
+                              <span aria-hidden="true" className="material-symbols-outlined text-[20px]">published_with_changes</span>
+                            </button>
+                          </Tooltip>
+                          <Tooltip label="Excluir">
+                            <button
+                              aria-label={`Excluir peça ${peca.nome}`}
+                              className={actionBtnDeleteCls}
+                              onClick={() => openDelete(peca)}
+                            >
+                              <span aria-hidden="true" className="material-symbols-outlined text-[20px]">delete</span>
+                            </button>
+                          </Tooltip>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-          {/* Pagination */}
-          <div className="p-4 border-t border-outline-variant bg-surface-container-lowest flex flex-col sm:flex-row items-center justify-between gap-4">
-            <span className="text-body-sm font-body-sm text-secondary text-center sm:text-left">Mostrando 1 a {filteredPecas.length} de {filteredPecas.length} peças</span>
-            <div className="flex items-center gap-sm">
-              <button className="text-secondary hover:text-primary p-xs rounded hover:bg-surface-variant transition-colors disabled:opacity-50" disabled>
-                <span className="material-symbols-outlined">chevron_left</span>
-              </button>
-              <span className="text-body-sm font-body-sm text-on-surface font-medium w-8 text-center">1</span>
-              <button className="text-secondary hover:text-primary p-xs rounded hover:bg-surface-variant transition-colors">
-                <span className="material-symbols-outlined">chevron_right</span>
-              </button>
+            <div className="p-4 border-t border-outline-variant bg-surface-container-low flex flex-col sm:flex-row items-center justify-between gap-4 mt-auto">
+              <span className="text-body-sm font-body-sm text-secondary text-center sm:text-left">Mostrando 1 a {filteredPecas.length} de {pecas.length} peças</span>
+              <div className="flex items-center gap-xs">
+                <button className="p-1 rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface-container disabled:opacity-50 transition-colors" disabled>
+                  <span className="material-symbols-outlined text-[20px]">chevron_left</span>
+                </button>
+                <button className="p-1 rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors">
+                  <span className="material-symbols-outlined text-[20px]">chevron_right</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Modal: Nova Peça */}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Adicionar Peça a uma Aeronave">
         <form className="flex flex-col gap-md" onSubmit={handleCreate}>
           <div className="flex flex-col gap-xs">
@@ -278,7 +274,6 @@ const Pecas: React.FC = () => {
         </form>
       </Modal>
 
-      {/* Modal: Editar Peça */}
       <Modal isOpen={isEditOpen} onClose={() => setIsEditOpen(false)} title={`Editar — ${editTarget?.nome || ''}`}>
         <form className="flex flex-col gap-md" onSubmit={handleEdit}>
           <div className="flex flex-col gap-xs">
@@ -307,7 +302,6 @@ const Pecas: React.FC = () => {
         </form>
       </Modal>
 
-      {/* Modal: Alterar Status */}
       <Modal isOpen={isStatusOpen} onClose={() => setIsStatusOpen(false)} title={`Status — ${statusTarget?.nome || ''}`}>
         <div className="flex flex-col gap-lg">
           <p className="font-body-md text-body-md text-on-surface">Selecione o novo status da peça:</p>
@@ -352,7 +346,6 @@ const Pecas: React.FC = () => {
         </div>
       </Modal>
 
-      {/* Modal: Filtros */}
       <Modal isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} title="Filtros de Peças">
         <div className="flex flex-col gap-lg">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-md">

@@ -4,7 +4,15 @@ import Modal from '../../components/Modal';
 import Tooltip from '../../components/Tooltip';
 import { type Funcionario, mockFuncionarios } from '../../types/funcionarios';
 
-const inputCls = "px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none";
+const inputCls = "px-sm py-xs border border-outline-variant rounded-lg bg-surface-container-lowest text-on-surface focus:border-primary focus:ring-2 focus:ring-primary-fixed-dim focus:outline-none w-full transition-all";
+const btnPrimaryCls = "w-full md:w-auto bg-primary text-on-primary px-lg py-sm rounded-lg font-label-md text-label-md flex items-center justify-center gap-xs shadow-md hover:bg-primary-container hover:text-on-primary-container transition-all active:scale-[0.98]";
+const btnFilterCls = "w-full md:w-auto flex items-center justify-center gap-xs px-md py-sm border rounded-lg font-label-sm text-label-sm transition-all";
+const searchInputCls = "w-full pl-10 pr-sm py-2 border border-outline-variant rounded-lg bg-surface-container-lowest font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-fixed-dim transition-all placeholder:text-outline-variant";
+const tableHeaderCls = "px-lg py-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider bg-surface-container-low border-b border-outline-variant";
+const actionBtnBaseCls = "p-1.5 transition-colors rounded-full";
+const actionBtnEditCls = `${actionBtnBaseCls} text-on-surface-variant hover:text-primary hover:bg-primary-fixed-dim/20`;
+const actionBtnDeleteCls = `${actionBtnBaseCls} text-on-surface-variant hover:text-error hover:bg-error-container/30`;
+const actionBtnViewCls = `${actionBtnBaseCls} text-on-surface-variant hover:text-primary hover:bg-primary-fixed-dim/20`;
 
 const nivelMap = (tipo: string): { nivel: Funcionario['nivel']; variant: string } => {
   if (tipo === '3') return { nivel: 'Administrador', variant: 'bg-primary-container text-on-primary-container border-primary-container' };
@@ -53,49 +61,56 @@ const Funcionarios: React.FC = () => {
 
   return (
     <Layout>
-      <div className="p-4 md:p-8 lg:p-xl max-w-[1200px] mx-auto w-full">
-          <nav aria-label="Breadcrumb" className="flex items-center text-on-surface-variant font-label-sm text-label-sm mb-lg">
-            <span className="hover:text-primary transition-colors cursor-pointer">Sistema</span>
-            <span className="material-symbols-outlined mx-xs text-[16px]">chevron_right</span>
-            <span className="text-on-surface font-semibold">Funcionários</span>
-          </nav>
-          <header className="flex flex-col md:flex-row md:items-center justify-between mb-8 md:mb-xl gap-4">
-            <div>
-              <h1 className="font-h1 text-h2 md:text-h1 text-on-surface">Funcionários</h1>
-              <p className="font-body-md text-body-md text-on-surface-variant mt-xs">Gerencie o diretório de pessoal e níveis de acesso ao sistema.</p>
+      <div className="flex flex-col min-h-full">
+        {/* Action Bar */}
+        <div className="sticky top-0 z-40 bg-surface-container-low/95 backdrop-blur-sm border-b border-outline-variant/30 px-4 md:px-8 lg:px-xl py-4 md:py-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <nav className="flex items-center gap-xs text-on-surface-variant font-label-sm text-label-sm mb-xs">
+              <span className="hover:text-primary cursor-pointer transition-colors">Sistema</span>
+              <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+              <span className="text-primary-container font-bold">Funcionários</span>
+            </nav>
+            <h1 className="font-h2 text-h2 text-on-surface">Diretório de Pessoal</h1>
+            <p className="font-body-md text-body-md text-on-surface-variant mt-xs hidden md:block">Gerencie o pessoal e níveis de acesso ao sistema.</p>
+          </div>
+          <div className="flex flex-col md:flex-row items-center gap-md w-full sm:w-auto">
+            <div className="relative w-full md:w-[300px]">
+              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
+              <input
+                className={searchInputCls}
+                placeholder="Buscar por nome ou usuário..."
+                type="text"
+                value={filters.search}
+                onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+              />
             </div>
-            <button onClick={() => setIsModalOpen(true)} className="w-full md:w-auto flex items-center justify-center gap-sm bg-primary text-on-primary px-lg py-sm rounded-DEFAULT hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-all font-label-md text-label-md active:scale-[0.98]">
-              <span className="material-symbols-outlined text-[20px]">add</span><span>Novo Funcionário</span>
+            <button 
+              onClick={() => setIsFilterOpen(true)}
+              className={`${btnFilterCls} ${filters.nivel !== 'Todos' ? 'border-primary bg-primary-fixed text-primary shadow-sm' : 'border-outline-variant text-on-surface-variant hover:bg-surface-container-low'}`}>
+              <span className="material-symbols-outlined text-[18px]">filter_list</span>
+              Filtros {filters.nivel !== 'Todos' && '•'}
             </button>
-          </header>
-          <div className="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-[0_4px_12px_rgba(0,0,0,0.02)] overflow-hidden">
-            <div className="p-4 border-b border-outline-variant bg-surface-container-low flex flex-col sm:flex-row justify-between items-center gap-4">
-              <div className="relative w-full sm:w-72">
-                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
-                <input 
-                  className="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-DEFAULT focus:border-primary focus:ring-1 focus:ring-primary outline-none font-body-sm text-body-sm text-on-surface transition-all" 
-                  placeholder="Buscar por nome ou usuário..." 
-                  type="text" 
-                  value={filters.search}
-                  onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                />
-              </div>
-              <button 
-                onClick={() => setIsFilterOpen(true)}
-                className={`w-full sm:w-auto flex items-center justify-center gap-xs px-md py-2 border rounded-DEFAULT transition-colors font-label-sm text-label-sm ${filters.nivel !== 'Todos' ? 'border-primary bg-primary-fixed text-primary' : 'border-outline-variant text-on-surface-variant hover:bg-surface-container-lowest'}`}>
-                <span className="material-symbols-outlined text-[18px]">filter_list</span>
-                Filtros {filters.nivel !== 'Todos' && '•'}
-              </button>
-            </div>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className={btnPrimaryCls}>
+              <span className="material-symbols-outlined text-[18px]">add</span>
+              Novo Funcionário
+            </button>
+          </div>
+        </div>
+
+        {/* Content Area */}
+        <div className="p-4 md:p-8 lg:p-xl flex-1">
+          <div className="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden flex flex-col">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse min-w-[800px] md:min-w-0">
                 <thead>
-                  <tr className="bg-surface-container-lowest border-b border-outline-variant text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">
-                    <th className="py-md px-lg font-semibold">Nome</th>
-                    <th className="py-md px-lg font-semibold hidden lg:table-cell">Telefone</th>
-                    <th className="py-md px-lg font-semibold hidden sm:table-cell">Endereço</th>
-                    <th className="py-md px-lg font-semibold">Nível</th>
-                    <th className="py-md px-lg font-semibold text-right">Ações</th>
+                  <tr className="bg-surface-container-low">
+                    <th className={tableHeaderCls}>Nome</th>
+                    <th className={`${tableHeaderCls} hidden lg:table-cell`}>Telefone</th>
+                    <th className={`${tableHeaderCls} hidden sm:table-cell`}>Endereço</th>
+                    <th className={tableHeaderCls}>Nível</th>
+                    <th className={`${tableHeaderCls} text-right`}>Ações</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-outline-variant bg-surface-container-lowest">
@@ -111,9 +126,17 @@ const Funcionarios: React.FC = () => {
                       <td className="py-md px-lg font-body-sm text-body-sm text-on-surface-variant max-w-[200px] truncate hidden sm:table-cell" title={func.endereco}>{func.endereco}</td>
                       <td className="py-md px-lg"><span className={`inline-flex items-center px-3 py-1 rounded-full ${func.nivelVariant} font-label-sm text-label-sm border`}>{func.nivel}</span></td>
                       <td className="py-md px-lg text-right">
-                        <div className="flex items-center justify-end gap-sm lg:opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
-                          <Tooltip label="Editar"><button aria-label={`Editar ${func.nome}`} className="p-1 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container-highest" onClick={() => openEdit(func)}><span aria-hidden="true" className="material-symbols-outlined text-[20px]">edit</span></button></Tooltip>
-                          <Tooltip label="Excluir"><button aria-label={`Remover ${func.nome}`} className="p-1 text-on-surface-variant hover:text-error transition-colors rounded-full hover:bg-error-container" onClick={() => openDelete(func)}><span aria-hidden="true" className="material-symbols-outlined text-[20px]">delete</span></button></Tooltip>
+                        <div className="flex items-center justify-end gap-xs lg:opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
+                          <Tooltip label="Editar">
+                            <button aria-label={`Editar ${func.nome}`} className={actionBtnEditCls} onClick={() => openEdit(func)}>
+                              <span aria-hidden="true" className="material-symbols-outlined text-[20px]">edit</span>
+                            </button>
+                          </Tooltip>
+                          <Tooltip label="Excluir">
+                            <button aria-label={`Remover ${func.nome}`} className={actionBtnDeleteCls} onClick={() => openDelete(func)}>
+                              <span aria-hidden="true" className="material-symbols-outlined text-[20px]">delete</span>
+                            </button>
+                          </Tooltip>
                         </div>
                       </td>
                     </tr>
@@ -121,14 +144,19 @@ const Funcionarios: React.FC = () => {
                 </tbody>
               </table>
             </div>
-            <div className="p-md border-t border-outline-variant bg-surface-container-lowest flex flex-col sm:flex-row items-center justify-between gap-md">
-              <span className="font-body-sm text-body-sm text-on-surface-variant text-center sm:text-left">Mostrando 1 a {filteredFuncionarios.length} de {filteredFuncionarios.length} funcionários</span>
-              <div className="flex items-center gap-sm">
-                <button className="p-1 text-outline hover:text-on-surface transition-colors disabled:opacity-50" disabled><span className="material-symbols-outlined text-[20px]">chevron_left</span></button>
-                <button className="p-1 text-outline hover:text-on-surface transition-colors"><span className="material-symbols-outlined text-[20px]">chevron_right</span></button>
+            <div className="p-md border-t border-outline-variant bg-surface-container-low flex flex-col sm:flex-row items-center justify-between gap-md mt-auto">
+              <span className="font-body-sm text-body-sm text-on-surface-variant text-center sm:text-left">Mostrando 1 a {filteredFuncionarios.length} de {funcionarios.length} funcionários</span>
+              <div className="flex items-center gap-xs">
+                <button className="p-1 rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface-container disabled:opacity-50 transition-colors" disabled>
+                  <span className="material-symbols-outlined text-[20px]">chevron_left</span>
+                </button>
+                <button className="p-1 rounded-lg border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors">
+                  <span className="material-symbols-outlined text-[20px]">chevron_right</span>
+                </button>
               </div>
             </div>
           </div>
+        </div>
       </div>
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Cadastrar Funcionário">

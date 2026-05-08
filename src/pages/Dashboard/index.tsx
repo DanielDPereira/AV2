@@ -4,6 +4,10 @@ import Layout from '../../components/Layout';
 import Modal from '../../components/Modal';
 import { type DashboardAircraft, type DashboardStats } from '../../types/dashboard';
 
+const inputCls = "px-sm py-xs border border-outline-variant rounded-lg bg-surface-container-lowest text-on-surface focus:border-primary focus:ring-2 focus:ring-primary-fixed-dim focus:outline-none w-full transition-all";
+const btnPrimaryCls = "flex-1 sm:flex-none bg-primary text-on-primary px-lg py-sm rounded-lg font-label-md text-label-md flex items-center justify-center gap-xs shadow-md hover:bg-primary-container hover:text-on-primary-container transition-all active:scale-[0.98]";
+const btnSecondaryCls = "flex-1 sm:flex-none bg-surface-container-lowest border border-outline text-on-surface font-label-md text-label-md px-lg py-sm rounded-lg hover:shadow-md transition-all flex items-center justify-center gap-xs active:scale-[0.98]";
+
 const mockStats: DashboardStats = {
   aircrafts: 142,
   parts: 8934,
@@ -51,17 +55,24 @@ const Dashboard: React.FC = () => {
         <div className="max-w-7xl mx-auto space-y-6 md:space-y-xl">
             {/* Header & Botões Rápidos */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-md">
-              <h1 className="font-h1 text-h2 md:text-h1 text-on-surface">Dashboard</h1>
+              <div>
+                <nav className="flex items-center gap-xs text-on-surface-variant font-label-sm text-label-sm mb-xs">
+                  <span className="hover:text-primary cursor-pointer transition-colors">Sistema</span>
+                  <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+                  <span className="text-primary-container font-bold">Dashboard</span>
+                </nav>
+                <h1 className="font-h2 text-h2 text-on-surface">Visão Geral</h1>
+              </div>
               <div className="flex flex-wrap gap-xs md:gap-sm">
-                <button onClick={() => setIsModalPecaOpen(true)} className="flex-1 sm:flex-none bg-surface-container-lowest border border-outline text-on-surface font-label-sm md:font-label-md text-label-sm md:text-label-md px-sm md:px-md py-xs md:py-sm rounded hover:shadow-sm transition-all flex items-center justify-center gap-xs">
+                <button onClick={() => setIsModalPecaOpen(true)} className={btnSecondaryCls}>
                   <span className="material-symbols-outlined text-[18px]">add</span>
                   Peça
                 </button>
-                <button onClick={() => setIsModalEtapaOpen(true)} className="flex-1 sm:flex-none bg-surface-container-lowest border border-outline text-on-surface font-label-sm md:font-label-md text-label-sm md:text-label-md px-sm md:px-md py-xs md:py-sm rounded hover:shadow-sm transition-all flex items-center justify-center gap-xs">
+                <button onClick={() => setIsModalEtapaOpen(true)} className={btnSecondaryCls}>
                   <span className="material-symbols-outlined text-[18px]">add</span>
                   Etapa
                 </button>
-                <button onClick={() => setIsModalAeronaveOpen(true)} className="flex-1 sm:flex-none bg-primary text-on-primary font-label-sm md:font-label-md text-label-sm md:text-label-md px-sm md:px-md py-xs md:py-sm rounded hover:shadow-md transition-all flex items-center justify-center gap-xs">
+                <button onClick={() => setIsModalAeronaveOpen(true)} className={btnPrimaryCls}>
                   <span className="material-symbols-outlined text-[18px]">add</span>
                   Aeronave
                 </button>
@@ -152,29 +163,29 @@ const Dashboard: React.FC = () => {
         <form className="flex flex-col gap-md" onSubmit={handleCreateAeronave}>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Código único</label>
-            <input type="text" value={novaAeronave.codigo} onChange={(e) => setNovaAeronave({...novaAeronave, codigo: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+            <input type="text" value={novaAeronave.codigo} onChange={(e) => setNovaAeronave({...novaAeronave, codigo: e.target.value})} className={inputCls} required />
           </div>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Modelo</label>
-            <input type="text" value={novaAeronave.modelo} onChange={(e) => setNovaAeronave({...novaAeronave, modelo: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+            <input type="text" value={novaAeronave.modelo} onChange={(e) => setNovaAeronave({...novaAeronave, modelo: e.target.value})} className={inputCls} required />
           </div>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Capacidade de Passageiros</label>
-            <input type="number" value={novaAeronave.capacidade} onChange={(e) => setNovaAeronave({...novaAeronave, capacidade: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+            <input type="number" value={novaAeronave.capacidade} onChange={(e) => setNovaAeronave({...novaAeronave, capacidade: e.target.value})} className={inputCls} required />
           </div>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Alcance em Km</label>
-            <input type="number" value={novaAeronave.alcance} onChange={(e) => setNovaAeronave({...novaAeronave, alcance: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+            <input type="number" value={novaAeronave.alcance} onChange={(e) => setNovaAeronave({...novaAeronave, alcance: e.target.value})} className={inputCls} required />
           </div>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Tipo</label>
-            <select value={novaAeronave.tipo} onChange={(e) => setNovaAeronave({...novaAeronave, tipo: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required>
+            <select value={novaAeronave.tipo} onChange={(e) => setNovaAeronave({...novaAeronave, tipo: e.target.value})} className={inputCls} required>
               <option value="Comercial">1- Comercial</option>
               <option value="Militar">2- Militar</option>
             </select>
           </div>
           <div className="flex justify-end gap-sm mt-md">
-            <button type="button" onClick={() => setIsModalAeronaveOpen(false)} className="px-md py-sm rounded text-primary hover:bg-primary-fixed">Cancelar</button>
+            <button type="button" onClick={() => setIsModalAeronaveOpen(false)} className="px-md py-sm rounded text-primary hover:bg-primary-fixed-dim/20">Cancelar</button>
             <button type="submit" className="px-md py-sm rounded bg-primary text-on-primary hover:opacity-90">Cadastrar</button>
           </div>
         </form>
@@ -184,25 +195,25 @@ const Dashboard: React.FC = () => {
         <form className="flex flex-col gap-md" onSubmit={handleCreatePeca}>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Código da Aeronave alvo</label>
-            <input type="text" value={novaPeca.aeronave} onChange={(e) => setNovaPeca({...novaPeca, aeronave: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+            <input type="text" value={novaPeca.aeronave} onChange={(e) => setNovaPeca({...novaPeca, aeronave: e.target.value})} className={inputCls} required />
           </div>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Nome do componente</label>
-            <input type="text" value={novaPeca.nome} onChange={(e) => setNovaPeca({...novaPeca, nome: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+            <input type="text" value={novaPeca.nome} onChange={(e) => setNovaPeca({...novaPeca, nome: e.target.value})} className={inputCls} required />
           </div>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Empresa fornecedora</label>
-            <input type="text" value={novaPeca.fornecedor} onChange={(e) => setNovaPeca({...novaPeca, fornecedor: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+            <input type="text" value={novaPeca.fornecedor} onChange={(e) => setNovaPeca({...novaPeca, fornecedor: e.target.value})} className={inputCls} required />
           </div>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Origem</label>
-            <select value={novaPeca.tipo} onChange={(e) => setNovaPeca({...novaPeca, tipo: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required>
+            <select value={novaPeca.tipo} onChange={(e) => setNovaPeca({...novaPeca, tipo: e.target.value})} className={inputCls} required>
               <option value="Nacional">1- Nacional</option>
               <option value="Importada">2- Importada</option>
             </select>
           </div>
           <div className="flex justify-end gap-sm mt-md">
-            <button type="button" onClick={() => setIsModalPecaOpen(false)} className="px-md py-sm rounded text-primary hover:bg-primary-fixed">Cancelar</button>
+            <button type="button" onClick={() => setIsModalPecaOpen(false)} className="px-md py-sm rounded text-primary hover:bg-primary-fixed-dim/20">Cancelar</button>
             <button type="submit" className="px-md py-sm rounded bg-primary text-on-primary hover:opacity-90">Cadastrar</button>
           </div>
         </form>
@@ -212,18 +223,18 @@ const Dashboard: React.FC = () => {
         <form className="flex flex-col gap-md" onSubmit={handleCreateEtapa}>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Código Aeronave</label>
-            <input type="text" value={novaEtapa.aeronave} onChange={(e) => setNovaEtapa({...novaEtapa, aeronave: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+            <input type="text" value={novaEtapa.aeronave} onChange={(e) => setNovaEtapa({...novaEtapa, aeronave: e.target.value})} className={inputCls} required />
           </div>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Nome da etapa</label>
-            <input type="text" value={novaEtapa.nome} onChange={(e) => setNovaEtapa({...novaEtapa, nome: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+            <input type="text" value={novaEtapa.nome} onChange={(e) => setNovaEtapa({...novaEtapa, nome: e.target.value})} className={inputCls} required />
           </div>
           <div className="flex flex-col gap-xs">
             <label className="font-label-md text-on-surface">Prazo</label>
-            <input type="text" value={novaEtapa.prazo} onChange={(e) => setNovaEtapa({...novaEtapa, prazo: e.target.value})} className="px-sm py-xs border border-outline-variant rounded bg-surface-container-lowest text-on-surface focus:border-primary focus:outline-none" required />
+            <input type="date" value={novaEtapa.prazo} onChange={(e) => setNovaEtapa({...novaEtapa, prazo: e.target.value})} className={inputCls} required />
           </div>
           <div className="flex justify-end gap-sm mt-md">
-            <button type="button" onClick={() => setIsModalEtapaOpen(false)} className="px-md py-sm rounded text-primary hover:bg-primary-fixed">Cancelar</button>
+            <button type="button" onClick={() => setIsModalEtapaOpen(false)} className="px-md py-sm rounded text-primary hover:bg-primary-fixed-dim/20">Cancelar</button>
             <button type="submit" className="px-md py-sm rounded bg-primary text-on-primary hover:opacity-90">Criar</button>
           </div>
         </form>
